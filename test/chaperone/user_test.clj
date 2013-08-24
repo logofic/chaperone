@@ -2,29 +2,29 @@
 	(:use midje.sweet)
 	(:use chaperone.user)
 	(:require [clj-time.core :as time])
-)
-
-;;; helper functions
-
-(defn create-test-user []
-  "I create a simple test user"
-	(->User 0 "Mark" "Mandel" "password" "email" "photo.jpg" (time/now))
 	)
 
 ;;; facts
 
 (fact
-	"I can create a user"
-	(create-test-user) => truthy
-	(:firstname (create-test-user)) => "Mark"
-	(:lastname (create-test-user)) => "Mandel"
-	(:password (create-test-user)) => "password"
-	(:email (create-test-user)) => "email"
+	"Better constructor works"
+	(let [test-user (new-user "Mark" "Mandel" "email" "password")]
+		(:id test-user) => truthy
+		(:firstname test-user) => "Mark"
+		(:lastname test-user) => "Mandel"
+		(:password test-user) => "password"
+		(:email test-user) => "email"
+		(:photo test-user) => nil
+		(:last-logged-in test-user) => nil
+		)
 	)
 
-(fact :focus
-	"Constructor function works"
-	(:id (make-user {:firstname "Mark" })) => truthy
-	(:firstname (make-user {:firstname "Mark" })) => truthy
-	(:lastname (make-user {:firstname "Mark" })) => falsey
+(fact
+	"Test optional arguments work"
+	(let [test-user (new-user "Mark" "Mandel" "email" "password" :photo "photo" :last-logged-in time/now)]
+		(:id test-user) => truthy
+		(:firstname test-user) => "Mark"
+		(:photo test-user) => "photo"
+		(:last-logged-in test-user) => truthy
+		)
 	)
