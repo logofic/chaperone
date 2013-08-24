@@ -13,10 +13,18 @@
 
 ;;; facts
 
-(fact "I can create a user"
+(fact
+	"I can create a user"
 	(create-test-user) => truthy
 	(:firstname (create-test-user)) => "Mark"
 	(:lastname (create-test-user)) => "Mandel"
 	(:password (create-test-user)) => "password"
 	(:email (create-test-user)) => "email"
+	)
+
+(fact :focus
+	"Constructor function works"
+	(:id (make-user {:firstname "Mark" })) => truthy
+	(:firstname (make-user {:firstname "Mark" })) => truthy
+	(:lastname (make-user {:firstname "Mark" })) => falsey
 	)

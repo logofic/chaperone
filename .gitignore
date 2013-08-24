@@ -11,3 +11,4 @@ pom.xml.asc
 !.gitignore
 *.iml
 doc
+checkouts
