@@ -1,10 +1,16 @@
-# chaperone
+# Chaperone
 
-FIXME: description
+
+
+
 
 ## Installation
 
-Download from http://example.com/FIXME.
+You will require a installation of [ElasticSearch](http://www.elasticsearch.org/)
+
+Chaperone will only automatically create an index, allowing you to manually create one, if you need more advanced ElasticSearch sharding/replication options.
+
+The
 
 ## Usage
 
@@ -12,25 +18,14 @@ FIXME: explanation
 
     $ java -jar chaperone-0.1.0-standalone.jar [args]
 
-## Options
+## Development / Test
 
-FIXME: listing of options this app accepts.
-
-## Examples
-
-...
-
-### Bugs
-
-...
-
-### Any Other Sections
-### That You Think
-### Might be Useful
+There is a [VagrantFile](http://www.vagrantup.com/) that provides the test infrastructure you need to run an instance of chaperone.
+Provisioning for Vagrant is provided by an [Ansible](http://www.ansibleworks.com/), that could also be reused to deploy to a production
+instance.
 
 ## License
 
-Copyright © 2013 FIXME
+Copyright © 2013 Mark Mandel
 
-Distributed under the Eclipse Public License either version 1.0 or (at
-your option) any later version.
+Distributed under the Apache License, Version 2.0.

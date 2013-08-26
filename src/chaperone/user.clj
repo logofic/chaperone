@@ -1,15 +1,18 @@
 (ns
 	^{:doc "System user and user management"}
 	chaperone.user
-	(:require [cljs-uuid.core :as uuid]))
+	(:require [cljs-uuid.core :as uuid]
+						[chaperone.persistence.core :as pcore]))
 
+;;; mapping configuration
 (defrecord User [id
 								 firstname
 								 lastname
 								 password
 								 email
 								 photo
-								 last-logged-in])
+								 last-logged-in]
+	pcore/Persistent)
 
 (defn new-user
 	"Constructor function for a new user. Also sets the ID to a UUID apon creation."

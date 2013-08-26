@@ -1,0 +1,6 @@
+---
+- hosts: vagrant
+  roles:
+    #- { role: dist_upgrade, sudo: true }
+    - { role: install_java, sudo: true }
+    - install_elasticsearch
