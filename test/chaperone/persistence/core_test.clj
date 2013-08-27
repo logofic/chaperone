@@ -5,11 +5,10 @@
 						[clojurewerkz.elastisch.rest.index :as esi]))
 
 ;;clean out the index before we begin
-(namespace-state-changes (before :facts
-													 (esi/delete es-index)
+(namespace-state-changes (before :facts (esi/delete es-index)
 													 ))
 
 (fact
-	"I am doign something awesome."
-	(conj [1 2] 3) => [1 2 3]
+	"Should be no index"
+	(esi/exists? es-index) => false
 	)

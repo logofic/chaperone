@@ -8,9 +8,12 @@
 
 You will require a installation of [ElasticSearch](http://www.elasticsearch.org/)
 
-Chaperone will only automatically create an index, allowing you to manually create one, if you need more advanced ElasticSearch sharding/replication options.
+To create the required index run `lein run -m chaperone.persistance.install` with the required environment variables.
 
-The
+## Enviornment Variables
+
+ - ELASTICSEARCH_URL - The url of Elastic Search
+ - ELATICSEARCH_INDEX - The name of the index to use for Chaperone.
 
 ## Usage
 
