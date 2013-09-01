@@ -12,7 +12,10 @@
 								 email
 								 photo
 								 last-logged-in]
-	pcore/Persistent)
+	pcore/Persistent
+	(get-type [this]
+		"Returns the es type of this persistence record"
+		"user"))
 
 (defn new-user
 	"Constructor function for a new user. Also sets the ID to a UUID apon creation."

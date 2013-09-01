@@ -8,7 +8,8 @@
 								 [codesignals.flux "0.1.2"]
 								 [cljs-uuid "0.0.4"]
 								 [environ "0.4.0"]
-								 [clojurewerkz/elastisch "1.2.0"]]
+								 [clojurewerkz/elastisch "1.3.0-SNAPSHOT"]
+								 ]
 	:main chaperone.core
 	:profiles {:uberjar {:aot :all}
 						 :dev {:dependencies [[midje "1.5.1"]]

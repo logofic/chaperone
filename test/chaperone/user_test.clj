@@ -1,8 +1,8 @@
 (ns chaperone.user-test
-	(:use midje.sweet)
-	(:use chaperone.user)
-	(:require [clj-time.core :as time])
-	)
+	(:use [midje.sweet]
+				[chaperone.user]
+				[chaperone.persistence.core :only (get-type)])
+	(:require [clj-time.core :as time]))
 
 ;;; facts
 
@@ -28,3 +28,9 @@
 		(:last-logged-in test-user) => truthy
 		)
 	)
+
+(fact
+	"Persistance methods work correctly"
+	(let [test-user (new-user "Mark" "Mandel" "email" "password")]
+		(get-type test-user) => "user"))
+

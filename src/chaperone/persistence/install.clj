@@ -5,13 +5,12 @@
 						[clojurewerkz.elastisch.rest.index :as esi]))
 
 
-(def user-mapping {:user {:properties {:id {:type "string" :store true :index "not_analyzed"}
-																				:firstname {:type "string" :store true}
-																				:lastname {:type "string" :store true}
+(def user-mapping {:user {:properties { :firstname {:type "string"}
+																				:lastname {:type "string"}
 																				:password {:type "string" :index "not_analyzed"}
-																				:email {:type "string" :store true}
-																				:photo {:type "string" :store true :index "not_analyzed"}
-																				:last-logged-in {:type "date" :store true}}}})
+																				:email {:type "string"}
+																				:photo {:type "string" :index "not_analyzed"}
+																				:last-logged-in {:type "date", :format "date_time"}}}})
 
 (defn create-index []
 	"Installs the index and require mappings for elasticsearch"
