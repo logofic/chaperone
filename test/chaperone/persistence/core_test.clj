@@ -29,4 +29,4 @@
 		(install/create-index)
 		(create test-user)
 		(let [result (->> (:id test-user) (get-by-id "user") :_source)]
-			(timef/parse date-formatter (:last-logged-in result)) => (:last-logged-in test-user))))
+			(parse-string-date (:last-logged-in result)) => (:last-logged-in test-user))))

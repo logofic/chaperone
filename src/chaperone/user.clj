@@ -3,7 +3,7 @@
 	chaperone.user
 	(:require [chaperone.persistence.core :as pcore]))
 
-;;; mapping configuration
+;; mapping configuration
 (defrecord User [id
 								 firstname
 								 lastname
@@ -22,6 +22,7 @@
 	 & {:keys [photo last-logged-in]}]
 	(->User (pcore/create-id) firstname lastname password email photo last-logged-in))
 
-#_
-(defn map->User [map]
-	(->User (:id map) firstname lastname password email photo last-logged-in))
+(defn _source->User [map]
+	"Create a User from the elasicsearch _source map"
+	(->User (:id map) (:firstname map) (:lastname map) (:password map) (:email map) (:photo map)
+		(pcore/parse-string-date (:last-logged-in map))))

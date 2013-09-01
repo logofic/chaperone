@@ -22,6 +22,10 @@
 	(fn [c jsonGenerator]
 		(.writeString jsonGenerator (timef/unparse date-formatter c))))
 
+(defn parse-string-date [date]
+	"Parse the standard date format for persistence"
+	(timef/parse date-formatter date))
+
 ;;; set default connection to elastic search
 (esr/connect! (env/env :elasticsearch-url))
 
