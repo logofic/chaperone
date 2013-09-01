@@ -7,3 +7,6 @@
 - name: install elasticsearch
   command: dpkg -i {{download_dir}}/elasticsearch.deb
   sudo: true
+- name: install front end
+  command: /usr/share/elasticsearch/bin/plugin -install mobz/elasticsearch-head
+  sudo: true
