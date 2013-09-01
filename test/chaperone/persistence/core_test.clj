@@ -22,11 +22,11 @@
 	(let [test-user (user/new-user "Mark" "Mandel" "email" "password")]
 		(install/create-index)
 		(create test-user)
-		(-> (get-by-id "user" (-> test-user :id .toString)) :_source :id) => (-> test-user :id .toString)))
+		(-> (get-by-id "user" (:id test-user)) :_source :id) => (:id test-user)))
 
 (fact "Should be able to store and retrieve a date"
 	(let [test-user (user/new-user "Mark" "Mandel" "email" "password" :last-logged-in (time/now))]
 		(install/create-index)
 		(create test-user)
-		(let [result (->> (-> test-user :id .toString) (get-by-id "user") :_source)]
+		(let [result (->> (:id test-user) (get-by-id "user") :_source)]
 			(timef/parse date-formatter (:last-logged-in result)) => (:last-logged-in test-user))))

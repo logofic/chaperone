@@ -17,5 +17,4 @@
 												 :elaticsearch-index "test_chaperone"}}}
 	:plugins [[lein-midje "3.0.0"]
 						[codox "0.6.4"]
-						[lein-environ "0.4.0"]]
-	)
+						[lein-environ "0.4.0"]])

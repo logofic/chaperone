@@ -3,6 +3,7 @@
 	(:require [environ.core :as env]
 						[cheshire.generate :as chesg]
 						[clj-time.format :as timef]
+						[cljs-uuid.core :as uuid]
 						[clojurewerkz.elastisch.rest :as esr]
 						[clojurewerkz.elastisch.rest.index :as esi]
 						[clojurewerkz.elastisch.rest.document :as esd]))
@@ -28,9 +29,14 @@
 	"The index that we store the data against in elastic search"
 	(env/env :elaticsearch-index))
 
+(defn create-id []
+	"creates a uuid string"
+	(-> (uuid/make-random) .toString))
+
 (defn create [^chaperone.persistence.core.Persistent record]
 	"utility class for easy inserting of a Persistent record"
 	(esd/create es-index (get-type record) record :id (:id record)))
 
 (defn get-by-id [type id]
+	"Get a specific type by id"
 	(esd/get es-index type id))
