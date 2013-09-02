@@ -5,10 +5,9 @@
 						:url "http://www.apache.org/licenses/LICENSE-2.0.html"}
 	:dependencies [[org.clojure/clojure "1.5.1"]
 								 [clj-time "0.6.0"]
-								 [codesignals.flux "0.1.2"]
 								 [cljs-uuid "0.0.4"]
 								 [environ "0.4.0"]
-								 [clojurewerkz/elastisch "1.3.0-SNAPSHOT"]
+								 [clojurewerkz/elastisch "1.3.0-beta1"]
 								 ]
 	:main chaperone.core
 	:profiles {:uberjar {:aot :all}
