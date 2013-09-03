@@ -1,16 +1,15 @@
-(ns
-	^{:doc "System user and user management"}
+(ns ^{:doc "System user and user management"}
 	chaperone.user
 	(:require [chaperone.persistence.core :as pcore]))
 
 ;; mapping configuration
 (defrecord User [id
-								 firstname
-								 lastname
-								 password
-								 email
-								 photo
-								 last-logged-in]
+				 firstname
+				 lastname
+				 password
+				 email
+				 photo
+				 last-logged-in]
 	pcore/Persistent
 	(get-type [this]
 		"Returns the es type of this persistence record"
@@ -25,4 +24,4 @@
 (defn _source->User [map]
 	"Create a User from the elasicsearch _source map"
 	(->User (:id map) (:firstname map) (:lastname map) (:password map) (:email map) (:photo map)
-		(pcore/parse-string-date (:last-logged-in map))))
+			(pcore/parse-string-date (:last-logged-in map))))

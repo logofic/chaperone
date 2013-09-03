@@ -1,10 +1,10 @@
 (ns chaperone.user-test
 	(:use [midje.sweet]
-				[chaperone.user])
+		  [chaperone.user])
 	(:require [clj-time.core :as time]
-						[clojurewerkz.elastisch.rest.index :as esi]
-						[chaperone.persistence.install :as install]
-						[chaperone.persistence.core :as pcore]))
+			  [clojurewerkz.elastisch.rest.index :as esi]
+			  [chaperone.persistence.install :as install]
+			  [chaperone.persistence.core :as pcore]))
 
 ;;; facts
 
@@ -37,13 +37,13 @@
 		(pcore/get-type test-user) => "user"))
 
 (fact :focus
-	"Test if the _source->User works properly"
-	(esi/delete pcore/es-index)
-	(install/create-index)
-	(let [test-user (new-user "Mark" "Mandel" "email" "password" :last-logged-in (time/now) :photo "photo.jpg")]
-		(pcore/create test-user)
-		(let [result (-> (pcore/get-by-id "user" (:id test-user)) :_source _source->User)]
-			(doseq [key (keys result)]
-				(key test-user) => (key result))
-			)
-		))
+	  "Test if the _source->User works properly"
+	  (esi/delete pcore/es-index)
+	  (install/create-index)
+	  (let [test-user (new-user "Mark" "Mandel" "email" "password" :last-logged-in (time/now) :photo "photo.jpg")]
+		  (pcore/create test-user)
+		  (let [result (-> (pcore/get-by-id "user" (:id test-user)) :_source _source->User)]
+			  (doseq [key (keys result)]
+				  (key test-user) => (key result))
+			  )
+		  ))
