@@ -7,7 +7,8 @@
 			  [chaperone.persistence.install :as install]
 			  [clojurewerkz.elastisch.rest :as esr]
 			  [clojurewerkz.elastisch.rest.index :as esi]
-			  [clojurewerkz.elastisch.rest.document :as esd]))
+			  [clojurewerkz.elastisch.rest.document :as esd]
+			  [clojurewerkz.elastisch.query :as esq]))
 
 ;;clean out the index before we begin
 (namespace-state-changes (before :facts (esi/delete es-index)
@@ -30,3 +31,14 @@
 		  (create test-user)
 		  (let [result (->> (:id test-user) (get-by-id "user") :_source)]
 			  (parse-string-date (:last-logged-in result)) => (:last-logged-in test-user))))
+
+(fact "Should be able to query for data" :focus
+	  (let [test-user1 (user/new-user "Mark" "Mandel" "email" "password")
+			test-user2 (user/new-user "ZAardvark" "ZAbigail" "email" "password")]
+		  (install/create-index)
+		  (create test-user1)
+		  (create test-user2)
+		  (esi/refresh es-index)
+		  (let [result (search "user" :query (esq/match-all) :sort {:lastname "asc"})]
+			  (mapv :_source (-> result :hits :hits)) => [test-user1 test-user2])
+		  ))

@@ -43,3 +43,7 @@
 (defn get-by-id [type id]
 	"Get a specific type by id"
 	(esd/get es-index type id))
+
+(defn search [mapping-type & {:as options}]
+	"Search the index, with the given properties"
+	(apply esd/search  (flatten [es-index mapping-type (map identity options)])))

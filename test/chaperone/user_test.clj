@@ -36,7 +36,7 @@
 	(let [test-user (new-user "Mark" "Mandel" "email" "password")]
 		(pcore/get-type test-user) => "user"))
 
-(fact :focus
+(fact
 	  "Test if the _source->User works properly"
 	  (esi/delete pcore/es-index)
 	  (install/create-index)
