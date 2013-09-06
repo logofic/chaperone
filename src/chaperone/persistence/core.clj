@@ -45,5 +45,5 @@
 	(esd/get es-index type id))
 
 (defn search [mapping-type & {:as options}]
-	"Search the index, with the given properties"
-	(apply esd/search  (flatten [es-index mapping-type (map identity options)])))
+	"Search the mapping-type, with the given properties"
+	(apply esd/search (reduce (fn [coll [k, v]] (conj coll k v)) [es-index mapping-type] options)))

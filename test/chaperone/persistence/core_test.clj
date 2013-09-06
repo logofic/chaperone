@@ -32,6 +32,10 @@
 		  (let [result (->> (:id test-user) (get-by-id "user") :_source)]
 			  (parse-string-date (:last-logged-in result)) => (:last-logged-in test-user))))
 
+(defn- es-result-to-id [result]
+	   "Convert the elastic search results to a list of ids, for easy comparison"
+	   (mapv (fn [item] (-> item :_source :id)) (-> result :hits :hits)))
+
 (fact "Should be able to query for data" :focus
 	  (let [test-user1 (user/new-user "Mark" "Mandel" "email" "password")
 			test-user2 (user/new-user "ZAardvark" "ZAbigail" "email" "password")]
@@ -39,6 +43,5 @@
 		  (create test-user1)
 		  (create test-user2)
 		  (esi/refresh es-index)
-		  (let [result (search "user" :query (esq/match-all) :sort {:lastname "asc"})]
-			  (mapv :_source (-> result :hits :hits)) => [test-user1 test-user2])
-		  ))
+		  (es-result-to-id (search "user" :query (esq/match-all) :sort {:lastname "asc"})) => [(:id test-user1) (:id test-user2)]
+		  (es-result-to-id (search "user" :query (esq/match-all) :sort {:lastname "desc"})) => [(:id test-user2) (:id test-user1)]))
