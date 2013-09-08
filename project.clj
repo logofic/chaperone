@@ -11,7 +11,10 @@
 						   ]
 			:main chaperone.core
 			:profiles {:uberjar {:aot :all}
-					   :dev     {:dependencies [[midje "1.6-beta1"]]
+					   :dev     {:dependencies [[midje "1.6-beta1"]
+												[org.clojure/tools.namespace "0.2.4"]]
+								 :source-paths ["dev"]
+								 :repl-options {:init-ns user}
 								 :env          {:elasticsearch-url  "http://dev.chaperone:9200"
 												:elaticsearch-index "test_chaperone"}}}
 			:plugins [[lein-midje "3.1.1"]

@@ -21,8 +21,9 @@
 				   (fn [c jsonGenerator]
 					   (.writeString jsonGenerator (timef/unparse date-formatter c))))
 
-(defn parse-string-date [date]
+(defn parse-string-date
 	"Parse the standard date format for persistence"
+	[date]
 	(timef/parse date-formatter date))
 
 ;;; set default connection to elastic search
@@ -32,18 +33,22 @@
 	 "The index that we store the data against in elastic search"
 	 (env/env :elaticsearch-index))
 
-(defn create-id []
+(defn create-id
 	"creates a uuid string"
+	[]
 	(-> (uuid/make-random) .toString))
 
-(defn create [^chaperone.persistence.core.Persistent record]
+(defn create
 	"utility class for easy inserting of a Persistent record"
+	[^chaperone.persistence.core.Persistent record]
 	(esd/create es-index (get-type record) record :id (:id record)))
 
-(defn get-by-id [type id]
+(defn get-by-id
 	"Get a specific type by id"
+	[type id]
 	(esd/get es-index type id))
 
-(defn search [mapping-type & {:as options}]
+(defn search
 	"Search the mapping-type, with the given properties"
+	[mapping-type & {:as options}]
 	(apply esd/search (reduce (fn [coll [k, v]] (conj coll k v)) [es-index mapping-type] options)))

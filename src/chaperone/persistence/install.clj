@@ -12,8 +12,9 @@
 									   :photo          {:type "string" :index "not_analyzed"}
 									   :last-logged-in {:type "date", :format "date_time"}}}})
 
-(defn create-index []
+(defn create-index
 	"Installs the index and require mappings for elasticsearch"
+	[]
 	(let [mappings (merge user-mapping)]
 		(esi/create pcore/es-index :mappings mappings)))
 
