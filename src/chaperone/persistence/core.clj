@@ -1,5 +1,6 @@
 (ns ^{:doc "Core functionality for persistance"}
 	chaperone.persistence.core
+	(:use [clojure.pprint :only (pprint)])
 	(:require [environ.core :as env]
 			  [cheshire.generate :as chesg]
 			  [clj-time.format :as timef]
@@ -24,7 +25,7 @@
 (defn parse-string-date
 	"Parse the standard date format for persistence"
 	[date]
-	(timef/parse date-formatter date))
+	(if date (timef/parse date-formatter date)))
 
 ;;; set default connection to elastic search
 (esr/connect! (env/env :elasticsearch-url))
@@ -48,7 +49,18 @@
 	[type id]
 	(esd/get es-index type id))
 
+(defn- search-with-options
+	   "Utilitiy function for passing through to esd/search with the required option map"
+	   [mapping-type options]
+	   (apply esd/search (reduce (fn [coll [k, v]] (conj coll k v)) [es-index mapping-type] options)))
+
 (defn search
 	"Search the mapping-type, with the given properties"
 	[mapping-type & {:as options}]
-	(apply esd/search (reduce (fn [coll [k, v]] (conj coll k v)) [es-index mapping-type] options)))
+	(search-with-options mapping-type options))
+
+(defn search-to-record
+	"Search the mapping-type, and convert it to defrecords using a transformer function"
+	[mapping-type transformer & {:as options}]
+	(let [results (-> (search-with-options mapping-type options) :hits :hits)]
+		(map (fn [item] (-> item :_source transformer)) results)))

@@ -1,6 +1,6 @@
 (ns chaperone.persistence.core-test
-	(:use midje.sweet)
-	(:use chaperone.persistence.core)
+	(:use [midje.sweet]
+		  [chaperone.persistence.core])
 	(:require [chaperone.user :as user]
 			  [clj-time.core :as time]
 			  [clj-time.format :as timef]
@@ -32,11 +32,18 @@
 		  (let [result (->> (:id test-user) (get-by-id "user") :_source)]
 			  (parse-string-date (:last-logged-in result)) => (:last-logged-in test-user))))
 
+(fact "Should be able to store and retrieve a date, even if it's nil" :focus
+	  (let [test-user (user/new-user "Mark" "Mandel" "email" "password")]
+		  (install/create-index)
+		  (create test-user)
+		  (let [result (->> (:id test-user) (get-by-id "user") :_source)]
+			  (parse-string-date (:last-logged-in result)) => (:last-logged-in test-user))))
+
 (defn- es-result-to-id [result]
 	   "Convert the elastic search results to a list of ids, for easy comparison"
 	   (mapv (fn [item] (-> item :_source :id)) (-> result :hits :hits)))
 
-(fact "Should be able to query for data" :focus
+(fact "Should be able to query for data"
 	  (let [test-user1 (user/new-user "Mark" "Mandel" "email" "password")
 			test-user2 (user/new-user "ZAardvark" "ZAbigail" "email" "password")]
 		  (install/create-index)
@@ -45,3 +52,13 @@
 		  (esi/refresh es-index)
 		  (es-result-to-id (search "user" :query (esq/match-all) :sort {:lastname "asc"})) => [(:id test-user1) (:id test-user2)]
 		  (es-result-to-id (search "user" :query (esq/match-all) :sort {:lastname "desc"})) => [(:id test-user2) (:id test-user1)]))
+
+(fact "Should be able to transform search data to appropriate defrecords"
+	  (let [test-user1 (user/new-user "Mark" "Mandel" "email" "password")
+			test-user2 (user/new-user "ZAardvark" "ZAbigail" "email" "password")]
+		  (install/create-index)
+		  (create test-user1)
+		  (create test-user2)
+		  (esi/refresh es-index)
+		  (search-to-record "user" user/_source->User :query (esq/match-all) :sort {:lastname "asc"}) => [test-user1 test-user2]
+		  (search-to-record "user" user/_source->User :query (esq/match-all) :sort {:lastname "desc"}) => [test-user2 test-user1]))
