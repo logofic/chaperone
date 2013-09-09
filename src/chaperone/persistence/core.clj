@@ -52,7 +52,8 @@
 (defn- search-with-options
 	   "Utilitiy function for passing through to esd/search with the required option map"
 	   [mapping-type options]
-	   (apply esd/search (reduce (fn [coll [k, v]] (conj coll k v)) [es-index mapping-type] options)))
+	   (apply esd/search es-index mapping-type (-> options seq flatten))
+	   )
 
 (defn search
 	"Search the mapping-type, with the given properties"
