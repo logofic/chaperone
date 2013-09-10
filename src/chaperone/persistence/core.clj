@@ -52,8 +52,7 @@
 (defn- search-with-options
 	   "Utilitiy function for passing through to esd/search with the required option map"
 	   [mapping-type options]
-	   (apply esd/search es-index mapping-type (-> options seq flatten))
-	   )
+	   (apply esd/search es-index mapping-type (mapcat identity options)))
 
 (defn search
 	"Search the mapping-type, with the given properties"

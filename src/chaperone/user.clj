@@ -1,8 +1,9 @@
 (ns ^{:doc "System user and user management"}
 	chaperone.user
-	(:require [chaperone.persistence.core :as pcore]))
+	(:require [chaperone.persistence.core :as pcore]
+			  [clojurewerkz.elastisch.query :as esq]))
 
-;; mapping configuration
+;;; User record
 (defrecord User
 	[id firstname lastname password email photo last-logged-in]
 	pcore/Persistent
@@ -21,3 +22,8 @@
 	[map]
 	(->User (:id map) (:firstname map) (:lastname map) (:password map) (:email map) (:photo map)
 			(pcore/parse-string-date (:last-logged-in map))))
+
+(defn list-users
+	"list all users"
+	[]
+	(pcore/search-to-record "user" _source->User :query (esq/match-all) :sort {:lastname "asc"}))
