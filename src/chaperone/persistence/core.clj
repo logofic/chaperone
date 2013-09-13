@@ -1,6 +1,5 @@
 (ns ^{:doc "Core functionality for persistance"}
 	chaperone.persistence.core
-	(:use [clojure.pprint :only (pprint)])
 	(:require [environ.core :as env]
 			  [cheshire.generate :as chesg]
 			  [clj-time.format :as timef]

@@ -5,6 +5,6 @@
 			  [clojurewerkz.elastisch.rest.document :as esd]))
 
 (fact
-	"I am doign something awesome."
-	(conj [1 2] 3) => [1 2 3]
+	"I can create a system. Check me out."
+	(create-system) => truthy
 	)
