@@ -20,7 +20,10 @@
 			:plugins [[lein-midje "3.1.1"]
 					  [codox "0.6.4"]
 					  [lein-environ "0.4.0"]
-					  [lein-cljsbuild "0.3.2"]]
+					  [lein-cljsbuild "0.3.3"]
+					  [http-kit "2.1.10"]
+					  [purnam "0.1.0-beta"]
+					  [http-kit "2.1.10"]]
 			:cljsbuild {
 						   :builds [{
 										; The path to the top-level ClojureScript source directory:
