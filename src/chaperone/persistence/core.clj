@@ -8,6 +8,14 @@
 			  [clojurewerkz.elastisch.rest.index :as esi]
 			  [clojurewerkz.elastisch.rest.document :as esd]))
 
+;;; system creation
+(defn create-sub-system
+	"Create the persistence system. Takes the existing system details"
+	[system]
+	(let [sub-system {:elasticsearch-url (env/env :elasticsearch-url)}]
+		(assoc system :persistence sub-system))
+	)
+
 
 (defprotocol Persistent
 	"Protocol for encapsulationg common persistence functions"
@@ -19,7 +27,7 @@
 
 (chesg/add-encoder org.joda.time.DateTime
 				   (fn [c jsonGenerator]
-					   (.writeString jsonGenerator (timef/unparse date-formatter c))))
+					   (.writeString jsonGenerator (timef/unparse date-formatter c))))-
 
 (defn parse-string-date
 	"Parse the standard date format for persistence"

@@ -3,6 +3,7 @@
 	not be included in a production build of the application."
 	(:use [midje.repl :only (autotest load-facts)]
 		  [clojure.pprint :only (pprint)]
+		  [clojure.repl]
 		  [clojure.tools.namespace.repl :only (refresh refresh-all)])
 	(:require [chaperone.core :as core]))
 

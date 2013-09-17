@@ -8,6 +8,10 @@
 						   [cljs-uuid "0.0.4"]
 						   [environ "0.4.0"]
 						   [clojurewerkz/elastisch "1.3.0-beta1"]
+						   [org.clojure/clojurescript "0.0-1889"]
+						   [purnam "0.1.0-beta"]
+						   [http-kit "2.1.10"]
+						   [dieter "0.4.1"]
 						   ]
 			:main chaperone.core
 			:profiles {:uberjar {:aot :all}
@@ -20,10 +24,7 @@
 			:plugins [[lein-midje "3.1.1"]
 					  [codox "0.6.4"]
 					  [lein-environ "0.4.0"]
-					  [lein-cljsbuild "0.3.3"]
-					  [http-kit "2.1.10"]
-					  [purnam "0.1.0-beta"]
-					  [http-kit "2.1.10"]]
+					  [lein-cljsbuild "0.3.3"]]
 			:cljsbuild {
 						   :builds [{
 										; The path to the top-level ClojureScript source directory:
