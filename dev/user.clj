@@ -18,13 +18,13 @@
 	"Creates and initializes the system under development in the Var
 	  #'system."
 	[]
-	(alter-var-root #'system (constantly core/create-system))
+	(alter-var-root #'system (constantly (core/create-system)))
 	)
 
 (defn start
 	"Starts the system running, updates the Var #'system."
 	[]
-	;; TODO
+	(alter-var-root #'system core/start)
 	)
 
 (defn stop
@@ -43,9 +43,13 @@
 
 (defn reset
 	"Stops the system, reloads modified source files, and restarts it."
-	[]
-	(stop)
-	(refresh :after 'user/go))
+	([]
+	 (reset true))
+	([do-refresh]
+	 (stop)
+	 (if do-refresh
+		 (refresh :after 'user/go)
+		 (go))))
 
 ;; helper functions
 
@@ -60,11 +64,6 @@
 	[]
 	(load-facts :filter :focus))
 
-;
-;(defn start
-;	"Starts the current development system."
-;	[]
-;	(alter-var-root #'system system/start))
 ;
 ;(defn stop
 ;	"Shuts down and destroys the current development system."

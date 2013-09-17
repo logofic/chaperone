@@ -9,6 +9,11 @@
 	(let [context {}]
 		(-> context pcore/create-sub-system)))
 
+(defn start
+	"Starts the system"
+	[system]
+	(-> system pcore/start))
+
 (defn -main
 	"I don't do a whole lot ... yet."
 	[& args]

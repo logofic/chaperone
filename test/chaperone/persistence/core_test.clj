@@ -1,7 +1,10 @@
 (ns chaperone.persistence.core-test
 	(:use [midje.sweet]
 		  [chaperone.persistence.core])
-	(:require [chaperone.user :as user]
+	(:require
+		[user :as dev]
+		[chaperone.user :as user]
+			  [chaperone.core :as core]
 			  [clj-time.core :as time]
 			  [clj-time.format :as timef]
 			  [chaperone.persistence.install :as install]
@@ -11,9 +14,16 @@
 			  [clojurewerkz.elastisch.query :as esq]))
 
 ;;clean out the index before we begin
-(namespace-state-changes (before :facts (esi/delete es-index)
+
+(defn- setup!
+	   "Provides setup for the tests. Has side effects"
+	   []
+	   (dev/reset false)
+	   (esi/delete es-index))
+
+(namespace-state-changes (before :facts (setup!)
 								 ))
-(fact
+(fact :focus
 	"Should be no index"
 	(esi/exists? es-index) => false
 	)

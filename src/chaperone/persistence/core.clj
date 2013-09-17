@@ -8,7 +8,7 @@
 			  [clojurewerkz.elastisch.rest.index :as esi]
 			  [clojurewerkz.elastisch.rest.document :as esd]))
 
-;;; system creation
+;;; system management/utils
 (defn create-sub-system
 	"Create the persistence system. Takes the existing system details"
 	[system]
@@ -16,6 +16,18 @@
 		(assoc system :persistence sub-system))
 	)
 
+(defn- sub-system
+	"get the persistence system from the global"
+	[system]
+	(:persistence system))
+
+(defn start
+	"Start the persistence mechanism"
+	[system]
+	(esr/connect! (-> system sub-system :elasticsearch-url))
+	system)
+
+;; logic
 
 (defprotocol Persistent
 	"Protocol for encapsulationg common persistence functions"
@@ -33,9 +45,6 @@
 	"Parse the standard date format for persistence"
 	[date]
 	(if date (timef/parse date-formatter date)))
-
-;;; set default connection to elastic search
-(esr/connect! (env/env :elasticsearch-url))
 
 (def es-index
 	 "The index that we store the data against in elastic search"
