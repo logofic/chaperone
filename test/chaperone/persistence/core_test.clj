@@ -1,17 +1,16 @@
 (ns chaperone.persistence.core-test
 	(:use [midje.sweet]
 		  [chaperone.persistence.core])
-	(:require
-		[user :as dev]
-		[chaperone.user :as user]
-		[chaperone.core :as core]
-		[clj-time.core :as time]
-		[clj-time.format :as timef]
-		[chaperone.persistence.install :as install]
-		[clojurewerkz.elastisch.rest :as esr]
-		[clojurewerkz.elastisch.rest.index :as esi]
-		[clojurewerkz.elastisch.rest.document :as esd]
-		[clojurewerkz.elastisch.query :as esq]))
+	(:require [user :as dev]
+			  [chaperone.user :as user]
+			  [chaperone.core :as core]
+			  [clj-time.core :as time]
+			  [clj-time.format :as timef]
+			  [chaperone.persistence.install :as install]
+			  [clojurewerkz.elastisch.rest :as esr]
+			  [clojurewerkz.elastisch.rest.index :as esi]
+			  [clojurewerkz.elastisch.rest.document :as esd]
+			  [clojurewerkz.elastisch.query :as esq]))
 
 ;;clean out the index before we begin
 
