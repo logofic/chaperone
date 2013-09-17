@@ -4,29 +4,32 @@
 	(:require
 		[user :as dev]
 		[chaperone.user :as user]
-			  [chaperone.core :as core]
-			  [clj-time.core :as time]
-			  [clj-time.format :as timef]
-			  [chaperone.persistence.install :as install]
-			  [clojurewerkz.elastisch.rest :as esr]
-			  [clojurewerkz.elastisch.rest.index :as esi]
-			  [clojurewerkz.elastisch.rest.document :as esd]
-			  [clojurewerkz.elastisch.query :as esq]))
+		[chaperone.core :as core]
+		[clj-time.core :as time]
+		[clj-time.format :as timef]
+		[chaperone.persistence.install :as install]
+		[clojurewerkz.elastisch.rest :as esr]
+		[clojurewerkz.elastisch.rest.index :as esi]
+		[clojurewerkz.elastisch.rest.document :as esd]
+		[clojurewerkz.elastisch.query :as esq]))
 
 ;;clean out the index before we begin
+
+(def local-es-index (atom 0))
 
 (defn- setup!
 	   "Provides setup for the tests. Has side effects"
 	   []
 	   (dev/reset false)
-	   (esi/delete es-index))
+	   (swap! local-es-index (constantly (get-es-index dev/system)))
+	   (esi/delete @local-es-index))
 
 (namespace-state-changes (before :facts (setup!)
 								 ))
 (fact :focus
-	"Should be no index"
-	(esi/exists? es-index) => false
-	)
+	  "Should be no index"
+	  (esi/exists? @local-es-index) => false
+	  )
 
 (fact
 	"Should be able to store and retrieve a Persistent record"
@@ -59,7 +62,7 @@
 		  (install/create-index)
 		  (create test-user1)
 		  (create test-user2)
-		  (esi/refresh es-index)
+		  (esi/refresh @local-es-index)
 		  (es-result-to-id (search "user" :query (esq/match-all) :sort {:lastname "asc"})) => [(:id test-user1) (:id test-user2)]
 		  (es-result-to-id (search "user" :query (esq/match-all) :sort {:lastname "desc"})) => [(:id test-user2) (:id test-user1)]))
 
@@ -69,6 +72,6 @@
 		  (install/create-index)
 		  (create test-user1)
 		  (create test-user2)
-		  (esi/refresh es-index)
+		  (esi/refresh @local-es-index)
 		  (search-to-record "user" user/_source->User :query (esq/match-all) :sort {:lastname "asc"}) => [test-user1 test-user2]
 		  (search-to-record "user" user/_source->User :query (esq/match-all) :sort {:lastname "desc"}) => [test-user2 test-user1]))

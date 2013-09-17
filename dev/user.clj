@@ -42,7 +42,7 @@
 	:ready)
 
 (defn reset
-	"Stops the system, reloads modified source files, and restarts it."
+	"Stops the system, optionally reloads modified source files, and restarts it."
 	([]
 	 (reset true))
 	([do-refresh]

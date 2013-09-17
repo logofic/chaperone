@@ -8,11 +8,12 @@
 			  [clojurewerkz.elastisch.rest.index :as esi]
 			  [clojurewerkz.elastisch.rest.document :as esd]))
 
-;;; system management/utils
+;;; system
 (defn create-sub-system
 	"Create the persistence system. Takes the existing system details"
 	[system]
-	(let [sub-system {:elasticsearch-url (env/env :elasticsearch-url)}]
+	(let [sub-system {:elasticsearch-url (env/env :elasticsearch-url)
+					  :elaticsearch-index (env/env :elaticsearch-index)}]
 		(assoc system :persistence sub-system))
 	)
 
@@ -27,7 +28,12 @@
 	(esr/connect! (-> system sub-system :elasticsearch-url))
 	system)
 
-;; logic
+(defn get-es-index
+	"Returns the ES index we are using from the system"
+	[system]
+	(-> system sub-system :elaticsearch-index))
+
+;;; logic
 
 (defprotocol Persistent
 	"Protocol for encapsulationg common persistence functions"
