@@ -51,7 +51,8 @@
 	(install/create-index dev/system)
 	(let [test-user (new-user "Mark" "Mandel" "email" "password" :last-logged-in (time/now) :photo "photo.jpg")]
 		(pcore/create test-user)
-		(let [result (-> (pcore/get-by-id "user" (:id test-user)) :_source _source->User)]
+		(let [_source->User (partial _source->User (pcore/sub-system dev/system))
+			  result (-> (pcore/get-by-id "user" (:id test-user)) :_source _source->User)]
 			(doseq [key (keys result)]
 				(key test-user) => (key result))
 			)
@@ -65,4 +66,4 @@
 		  (pcore/create test-user1)
 		  (pcore/create test-user2)
 		  (esi/refresh @local-es-index)
-		  (list-users) => [test-user1 test-user2]))
+		  (list-users dev/system) => [test-user1 test-user2]))

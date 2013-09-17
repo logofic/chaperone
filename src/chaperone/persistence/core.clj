@@ -12,26 +12,37 @@
 (defn create-sub-system
 	"Create the persistence system. Takes the existing system details"
 	[system]
-	(let [sub-system {:elasticsearch-url (env/env :elasticsearch-url)
-					  :elaticsearch-index (env/env :elaticsearch-index)}]
+	(let [sub-system {:elasticsearch-url  (env/env :elasticsearch-url)
+					  :elaticsearch-index (env/env :elaticsearch-index)
+					  :date-formatter     (timef/formatters :date-time)}]
 		(assoc system :persistence sub-system))
 	)
 
-(defn- sub-system
+(defn sub-system
 	"get the persistence system from the global"
 	[system]
 	(:persistence system))
-
-(defn start
-	"Start the persistence mechanism"
-	[system]
-	(esr/connect! (-> system sub-system :elasticsearch-url))
-	system)
 
 (defn get-es-index
 	"Returns the ES index we are using from the system"
 	[system]
 	(-> system sub-system :elaticsearch-index))
+
+(defn- date-formatter
+	"get the date formatter from a system object"
+	[system]
+	(-> system sub-system :date-formatter))
+
+(defn start
+	"Start the persistence mechanism"
+	[system]
+	(esr/connect! (-> system sub-system :elasticsearch-url))
+
+	;;; extend json handler for joda dates - yyyy-MM-dd’T’HH:mm:ss.SSSZZ (es date_time format)
+	(chesg/add-encoder org.joda.time.DateTime
+					   (fn [c jsonGenerator]
+						   (.writeString jsonGenerator (timef/unparse (date-formatter system) c))))
+	system)
 
 ;;; logic
 
@@ -40,17 +51,10 @@
 	(get-type [this] "Returns the es type of this persistence record")
 	)
 
-;;; extend json handler for joda dates - yyyy-MM-dd’T’HH:mm:ss.SSSZZ (es date_time format)
-(def date-formatter (timef/formatters :date-time))
-
-(chesg/add-encoder org.joda.time.DateTime
-				   (fn [c jsonGenerator]
-					   (.writeString jsonGenerator (timef/unparse date-formatter c))))-
-
 (defn parse-string-date
 	"Parse the standard date format for persistence"
-	[date]
-	(if date (timef/parse date-formatter date)))
+	[persistence date]
+	(if date (timef/parse (:date-formatter persistence) date)))
 
 (def ^:private es-index
 	 "The index that we store the data against in elastic search"
@@ -85,4 +89,4 @@
 	"Search the mapping-type, and convert it to defrecords using a transformer function"
 	[mapping-type transformer & {:as options}]
 	(let [results (-> (search-with-options mapping-type options) :hits :hits)]
-		(map (fn [item] (-> item :_source transformer)) results)))
+		(map (fn [item] (-> item :_source transformer)) results))) ()

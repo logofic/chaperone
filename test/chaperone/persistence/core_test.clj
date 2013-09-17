@@ -25,10 +25,10 @@
 
 (namespace-state-changes (before :facts (setup!)))
 
-(fact :focus
-	  "Should be no index"
-	  (esi/exists? @local-es-index) => false
-	  )
+(fact
+	"Should be no index"
+	(esi/exists? @local-es-index) => false
+	)
 
 (fact
 	"Should be able to store and retrieve a Persistent record"
@@ -42,14 +42,14 @@
 		  (install/create-index dev/system)
 		  (create test-user)
 		  (let [result (->> (:id test-user) (get-by-id "user") :_source)]
-			  (parse-string-date (:last-logged-in result)) => (:last-logged-in test-user))))
+			  (parse-string-date (sub-system dev/system) (:last-logged-in result)) => (:last-logged-in test-user))))
 
-(fact "Should be able to store and retrieve a date, even if it's nil" :focus
+(fact "Should be able to store and retrieve a date, even if it's nil"
 	  (let [test-user (user/new-user "Mark" "Mandel" "email" "password")]
 		  (install/create-index dev/system)
 		  (create test-user)
 		  (let [result (->> (:id test-user) (get-by-id "user") :_source)]
-			  (parse-string-date (:last-logged-in result)) => (:last-logged-in test-user))))
+			  (parse-string-date (sub-system dev/system) (:last-logged-in result)) => (:last-logged-in test-user))))
 
 (defn- es-result-to-id [result]
 	   "Convert the elastic search results to a list of ids, for easy comparison"
@@ -65,12 +65,13 @@
 		  (es-result-to-id (search "user" :query (esq/match-all) :sort {:lastname "asc"})) => [(:id test-user1) (:id test-user2)]
 		  (es-result-to-id (search "user" :query (esq/match-all) :sort {:lastname "desc"})) => [(:id test-user2) (:id test-user1)]))
 
-(fact "Should be able to transform search data to appropriate defrecords"
+(fact "Should be able to transform search data to appropriate defrecords" :focus
 	  (let [test-user1 (user/new-user "Mark" "Mandel" "email" "password")
-			test-user2 (user/new-user "ZAardvark" "ZAbigail" "email" "password")]
+			test-user2 (user/new-user "ZAardvark" "ZAbigail" "email" "password")
+			_source->User (partial user/_source->User dev/system)]
 		  (install/create-index dev/system)
 		  (create test-user1)
 		  (create test-user2)
 		  (esi/refresh @local-es-index)
-		  (search-to-record "user" user/_source->User :query (esq/match-all) :sort {:lastname "asc"}) => [test-user1 test-user2]
-		  (search-to-record "user" user/_source->User :query (esq/match-all) :sort {:lastname "desc"}) => [test-user2 test-user1]))
+		  (search-to-record "user" _source->User :query (esq/match-all) :sort {:lastname "asc"}) => [test-user1 test-user2]
+		  (search-to-record "user" _source->User :query (esq/match-all) :sort {:lastname "desc"}) => [test-user2 test-user1]))

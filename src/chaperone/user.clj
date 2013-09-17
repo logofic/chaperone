@@ -5,7 +5,7 @@
 
 ;;; User record
 (defrecord User
-	[id firstname lastname password email photo last-logged-in]
+		   [id firstname lastname password email photo last-logged-in]
 	pcore/Persistent
 	(get-type [this]
 		"Returns the es type of this persistence record"
@@ -19,11 +19,11 @@
 
 (defn _source->User
 	"Create a User from the elasicsearch _source map"
-	[map]
+	[persistence map]
 	(->User (:id map) (:firstname map) (:lastname map) (:password map) (:email map) (:photo map)
-			(pcore/parse-string-date (:last-logged-in map))))
+			(pcore/parse-string-date persistence (:last-logged-in map))))
 
 (defn list-users
 	"list all users"
-	[]
-	(pcore/search-to-record "user" _source->User :query (esq/match-all) :sort {:lastname "asc"}))
+	[persistence]
+	(pcore/search-to-record "user" (partial _source->User persistence) :query (esq/match-all) :sort {:lastname "asc"}))
