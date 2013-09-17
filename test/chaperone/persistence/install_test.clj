@@ -14,13 +14,13 @@
 	   (dev/reset false)
 	   (swap! local-es-index (constantly (pcore/get-es-index dev/system)))
 	   (esi/delete @local-es-index)
-	   (create-index))
+	   (create-index dev/system))
 
 ;;clean out the index before we begin
 (namespace-state-changes (before :facts (setup!)))
 
 (fact
 	"Shall we look at this index of ours?"
-	(esi/exists? pcore/es-index) => true
-	(-> (esi/get-mapping pcore/es-index "user") :user :properties keys sort) => (-> user-mapping :user :properties keys sort)
+	(esi/exists? @local-es-index) => true
+	(-> (esi/get-mapping @local-es-index "user") :user :properties keys sort) => (-> user-mapping :user :properties keys sort)
 	)

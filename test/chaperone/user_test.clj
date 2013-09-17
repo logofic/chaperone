@@ -1,12 +1,21 @@
 (ns chaperone.user-test
 	(:use [midje.sweet]
 		  [chaperone.user])
-	(:require [clj-time.core :as time]
+	(:require [user :as dev]
+			  [clj-time.core :as time]
 			  [clojurewerkz.elastisch.rest.index :as esi]
 			  [chaperone.persistence.install :as install]
 			  [chaperone.persistence.core :as pcore]))
 
-;;; facts
+(def local-es-index (atom 0))
+
+(defn- setup!
+	   "Provides setup for the tests. Has side effects"
+	   []
+	   (dev/reset false)
+	   (swap! local-es-index (constantly (pcore/get-es-index dev/system))))
+
+(namespace-state-changes (before :facts (setup!)))
 
 (fact
 	"Better constructor works"
@@ -38,8 +47,8 @@
 
 (fact
 	"Test if the _source->User works properly"
-	(esi/delete pcore/es-index)
-	(install/create-index)
+	(esi/delete @local-es-index)
+	(install/create-index dev/system)
 	(let [test-user (new-user "Mark" "Mandel" "email" "password" :last-logged-in (time/now) :photo "photo.jpg")]
 		(pcore/create test-user)
 		(let [result (-> (pcore/get-by-id "user" (:id test-user)) :_source _source->User)]
@@ -51,9 +60,9 @@
 (fact "Be able to list all users"
 	  (let [test-user1 (new-user "Mark" "Mandel" "email" "password")
 			test-user2 (new-user "ZAardvark" "ZAbigail" "email" "password")]
-		  (esi/delete pcore/es-index)
-		  (install/create-index)
+		  (esi/delete @local-es-index)
+		  (install/create-index dev/system)
 		  (pcore/create test-user1)
 		  (pcore/create test-user2)
-		  (esi/refresh pcore/es-index)
+		  (esi/refresh @local-es-index)
 		  (list-users) => [test-user1 test-user2]))

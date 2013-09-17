@@ -23,8 +23,8 @@
 	   (swap! local-es-index (constantly (get-es-index dev/system)))
 	   (esi/delete @local-es-index))
 
-(namespace-state-changes (before :facts (setup!)
-								 ))
+(namespace-state-changes (before :facts (setup!)))
+
 (fact :focus
 	  "Should be no index"
 	  (esi/exists? @local-es-index) => false
@@ -33,20 +33,20 @@
 (fact
 	"Should be able to store and retrieve a Persistent record"
 	(let [test-user (user/new-user "Mark" "Mandel" "email" "password")]
-		(install/create-index)
+		(install/create-index dev/system)
 		(create test-user)
 		(-> (get-by-id "user" (:id test-user)) :_source :id) => (:id test-user)))
 
 (fact "Should be able to store and retrieve a date"
 	  (let [test-user (user/new-user "Mark" "Mandel" "email" "password" :last-logged-in (time/now))]
-		  (install/create-index)
+		  (install/create-index dev/system)
 		  (create test-user)
 		  (let [result (->> (:id test-user) (get-by-id "user") :_source)]
 			  (parse-string-date (:last-logged-in result)) => (:last-logged-in test-user))))
 
 (fact "Should be able to store and retrieve a date, even if it's nil" :focus
 	  (let [test-user (user/new-user "Mark" "Mandel" "email" "password")]
-		  (install/create-index)
+		  (install/create-index dev/system)
 		  (create test-user)
 		  (let [result (->> (:id test-user) (get-by-id "user") :_source)]
 			  (parse-string-date (:last-logged-in result)) => (:last-logged-in test-user))))
@@ -58,7 +58,7 @@
 (fact "Should be able to query for data"
 	  (let [test-user1 (user/new-user "Mark" "Mandel" "email" "password")
 			test-user2 (user/new-user "ZAardvark" "ZAbigail" "email" "password")]
-		  (install/create-index)
+		  (install/create-index dev/system)
 		  (create test-user1)
 		  (create test-user2)
 		  (esi/refresh @local-es-index)
@@ -68,7 +68,7 @@
 (fact "Should be able to transform search data to appropriate defrecords"
 	  (let [test-user1 (user/new-user "Mark" "Mandel" "email" "password")
 			test-user2 (user/new-user "ZAardvark" "ZAbigail" "email" "password")]
-		  (install/create-index)
+		  (install/create-index dev/system)
 		  (create test-user1)
 		  (create test-user2)
 		  (esi/refresh @local-es-index)

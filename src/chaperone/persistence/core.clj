@@ -52,7 +52,7 @@
 	[date]
 	(if date (timef/parse date-formatter date)))
 
-(def es-index
+(def ^:private es-index
 	 "The index that we store the data against in elastic search"
 	 (env/env :elaticsearch-index))
 
