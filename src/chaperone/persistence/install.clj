@@ -14,7 +14,7 @@
 
 (defn create-index
 	"Installs the index and require mappings for elasticsearch"
-	[]
-	(let [mappings (merge user-mapping)]
-		(esi/create pcore/es-index :mappings mappings)))
-
+	[system]
+	(let [mappings (merge user-mapping)
+		  es-index (pcore/get-es-index system)]
+		(esi/create es-index :mappings mappings)))

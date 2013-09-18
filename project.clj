@@ -8,6 +8,10 @@
 						   [cljs-uuid "0.0.4"]
 						   [environ "0.4.0"]
 						   [clojurewerkz/elastisch "1.3.0-beta1"]
+						   [org.clojure/clojurescript "0.0-1889"]
+						   [purnam "0.1.0-beta"]
+						   [http-kit "2.1.10"]
+						   [dieter "0.4.1"]
 						   ]
 			:main chaperone.core
 			:profiles {:uberjar {:aot :all}
@@ -16,7 +20,19 @@
 								 :source-paths ["dev"]
 								 :repl-options {:init-ns user}
 								 :env          {:elasticsearch-url  "http://dev.chaperone:9200"
-												:elaticsearch-index "test_chaperone"}}}
+												:elasticsearch-index "test_chaperone"}}}
 			:plugins [[lein-midje "3.1.1"]
 					  [codox "0.6.4"]
-					  [lein-environ "0.4.0"]])
+					  [lein-environ "0.4.0"]
+					  [lein-cljsbuild "0.3.3"]]
+			:cljsbuild {
+						   :builds [{
+										; The path to the top-level ClojureScript source directory:
+										:source-paths   ["src-cljs"]
+										:notify-command ["notify-send"]
+										; The standard ClojureScript compiler options:
+										; (See the ClojureScript compiler documentation for details.)
+										:compiler       {:output-to     "static/js/main.js" ; default: target/cljsbuild-main.js
+														 :optimizations :whitespace
+														 :pretty-print  true}}]}
+			)
