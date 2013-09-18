@@ -26,4 +26,4 @@
 (defn list-users
 	"list all users"
 	[persistence]
-	(pcore/search-to-record "user" (partial _source->User persistence) :query (esq/match-all) :sort {:lastname "asc"}))
+	(pcore/search-to-record persistence "user" (partial _source->User persistence) :query (esq/match-all) :sort {:lastname "asc"}))

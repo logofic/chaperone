@@ -49,10 +49,11 @@
 	"Test if the _source->User works properly"
 	(esi/delete @local-es-index)
 	(install/create-index dev/system)
-	(let [test-user (new-user "Mark" "Mandel" "email" "password" :last-logged-in (time/now) :photo "photo.jpg")]
-		(pcore/create test-user)
-		(let [_source->User (partial _source->User (pcore/sub-system dev/system))
-			  result (-> (pcore/get-by-id "user" (:id test-user)) :_source _source->User)]
+	(let [test-user (new-user "Mark" "Mandel" "email" "password" :last-logged-in (time/now) :photo "photo.jpg")
+		  persistence (pcore/sub-system dev/system)]
+		(pcore/create persistence test-user)
+		(let [_source->User (partial _source->User persistence)
+			  result (-> (pcore/get-by-id persistence "user" (:id test-user)) :_source _source->User)]
 			(doseq [key (keys result)]
 				(key test-user) => (key result))
 			)
@@ -60,10 +61,11 @@
 
 (fact "Be able to list all users"
 	  (let [test-user1 (new-user "Mark" "Mandel" "email" "password")
-			test-user2 (new-user "ZAardvark" "ZAbigail" "email" "password")]
+			test-user2 (new-user "ZAardvark" "ZAbigail" "email" "password")
+			persistence (pcore/sub-system dev/system)]
 		  (esi/delete @local-es-index)
 		  (install/create-index dev/system)
-		  (pcore/create test-user1)
-		  (pcore/create test-user2)
+		  (pcore/create persistence test-user1)
+		  (pcore/create persistence test-user2)
 		  (esi/refresh @local-es-index)
-		  (list-users dev/system) => [test-user1 test-user2]))
+		  (list-users persistence) => [test-user1 test-user2]))

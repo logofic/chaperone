@@ -20,7 +20,7 @@
 								 :source-paths ["dev"]
 								 :repl-options {:init-ns user}
 								 :env          {:elasticsearch-url  "http://dev.chaperone:9200"
-												:elaticsearch-index "test_chaperone"}}}
+												:elasticsearch-index "test_chaperone"}}}
 			:plugins [[lein-midje "3.1.1"]
 					  [codox "0.6.4"]
 					  [lein-environ "0.4.0"]
