@@ -75,8 +75,9 @@
 			_source->User (partial user/_source->User dev/system)
 			persistence (sub-system dev/system)]
 		  (install/create-index dev/system)
-		  (create persistence test-user1)
-		  (create persistence test-user2)
+		  (doto persistence
+			  (create test-user1)
+			  (create test-user2))
 		  (esi/refresh @local-es-index)
 		  (search-to-record persistence "user" _source->User :query (esq/match-all) :sort {:lastname "asc"}) => [test-user1 test-user2]
 		  (search-to-record persistence "user" _source->User :query (esq/match-all) :sort {:lastname "desc"}) => [test-user2 test-user1]))

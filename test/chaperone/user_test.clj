@@ -65,7 +65,8 @@
 			persistence (pcore/sub-system dev/system)]
 		  (esi/delete @local-es-index)
 		  (install/create-index dev/system)
-		  (pcore/create persistence test-user1)
-		  (pcore/create persistence test-user2)
+		  (doto persistence
+			  (pcore/create test-user1)
+			  (pcore/create test-user2))
 		  (esi/refresh @local-es-index)
 		  (list-users persistence) => [test-user1 test-user2]))
