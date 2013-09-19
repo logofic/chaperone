@@ -1,5 +1,5 @@
 (ns ^{:doc "Core functionality for persistance"}
-	chaperone.persistence.core
+		chaperone.persistence.core
 	(:require [environ.core :as env]
 			  [cheshire.generate :as chesg]
 			  [clj-time.format :as timef]
