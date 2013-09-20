@@ -8,12 +8,17 @@
 	"Create the system context, but don't start it"
 	[]
 	(let [context {}]
-		(-> context persist/create-sub-system web/create-sub-system)))
+		(-> context persist/create-sub-system web/create-sub-system	)))
 
 (defn start
 	"Starts the system"
 	[system]
-	(-> system persist/start))
+	(println "user/Starting the system")
+	(-> system persist/start web/start))
+
+(defn stop "stop the system"
+	[system]
+	(-> system web/stop))
 
 (defn -main
 	"I don't do a whole lot ... yet."

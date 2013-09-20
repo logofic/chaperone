@@ -11,6 +11,7 @@
 						   [org.clojure/clojurescript "0.0-1889"]
 						   [purnam "0.1.0-beta"]
 						   [http-kit "2.1.10"]
+						   [compojure "1.1.5"]
 						   [dieter "0.4.1"]
 						   ]
 			:main chaperone.core

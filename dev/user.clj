@@ -9,30 +9,28 @@
 
 ;; system init functions
 
-(def system
-	 "A Var containing an object representing the application under
-	  development."
-	 nil)
+	(def system
+		 "A Var containing an object representing the application under
+		  development."
+		 nil)
 
-(defn create
-	"Creates and initializes the system under development in the Var
-	  #'system."
-	[]
-	(alter-var-root #'system (constantly (core/create-system)))
-	)
+	(defn create
+		"Creates and initializes the system under development in the Var
+		  #'system."
+		[]
+		(alter-var-root #'system (constantly (core/create-system)))
+		)
 
-(defn start
-	"Starts the system running, updates the Var #'system."
-	[]
-	(alter-var-root #'system core/start)
-	)
+	(defn start
+		"Starts the system running, updates the Var #'system."
+		[]
+		(alter-var-root #'system core/start))
 
 (defn stop
 	"Stops the system if it is currently running, updates the Var
 	  #'system."
 	[]
-	;; TODO
-	)
+	(alter-var-root #'system core/stop))
 
 (defn go
 	"Initializes and starts the system running."
@@ -43,13 +41,9 @@
 
 (defn reset
 	"Stops the system, optionally reloads modified source files, and restarts it."
-	([]
-	 (reset true))
-	([do-refresh]
-	 (stop)
-	 (if do-refresh
-		 (refresh :after 'user/go)
-		 (go))))
+	[]
+	(stop)
+	(refresh :after 'user/go))
 
 ;; helper functions
 
