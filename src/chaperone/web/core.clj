@@ -4,7 +4,8 @@
 			 [environ.core :as env]
 			 [compojure.core :as comp]
 			 [compojure.handler :as handler]
-			 [compojure.route :as route]))
+			 [compojure.route :as route]
+			 [selmer.parser :as selmer]))
 
 ;;; system tools
 (defn create-sub-system
@@ -27,7 +28,7 @@
 
 ;basic configuration
 (comp/defroutes site-routes
-				(comp/GET "/" [] index-page)
+				(comp/GET "/" [] (selmer/render-file "views/index.html" {}))
 				(route/not-found "<h1>404 OMG</h1>"))
 
 (defn start
