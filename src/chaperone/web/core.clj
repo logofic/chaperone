@@ -36,13 +36,17 @@
 	(println "Starting server")
 	(let [web (sub-system system)
 		  port (:port web)]
-		(assoc :web
-			  (if-not (:server web)
-				 (assoc web :server (server/run-server (handler/site #'site-routes) {:port port}))
-				  system ))))
+		(if-not (:server web)
+			(assoc system :web
+				  (assoc web :server (server/run-server (handler/site #'site-routes) {:port port})))
+			system)))
 (defn stop
 	"Oh noes. Stop the server!"
 	[system]
+	(let [web (sub-system system)]
+		(println "stopping web: " web)
+		(if (:server web)
+					((:server web))))
 	system)
 
 ;(run-server (site #'hello-world) {:port 8080})

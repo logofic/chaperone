@@ -12,6 +12,7 @@
 						   [purnam "0.1.0-beta"]
 						   [http-kit "2.1.10"]
 						   [compojure "1.1.5"]
+						   [selmer "0.4.2"]
 						   [dieter "0.4.1"]
 						   ]
 			:main chaperone.core
