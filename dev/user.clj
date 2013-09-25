@@ -4,7 +4,8 @@
 	(:use [midje.repl :only (autotest load-facts)]
 		  [clojure.pprint :only (pprint)]
 		  [clojure.repl]
-		  [clojure.tools.namespace.repl :only (refresh refresh-all)])
+		  [clojure.tools.namespace.repl :only (refresh refresh-all)]
+		  [clojure.tools.trace])
 	(:require [chaperone.core :as core]))
 
 ;; system init functions

@@ -34,17 +34,24 @@
 	[request]
 	"Index Page")
 
+(def dieter-config
+	 {
+		 :engine     :v8 ; defaults to :rhino; :v8 is much much faster
+		 :compress   false ; minify using Google Closure Compiler & Less compression
+		 :cache-mode :production ; or :production. :development disables cacheing
+		 })
+
 ;basic configuration
 (comp/defroutes site-routes
 				(comp/GET "/" [] (selmer/render-file "views/index.html"
 													 {:foo  "bar",
-													  :less (dieter/link-to-asset "main.less")}))
+													  :less (dieter/link-to-asset "main.less" dieter-config)}))
 				(route/not-found "<h1>404 OMG</h1>"))
 
 (defn run-server
 	"runs the server, and returns the stop function"
 	[web port]
-	(server/run-server (-> #'site-routes handler/site (dieter/asset-pipeline (:dieter web))) {:port port}))
+	(server/run-server (-> (-> #'site-routes handler/site) (dieter/asset-pipeline dieter-config)) {:port port}))
 
 (defn start
 	"Start the web server, and get this ball rolling"
@@ -56,6 +63,7 @@
 			(assoc system :web
 						  (assoc web :server (run-server web port)))
 			system)))
+
 (defn stop
 	"Oh noes. Stop the server!"
 	[system]
