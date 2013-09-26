@@ -16,6 +16,7 @@ To create the required index run `lein run -m chaperone.persistance.install` wit
 
  - ELASTICSEARCH_URL - The url of Elastic Search
  - ELATICSEARCH_INDEX - The name of the index to use for Chaperone.
+ - WEB_SERVER_PORT - The port of the web server to run on. Defaults to 8080.
 
 ## Usage
 

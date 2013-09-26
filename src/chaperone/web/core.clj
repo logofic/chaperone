@@ -13,12 +13,10 @@
 	"Create the persistence system. Takes the existing system details"
 	[system]
 	(let [sub-system {:port   (env/env :web-server-port 8080)
-					  :dieter {:engine     :rhino ; defaults to :rhino; :v8 is much much faster
+					  :dieter {:engine     :v8 ; defaults to :rhino; :v8 is much much faster
 							   :compress   false ; minify using Google Closure Compiler & Less compression
-												  ;:asset-roots ["resources/assets"] ; must have a folder called 'assets'. Searched for assets in the order listed.
-												  ;:cache-root  "resources/assets-cache" ; compiled assets are cached here
-							   :cache-mode :development ; or :production. :development disables cacheing
-							   :log-level  :normal} ; or :quiet
+							   :cache-mode :production ; or :production. :development disables cacheing
+							   }
 					  }]
 		(assoc system :web sub-system)))
 
@@ -51,7 +49,7 @@
 (defn run-server
 	"runs the server, and returns the stop function"
 	[web port]
-	(server/run-server (-> (-> #'site-routes handler/site) (dieter/asset-pipeline dieter-config)) {:port port}))
+	(server/run-server (-> (handler/site #'site-routes) (dieter/asset-pipeline dieter-config)) {:port port}))
 
 (defn start
 	"Start the web server, and get this ball rolling"
