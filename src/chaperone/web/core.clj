@@ -13,7 +13,7 @@
 	"Create the persistence system. Takes the existing system details"
 	[system]
 	(let [sub-system {:port   (env/env :web-server-port 8080)
-					  :dieter {:engine     :v8 ; defaults to :rhino; :v8 is much much faster
+					  :dieter {:engine     :v8
 							   :compress   false ; minify using Google Closure Compiler & Less compression
 							   :cache-mode :production ; or :production. :development disables cacheing
 							   }
@@ -27,29 +27,17 @@
 
 ;;; logic
 
-(defn index-page
-	"Returns the index page"
-	[request]
-	"Index Page")
-
-(def dieter-config
-	 {
-		 :engine     :v8 ; defaults to :rhino; :v8 is much much faster
-		 :compress   false ; minify using Google Closure Compiler & Less compression
-		 :cache-mode :production ; or :production. :development disables cacheing
-		 })
-
-;basic configuration
-(comp/defroutes site-routes
-				(comp/GET "/" [] (selmer/render-file "views/index.html"
-													 {:foo  "bar",
-													  :less (dieter/link-to-asset "main.less" dieter-config)}))
-				(route/not-found "<h1>404 OMG</h1>"))
+(defn- create-routes
+	   [web]
+	   (comp/routes
+		   (comp/GET "/" [] (selmer/render-file "views/index.html"
+												{:less (dieter/link-to-asset "main.less" (:dieter web))}))
+		   (route/not-found "<h1>404 OMG</h1>")))
 
 (defn run-server
 	"runs the server, and returns the stop function"
 	[web port]
-	(server/run-server (-> (handler/site #'site-routes) (dieter/asset-pipeline dieter-config)) {:port port}))
+	(server/run-server (-> (handler/site (create-routes web)) (dieter/asset-pipeline (:dieter web))) {:port port}))
 
 (defn start
 	"Start the web server, and get this ball rolling"
@@ -69,5 +57,3 @@
 		(if (:server web)
 			((:server web))))
 	system)
-
-;(run-server (site #'hello-world) {:port 8080})
