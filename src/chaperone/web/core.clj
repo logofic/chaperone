@@ -32,6 +32,7 @@
 	   (comp/routes
 		   (comp/GET "/" [] (selmer/render-file "views/index.html"
 												{:less (dieter/link-to-asset "main.less" (:dieter web))}))
+		   (route/resources "/public")
 		   (route/not-found "<h1>404 OMG</h1>")))
 
 (defn run-server

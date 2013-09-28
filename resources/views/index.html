@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app>
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -39,12 +39,15 @@
 				</li>
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
-				<li class="dropdown"><a href="#list-users">List Users</a>
+				<li class="dropdown"><a ng-href="#/admin/users/list">List Users</a>
 				</li>
 			</ul>
 		</div><!--/.nav-collapse -->
 	</div>
 </div>
 
+<script type="text/javascript" src="/public/jquery-2.0.3.min.js"></script>
+<script type="text/javascript" src="/public/bootstrap.min.js"></script>
+<script type="text/javascript" src="/public/angular.min.js"></script>
 </body>
 </html>
