@@ -4,4 +4,4 @@
 
 (defn hello
 	[]
-	(.log js/console "Hello! v2"))
+	(.log js/console "Hello! v3"))

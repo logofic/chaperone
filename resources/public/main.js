@@ -22355,5 +22355,5 @@ cljs.core.special_symbol_QMARK_ = function special_symbol_QMARK_(x) {
 goog.provide("chaperone.ng.core");
 goog.require("cljs.core");
 chaperone.ng.core.hello = function hello() {
-  return console.log("Hello! v2")
+  return console.log("Hello! v3")
 };

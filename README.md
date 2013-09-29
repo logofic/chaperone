@@ -30,6 +30,16 @@ There is a [VagrantFile](http://www.vagrantup.com/) that provides the test infra
 Provisioning for Vagrant is provided by an [Ansible](http://www.ansibleworks.com/), that could also be reused to deploy to a production
 instance.
 
+### Compiling ClojureScript
+
+Make sure to use `with-profile cljs` when interacting with Clojurescript. This is required to remove certain dependencies that otherwise
+break compilation, and add in the clojurescript dependencies.
+
+For example:
+`lein with-profile cljs cljsbuild auto`
+
+To automatically compile the ClojureScript.
+
 ## License
 
 Copyright © 2013 Mark Mandel
