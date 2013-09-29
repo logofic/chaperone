@@ -39,6 +39,8 @@
 																:notify-command ["notify-send"]
 																; The standard ClojureScript compiler options:
 																; (See the ClojureScript compiler documentation for details.)
-																:compiler       {:output-to     "resources/public/main.js"
+																:compiler       {:output-to     "resources/public/js/main.js"
 																				 :optimizations :whitespace
-																				 :pretty-print  true}}]}}})
+																				 :pretty-print  true
+																				 ;:source-map "resources/public/main.js.map"
+																				 }}]}}})

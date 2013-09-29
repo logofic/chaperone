@@ -22354,6 +22354,18 @@ cljs.core.special_symbol_QMARK_ = function special_symbol_QMARK_(x) {
 };
 goog.provide("chaperone.ng.core");
 goog.require("cljs.core");
-chaperone.ng.core.hello = function hello() {
-  return console.log("Hello! v3")
-};
+chaperone.ng.core.chaperone_app = angular.module("chaperone.app", ["ngRoute"]);
+angular.module("chaperone.app").config(["$routeProvider", function($routeProvider) {
+  var G__4254 = $routeProvider;
+  G__4254.when("/admin/users/list", function() {
+    var G__4255 = {};
+    G__4255["templateUrl"] = "/public/partials/admin/user/list.html";
+    return G__4255
+  }());
+  G__4254.otherwise(function() {
+    var G__4257 = {};
+    G__4257["templateUrl"] = "/public/partials/index.html";
+    return G__4257
+  }());
+  return G__4254
+}]);
