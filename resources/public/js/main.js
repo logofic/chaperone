@@ -22326,8 +22326,6 @@ cljs.core.special_symbol_QMARK_ = function special_symbol_QMARK_(x) {
   new cljs.core.Symbol(null, ".", ".", -1640531481, null), null, new cljs.core.Symbol(null, "ns", "ns", -1640528002, null), null, new cljs.core.Symbol(null, "do", "do", -1640528316, null), null, new cljs.core.Symbol(null, "fn*", "fn*", -1640430053, null), null, new cljs.core.Symbol(null, "throw", "throw", -1530191713, null), null, new cljs.core.Symbol(null, "letfn*", "letfn*", 1548249632, null), null, new cljs.core.Symbol(null, "js*", "js*", -1640426054, null), null, new cljs.core.Symbol(null, "defrecord*", 
   "defrecord*", 774272013, null), null, new cljs.core.Symbol(null, "let*", "let*", -1637213400, null), null, new cljs.core.Symbol(null, "loop*", "loop*", -1537374273, null), null, new cljs.core.Symbol(null, "try", "try", -1640416396, null), null, new cljs.core.Symbol(null, "if", "if", -1640528170, null), null, new cljs.core.Symbol(null, "def", "def", -1640432194, null), null], true), x)
 };
-goog.provide("chaperone.ng.admin.user");
-goog.require("cljs.core");
 goog.provide("clojure.string");
 goog.require("cljs.core");
 goog.require("goog.string.StringBuffer");
@@ -23360,28 +23358,33 @@ goog.require("purnam.cljs");
 goog.require("purnam.cljs");
 chaperone.ng.core.chaperone_app = angular.module("chaperone.app", ["ngRoute"]);
 angular.module("chaperone.app").config(["$routeProvider", function($routeProvider) {
-  var G__5229 = $routeProvider;
-  G__5229.when("/admin/users/add", function() {
-    var G__5230 = {};
-    G__5230["templateUrl"] = "/public/partials/admin/user/user-form.html";
-    G__5230["controller"] = "AdminUserCtrl";
-    return G__5230
+  var G__5111 = $routeProvider;
+  G__5111.when("/admin/users/add", function() {
+    var G__5112 = {};
+    G__5112["templateUrl"] = "/public/partials/admin/user/user-form.html";
+    G__5112["controller"] = "AdminUserCtrl";
+    return G__5112
   }());
-  G__5229.when("/admin/users/list", function() {
-    var G__5232 = {};
-    G__5232["templateUrl"] = "/public/partials/admin/user/list.html";
-    return G__5232
+  G__5111.when("/admin/users/list", function() {
+    var G__5114 = {};
+    G__5114["templateUrl"] = "/public/partials/admin/user/list.html";
+    return G__5114
   }());
-  G__5229.otherwise(function() {
-    var G__5234 = {};
-    G__5234["templateUrl"] = "/public/partials/index.html";
-    return G__5234
+  G__5111.otherwise(function() {
+    var G__5116 = {};
+    G__5116["templateUrl"] = "/public/partials/index.html";
+    return G__5116
   }());
-  return G__5229
+  return G__5111
 }]);
-chaperone.ng.core.chaperone_app_AdminUserCtrl = ["$scope", function($scope) {
+goog.provide("chaperone.ng.admin.user");
+goog.require("cljs.core");
+goog.require("purnam.cljs");
+goog.require("chaperone.ng.core");
+goog.require("purnam.cljs");
+chaperone.ng.admin.user.chaperone_app_AdminUserCtrl = ["$scope", function($scope) {
   return purnam.cljs.aset_in.call(null, $scope, cljs.core.PersistentVector.fromArray(["title"], true), "Add")
 }];
-angular.module("chaperone.app").controller("AdminUserCtrl", chaperone.ng.core.chaperone_app_AdminUserCtrl);
+angular.module("chaperone.app").controller("AdminUserCtrl", chaperone.ng.admin.user.chaperone_app_AdminUserCtrl);
 
 //# sourceMappingURL=main.js.map

@@ -13,6 +13,3 @@
 				(.when "/admin/users/add" (obj :templateUrl "/public/partials/admin/user/user-form.html" :controller "AdminUserCtrl"))
 				(.when "/admin/users/list" (obj :templateUrl "/public/partials/admin/user/list.html"))
 				(.otherwise (obj :templateUrl "/public/partials/index.html"))))
-
-(def.controller chaperone.app.AdminUserCtrl [$scope]
-				(! $scope.title "Add"))
