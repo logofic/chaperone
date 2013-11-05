@@ -30,7 +30,7 @@
 			   ;; profile specifically for compiling cljs, to remove unneccessary dependencies, and since
 			   ;; it will blow up with dieter as it looks for the v8 native
 			   :cljs    {:dependencies [[org.clojure/clojurescript "0.0-1978"]
-										[purnam "0.1.0-beta"]]
+										[im.chit/purnam "0.1.6"]]
 						 :exclusions   [dieter http-kit compojure selmer environ]
 						 :plugins      [[lein-cljsbuild "0.3.3"]]
 						 :cljsbuild    {
@@ -43,5 +43,5 @@
 														:compiler       {:output-to     "resources/public/js/main.js"
 																		 :optimizations :whitespace
 																		 :pretty-print  true
-																		 :source-map "resources/public/main.js.map"
+																		 :source-map "resources/public/js/main.js.map"
 																		 }}]}}})
