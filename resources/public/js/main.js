@@ -23383,7 +23383,9 @@ goog.require("purnam.cljs");
 goog.require("chaperone.ng.core");
 goog.require("purnam.cljs");
 chaperone.ng.admin.user.chaperone_app_AdminUserCtrl = ["$scope", function($scope) {
-  return purnam.cljs.aset_in.call(null, $scope, cljs.core.PersistentVector.fromArray(["title"], true), "Add")
+  return purnam.cljs.aset_in.call(null, $scope, cljs.core.PersistentVector.fromArray(["init"], true), function() {
+    return purnam.cljs.aset_in.call(null, $scope, cljs.core.PersistentVector.fromArray(["title"], true), "Add")
+  })
 }];
 angular.module("chaperone.app").controller("AdminUserCtrl", chaperone.ng.admin.user.chaperone_app_AdminUserCtrl);
 

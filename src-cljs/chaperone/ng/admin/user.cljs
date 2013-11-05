@@ -4,8 +4,10 @@
 		  ;use to specify the order things need to run in.
 		  [chaperone.ng.core :only []])
 	(:use-macros
-		[purnam.js :only [obj ! ]]
+		[purnam.js :only [obj !]]
 		[purnam.angular :only [def.module def.controller]]))
 
 (def.controller chaperone.app.AdminUserCtrl [$scope]
-				(! $scope.title "Add"))
+				(! $scope.init
+				   (fn []
+					   (! $scope.title "Add"))))
