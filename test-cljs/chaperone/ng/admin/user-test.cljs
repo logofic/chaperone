@@ -4,19 +4,17 @@
     (:use [purnam.cljs :only [aset-in aget-in]])
     (:use-macros
         [purnam.js :only [obj arr !]]
-        [purnam.test :only [init describe it is]]
+        [purnam.test :only [init describe it is is-not]]
         [purnam.test.angular :only [describe.ng describe.controller]]))
 
 (init)
-
-;; why am I not seeing tests?
-(describe {:doc "will this run an actual test?"}
-          (it "should list a test"
-              (is "foo" "bar")))
 
 (describe.controller {:doc        "Testing AdminUserCtrl"
                       :module     chaperone.app
                       :controller AdminUserCtrl}
 
+                     (.log js/console "Scope: " $scope) ;; coming back as null
+
                      (it "Should have a title in the scope"
-                         (is $scope.title "Add")))
+                         (do ($scope.init)
+                             (is $scope.title "Add"))))
