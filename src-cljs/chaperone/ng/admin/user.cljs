@@ -8,6 +8,8 @@
 		[purnam.angular :only [def.module def.controller]]))
 
 (def.controller chaperone.app.AdminUserCtrl [$scope]
+                (.log js/console "I have started!")
+
 				(! $scope.init
 				   (fn []
 					   (! $scope.title "Add"))))
