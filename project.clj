@@ -9,7 +9,7 @@
                    [environ "0.4.0"]
                    [clojurewerkz/elastisch "1.3.0-beta3"]
                    [http-kit "2.1.13"]
-                   [selmer "0.5.3"]
+                   [selmer "0.5.4"]
                    [compojure "1.1.5"]
                    [dieter "0.4.1"]]
     :main chaperone.core
@@ -29,9 +29,9 @@
 
                ;; profile specifically for compiling cljs, to remove unneccessary dependencies, and sinceA
                ;; it will blow up with dieter as it looks for the v8 native
-               :cljs    {:dependencies [[org.clojure/clojurescript "0.0-2030"]
+               :cljs    {:dependencies [[org.clojure/clojurescript "0.0-2080"]
                                         [im.chit/purnam "0.1.8"]]
-                         :exclusions   [dieter http-kit compojure environ]
+                         :exclusions   [dieter http-kit compojure environ clj-time selmer]
                          :plugins      [[lein-cljsbuild "0.3.3"]]
                          :cljsbuild    {
                                            :builds [{
@@ -42,6 +42,7 @@
                                                         ; The standard ClojureScript compiler options:
                                                         ; (See the ClojureScript compiler documentation for details.)
                                                         :compiler       {:output-to     "resources/public/js/main.js"
+                                                                         :output-dir    "resources/public/js/target"
                                                                          :optimizations :whitespace
                                                                          :pretty-print  true
                                                                          :source-map    "resources/public/js/main.js.map"
@@ -50,6 +51,7 @@
                                                      :source-paths   ["src-cljs", "test-cljs"]
                                                      :notify-command ["notify-send"]
                                                      :compiler       {:output-to     "resources/public/js/test/main.js"
+                                                                      :output-dir    "resources/public/js/test/target"
                                                                       :optimizations :whitespace
                                                                       :pretty-print  true
                                                                       :source-map    "resources/public/js/test/main.js.map"
