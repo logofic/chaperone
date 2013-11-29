@@ -14,4 +14,8 @@
 
                      (it "Should have a title in the scope"
                          ($scope.init)
-                         (is $scope.title "Add")))
+                         (is $scope.title "Add"))
+
+                     (it "Should create a new user into scope, when a non existent usersid is used"
+                         ($scope.load-user)
+                         (is $scope.user.name "")))

@@ -34,25 +34,26 @@
                          :exclusions   [dieter http-kit compojure environ clj-time selmer]
                          :plugins      [[lein-cljsbuild "0.3.3"]]
                          :cljsbuild    {
-                                           :builds [{
-                                                        :id             "source"
-                                                        ; The path to the top-level ClojureScript source directory:
-                                                        :source-paths   ["src-cljs"]
-                                                        :notify-command ["notify-send"]
-                                                        ; The standard ClojureScript compiler options:
-                                                        ; (See the ClojureScript compiler documentation for details.)
-                                                        :compiler       {:output-to     "resources/public/js/main.js"
-                                                                         :output-dir    "resources/public/js/target"
-                                                                         :optimizations :whitespace
-                                                                         :pretty-print  true
-                                                                         :source-map    "resources/public/js/main.js.map"
-                                                                         }},
-                                                    {:id             "test"
-                                                     :source-paths   ["src-cljs", "test-cljs"]
-                                                     :notify-command ["notify-send"]
-                                                     :compiler       {:output-to     "resources/public/js/test/main.js"
-                                                                      :output-dir    "resources/public/js/test/target"
-                                                                      :optimizations :whitespace
-                                                                      :pretty-print  true
-                                                                      :source-map    "resources/public/js/test/main.js.map"
-                                                                      }}]}}})
+                                           :crossovers [chaperone.crossover.user]
+                                           :builds     [{
+                                                            :id             "source"
+                                                            ; The path to the top-level ClojureScript source directory:
+                                                            :source-paths   ["src-cljs"]
+                                                            :notify-command ["notify-send"]
+                                                            ; The standard ClojureScript compiler options:
+                                                            ; (See the ClojureScript compiler documentation for details.)
+                                                            :compiler       {:output-to     "resources/public/js/main.js"
+                                                                             :output-dir    "resources/public/js/target"
+                                                                             :optimizations :whitespace
+                                                                             :pretty-print  true
+                                                                             :source-map    "resources/public/js/main.js.map"
+                                                                             }},
+                                                        {:id             "test"
+                                                         :source-paths   ["src-cljs", "test-cljs"]
+                                                         :notify-command ["notify-send"]
+                                                         :compiler       {:output-to     "resources/public/js/test/main.js"
+                                                                          :output-dir    "resources/public/js/test/target"
+                                                                          :optimizations :whitespace
+                                                                          :pretty-print  true
+                                                                          :source-map    "resources/public/js/test/main.js.map"
+                                                                          }}]}}})

@@ -1,6 +1,7 @@
 (ns chaperone.user-test
 	(:use [midje.sweet]
-		  [chaperone.user])
+		  [chaperone.user]
+          [chaperone.crossover.user])
 	(:require [test-helper :as test]
 			  [clj-time.core :as time]
 			  [clojurewerkz.elastisch.rest.index :as esi]

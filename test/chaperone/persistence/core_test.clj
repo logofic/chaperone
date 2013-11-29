@@ -3,7 +3,8 @@
 		  [chaperone.persistence.core])
 	(:require [test-helper :as test]
 			  [chaperone.user :as user]
-			  [clj-time.core :as time]
+              [chaperone.crossover.user :as cx-user]
+              [clj-time.core :as time]
 			  [clj-time.format :as timef]
 			  [chaperone.persistence.install :as install]
 			  [clojurewerkz.elastisch.rest :as esr]
@@ -30,14 +31,14 @@
 
 (fact
 	"Should be able to store and retrieve a Persistent record"
-	(let [test-user (user/new-user "Mark" "Mandel" "email" "password")
+	(let [test-user (cx-user/new-user "Mark" "Mandel" "email" "password")
 		  persistence (sub-system test/system)]
 		(install/create-index test/system)
 		(create persistence test-user)
 		(-> (get-by-id persistence "user" (:id test-user)) :_source :id) => (:id test-user)))
 
 (fact "Should be able to store and retrieve a date"
-	  (let [test-user (user/new-user "Mark" "Mandel" "email" "password" :last-logged-in (time/now))
+	  (let [test-user (cx-user/new-user "Mark" "Mandel" "email" "password" :last-logged-in (time/now))
 			persistence (sub-system test/system)]
 		  (install/create-index test/system)
 		  (create persistence test-user)
@@ -45,7 +46,7 @@
 			  (parse-string-date persistence (:last-logged-in result)) => (:last-logged-in test-user))))
 
 (fact "Should be able to store and retrieve a date, even if it's nil"
-	  (let [test-user (user/new-user "Mark" "Mandel" "email" "password")
+	  (let [test-user (cx-user/new-user "Mark" "Mandel" "email" "password")
 			persistence (sub-system test/system)]
 		  (install/create-index test/system)
 		  (create persistence test-user)
@@ -57,8 +58,8 @@
 	   (mapv (fn [item] (-> item :_source :id)) (-> result :hits :hits)))
 
 (fact "Should be able to query for data"
-	  (let [test-user1 (user/new-user "Mark" "Mandel" "email" "password")
-			test-user2 (user/new-user "ZAardvark" "ZAbigail" "email" "password")
+	  (let [test-user1 (cx-user/new-user "Mark" "Mandel" "email" "password")
+			test-user2 (cx-user/new-user "ZAardvark" "ZAbigail" "email" "password")
 			persistence (sub-system test/system)]
 		  (install/create-index test/system)
 		  (create persistence test-user1)
@@ -68,8 +69,8 @@
 		  (es-result-to-id (search persistence "user" :query (esq/match-all) :sort {:lastname "desc"})) => [(:id test-user2) (:id test-user1)]))
 
 (fact "Should be able to transform search data to appropriate defrecords" :focus
-	  (let [test-user1 (user/new-user "Mark" "Mandel" "email" "password")
-			test-user2 (user/new-user "ZAardvark" "ZAbigail" "email" "password")
+	  (let [test-user1 (cx-user/new-user "Mark" "Mandel" "email" "password")
+			test-user2 (cx-user/new-user "ZAardvark" "ZAbigail" "email" "password")
 			_source->User (partial user/_source->User test/system)
 			persistence (sub-system test/system)]
 		  (install/create-index test/system)

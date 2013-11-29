@@ -3,7 +3,6 @@
     (:require [environ.core :as env]
               [cheshire.generate :as chesg]
               [clj-time.format :as timef]
-              [cljs-uuid.core :as uuid]
               [clojurewerkz.elastisch.rest :as esr]
               [clojurewerkz.elastisch.rest.index :as esi]
               [clojurewerkz.elastisch.rest.document :as esd]))
@@ -53,14 +52,9 @@
     [persistence date]
     (if date (timef/parse (:date-formatter persistence) date)))
 
-(defn create-id
-    "creates a uuid string"
-    []
-    (-> (uuid/make-random) .toString))
-
 (defn create
     "utility class for easy inserting of a Persistent record"
-    [persistence ^chaperone.persistence.core.Persistent record]
+    [persistence record]
     (esd/create (:elasticsearch-index persistence) (get-type record) record :id (:id record)))
 
 (defn get-by-id

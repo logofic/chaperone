@@ -7,12 +7,6 @@
 
 (defmethod pcore/get-type User [record] "user")
 
-(defn new-user
-    "Constructor function for a new user. Also sets the ID to a UUID apon creation."
-    [firstname lastname email password
-     & {:keys [photo last-logged-in]}]
-    (->User (pcore/create-id) firstname lastname password email photo last-logged-in))
-
 (defn _source->User
     "Create a User from the elasicsearch _source map"
     [persistence map]
