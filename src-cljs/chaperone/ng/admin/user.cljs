@@ -5,7 +5,7 @@
               [chaperone.crossover.user :as user])
     (:use [purnam.cljs :only [aget-in aset-in]])
     (:use-macros
-        [purnam.js :only [obj !]]
+        [purnam.js :only [obj ! !>]]
         [purnam.angular :only [def.controller]]))
 
 (def.controller chaperone.app.AdminUserCtrl [$scope]
@@ -14,4 +14,6 @@
                        (! $scope.title "Add")))
                 (! $scope.load-user
                    (fn []
-                       (! $scope.user (apply obj (user/->User))))))
+                       (let [user (user/new-user "" "" "" "")]
+                           (! $scope.user (clj->js user))))))
+

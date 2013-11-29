@@ -52,7 +52,7 @@
     [persistence date]
     (if date (timef/parse (:date-formatter persistence) date)))
 
-(defn create
+(defn save
     "utility class for easy inserting of a Persistent record"
     [persistence record]
     (esd/create (:elasticsearch-index persistence) (get-type record) record :id (:id record)))

@@ -5,7 +5,7 @@
               :url  "http://www.apache.org/licenses/LICENSE-2.0.html"}
     :dependencies [[org.clojure/clojure "1.5.1"]
                    [clj-time "0.6.0"]
-                   [cljs-uuid "0.0.4"]
+                   [cljs-uuid "0.0.5"]
                    [environ "0.4.0"]
                    [clojurewerkz/elastisch "1.3.0-beta3"]
                    [http-kit "2.1.13"]
@@ -34,7 +34,7 @@
                          :exclusions   [dieter http-kit compojure environ clj-time selmer]
                          :plugins      [[lein-cljsbuild "0.3.3"]]
                          :cljsbuild    {
-                                           :crossovers [chaperone.crossover.user]
+                                           :crossovers [chaperone.crossover]
                                            :builds     [{
                                                             :id             "source"
                                                             ; The path to the top-level ClojureScript source directory:

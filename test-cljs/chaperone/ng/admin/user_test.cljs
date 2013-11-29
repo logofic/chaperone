@@ -1,4 +1,4 @@
-(ns chaperone.ng.admin.user-test
+(ns chaperone.ng.admin.user_test.cljs
     (:require [chaperone.ng.admin.user :as admin-user])
     (:use [purnam.cljs :only [aset-in aget-in]])
     (:use-macros
@@ -18,4 +18,4 @@
 
                      (it "Should create a new user into scope, when a non existent usersid is used"
                          ($scope.load-user)
-                         (is $scope.user.name "")))
+                         (is $scope.user.firstname "")))

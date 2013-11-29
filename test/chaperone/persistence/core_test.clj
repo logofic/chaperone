@@ -34,14 +34,14 @@
 	(let [test-user (cx-user/new-user "Mark" "Mandel" "email" "password")
 		  persistence (sub-system test/system)]
 		(install/create-index test/system)
-		(create persistence test-user)
+		(save persistence test-user)
 		(-> (get-by-id persistence "user" (:id test-user)) :_source :id) => (:id test-user)))
 
 (fact "Should be able to store and retrieve a date"
 	  (let [test-user (cx-user/new-user "Mark" "Mandel" "email" "password" :last-logged-in (time/now))
 			persistence (sub-system test/system)]
 		  (install/create-index test/system)
-		  (create persistence test-user)
+		  (save persistence test-user)
 		  (let [result (->> (:id test-user) (get-by-id persistence "user") :_source)]
 			  (parse-string-date persistence (:last-logged-in result)) => (:last-logged-in test-user))))
 
@@ -49,7 +49,7 @@
 	  (let [test-user (cx-user/new-user "Mark" "Mandel" "email" "password")
 			persistence (sub-system test/system)]
 		  (install/create-index test/system)
-		  (create persistence test-user)
+		  (save persistence test-user)
 		  (let [result (->> (:id test-user) (get-by-id persistence "user") :_source)]
 			  (parse-string-date persistence (:last-logged-in result)) => (:last-logged-in test-user))))
 
@@ -62,8 +62,8 @@
 			test-user2 (cx-user/new-user "ZAardvark" "ZAbigail" "email" "password")
 			persistence (sub-system test/system)]
 		  (install/create-index test/system)
-		  (create persistence test-user1)
-		  (create persistence test-user2)
+		  (save persistence test-user1)
+		  (save persistence test-user2)
 		  (esi/refresh @test/es-index)
 		  (es-result-to-id (search persistence "user" :query (esq/match-all) :sort {:lastname "asc"})) => [(:id test-user1) (:id test-user2)]
 		  (es-result-to-id (search persistence "user" :query (esq/match-all) :sort {:lastname "desc"})) => [(:id test-user2) (:id test-user1)]))
@@ -75,8 +75,8 @@
 			persistence (sub-system test/system)]
 		  (install/create-index test/system)
 		  (doto persistence
-			  (create test-user1)
-			  (create test-user2))
+			  (save test-user1)
+			  (save test-user2))
 		  (esi/refresh @test/es-index)
 		  (search-to-record persistence "user" _source->User :query (esq/match-all) :sort {:lastname "asc"}) => [test-user1 test-user2]
 		  (search-to-record persistence "user" _source->User :query (esq/match-all) :sort {:lastname "desc"}) => [test-user2 test-user1]))

@@ -51,7 +51,7 @@
 	(install/create-index test/system)
 	(let [test-user (new-user "Mark" "Mandel" "email" "password" :last-logged-in (time/now) :photo "photo.jpg")
 		  persistence (pcore/sub-system test/system)]
-		(pcore/create persistence test-user)
+		(pcore/save persistence test-user)
 		(let [_source->User (partial _source->User persistence)
 			  result (-> (pcore/get-by-id persistence "user" (:id test-user)) :_source _source->User)]
 			(doseq [key (keys result)]
@@ -66,7 +66,7 @@
 		  (esi/delete @test/es-index)
 		  (install/create-index test/system)
 		  (doto persistence
-			  (pcore/create test-user1)
-			  (pcore/create test-user2))
+			  (pcore/save test-user1)
+			  (pcore/save test-user2))
 		  (esi/refresh @test/es-index)
 		  (list-users persistence) => [test-user1 test-user2]))
