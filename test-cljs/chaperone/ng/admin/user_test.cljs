@@ -18,4 +18,7 @@
 
                      (it "Should create a new user into scope, when a non existent usersid is used"
                          ($scope.load-user)
-                         (is $scope.user.firstname "")))
+                         (is $scope.user.firstname "")
+                         (is $scope.user.lastname "")
+                         (is $scope.user.email "")
+                         (is $scope.user.password "")))
