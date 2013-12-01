@@ -21,7 +21,7 @@
                            (! $scope.user (clj->js user)))))
                 (! $scope.save-user
                    (fn []
-                       (let [user (x-user/map->User $scope.user)
+                       (let [user (x-user/map->User (js->clj $scope.user))
                              chan (user/save-user user)]
                            (go (let [result (<! chan)]
                                    (! $scope.alert (obj :category "success" :message "User has been saved successfully"))

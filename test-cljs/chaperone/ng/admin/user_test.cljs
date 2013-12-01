@@ -2,7 +2,7 @@
     (:require [chaperone.ng.admin.user :as admin-user])
     (:use [purnam.cljs :only [aset-in aget-in]])
     (:use-macros
-        [purnam.js :only [obj]]
+        [purnam.js :only [obj !]]
         [purnam.test :only [init describe it is]]
         [purnam.test.angular :only [describe.controller]]))
 
@@ -21,4 +21,14 @@
                          (is $scope.user.firstname "")
                          (is $scope.user.lastname "")
                          (is $scope.user.email "")
-                         (is $scope.user.password "")))
+                         (is $scope.user.password ""))
+
+                     (it "Should show a message and change the location when a user is saved"
+                         ($scope.load-user)
+                         (! $scope.user.firstname "John")
+                         (! $scope.user.lastname "Doe")
+                         (! $scope.user.email "email@email.com")
+                         (! $scope.user.password "password")
+                         ($scope.save-user)
+                         ;TODO: Actually write a test here.
+                         ))
