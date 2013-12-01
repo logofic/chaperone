@@ -11,7 +11,8 @@
                    [http-kit "2.1.13"]
                    [selmer "0.5.4"]
                    [compojure "1.1.5"]
-                   [dieter "0.4.1"]]
+                   [dieter "0.4.1"]
+                   [org.clojure/core.async "0.1.242.0-44b1e3-alpha"]]
     :main chaperone.core
     :plugins [[lein-midje "3.1.1"]
               [codox "0.6.4"]

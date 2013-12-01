@@ -6,6 +6,7 @@
 SESSION=chaperone
 
 tmux new-session -d -s $SESSION
+tmux send-keys "vagrant up" C-m
 tmux send-keys "karma start" C-m
 tmux split-window -h
 tmux select-pane -t 1
