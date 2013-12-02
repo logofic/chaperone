@@ -7,4 +7,4 @@
     "Send a user back to the server and save it"
     [^User user]
     ;;TODO: Need to actually make this work
-    (chan))
+    (throw (js/Error "save-user Not implemented")))

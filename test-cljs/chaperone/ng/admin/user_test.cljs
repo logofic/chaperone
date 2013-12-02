@@ -1,34 +1,44 @@
 (ns chaperone.ng.admin.user_test.cljs
-    (:require [chaperone.ng.admin.user :as admin-user])
-    (:use [purnam.cljs :only [aset-in aget-in]])
+    (:require [chaperone.ng.admin.user :as admin-user]
+              [chaperone.user :as user])
+    (:use [purnam.cljs :only [aset-in aget-in]]
+          [cljs.core.async :only [chan put!]])
     (:use-macros
         [purnam.js :only [obj !]]
         [purnam.test :only [init describe it is]]
-        [purnam.test.angular :only [describe.controller]]))
+        [purnam.test.angular :only [describe.controller describe.ng]]))
 
 (init)
 
-(describe.controller {:doc        "Testing AdminUserCtrl"
-                      :module     chaperone.app
-                      :controller AdminUserCtrl}
+(describe.ng
+    {:doc    "Testing AdminUserCtrl"
+     :module chaperone.app
+     :inject [[$scope ([$rootScope $controller $location]
+                       ($controller "AdminUserCtrl" (obj :$scope ($rootScope.$new) :$location $location)))]
+              [$location ([$location] $location)]]}
 
-                     (it "Should have a title in the scope"
-                         ($scope.init)
-                         (is $scope.title "Add"))
+    (it "Should have a title in the scope"
+        ($scope.init)
+        (is $scope.title "Add"))
 
-                     (it "Should create a new user into scope, when a non existent usersid is used"
-                         ($scope.load-user)
-                         (is $scope.user.firstname "")
-                         (is $scope.user.lastname "")
-                         (is $scope.user.email "")
-                         (is $scope.user.password ""))
+    (it "Should create a new user into scope, when a non existent usersid is used"
+        ($scope.load-user)
+        (is $scope.user.firstname "")
+        (is $scope.user.lastname "")
+        (is $scope.user.email "")
+        (is $scope.user.password ""))
 
-                     (it "Should show a message and change the location when a user is saved"
-                         ($scope.load-user)
-                         (! $scope.user.firstname "John")
-                         (! $scope.user.lastname "Doe")
-                         (! $scope.user.email "email@email.com")
-                         (! $scope.user.password "password")
+    (it "Should show a message and change the location when a user is saved"
+        ($scope.load-user)
+        (! $scope.user.firstname "John")
+        (! $scope.user.lastname "Doe")
+        (! $scope.user.email "email@email.com")
+        (! $scope.user.password "password")
+        (let [ws-chan (chan)]
+            (with-redefs [user/save-user (fn [user] ws-chan)]
                          ($scope.save-user)
-                         ;TODO: Actually write a test here.
-                         ))
+                         (js/runs (fn [] (put! ws-chan {})))
+                         (js/waitsFor (fn [] (= ($location.path) "/admin/users/list")), "Location never gets set", 1000)
+                         (js/runs (fn []
+                                      (is $scope.alert.category "success"))))))
+    )

@@ -36,20 +36,8 @@
                          :plugins      [[lein-cljsbuild "0.3.3"]]
                          :cljsbuild    {
                                            :crossovers [chaperone.crossover]
-                                           :builds     [{
-                                                            :id             "source"
-                                                            ; The path to the top-level ClojureScript source directory:
-                                                            :source-paths   ["src-cljs"]
-                                                            :notify-command ["notify-send"]
-                                                            ; The standard ClojureScript compiler options:
-                                                            ; (See the ClojureScript compiler documentation for details.)
-                                                            :compiler       {:output-to     "resources/public/js/main.js"
-                                                                             :output-dir    "resources/public/js/target"
-                                                                             :optimizations :whitespace
-                                                                             :pretty-print  true
-                                                                             :source-map    "resources/public/js/main.js.map"
-                                                                             }},
-                                                        {:id             "test"
+                                           ;; compile test first, it's a faster feedback loop.
+                                           :builds     [{:id             "test"
                                                          :source-paths   ["src-cljs", "test-cljs"]
                                                          :notify-command ["notify-send"]
                                                          :compiler       {:output-to     "resources/public/js/test/main.js"
@@ -57,4 +45,18 @@
                                                                           :optimizations :whitespace
                                                                           :pretty-print  true
                                                                           :source-map    "resources/public/js/test/main.js.map"
-                                                                          }}]}}})
+                                                                          }
+                                                         },
+                                                        {:id             "source"
+                                                         ; The path to the top-level ClojureScript source directory:
+                                                         :source-paths   ["src-cljs"]
+                                                         :notify-command ["notify-send"]
+                                                         ; The standard ClojureScript compiler options:
+                                                         ; (See the ClojureScript compiler documentation for details.)
+                                                         :compiler       {:output-to     "resources/public/js/main.js"
+                                                                          :output-dir    "resources/public/js/target"
+                                                                          :optimizations :whitespace
+                                                                          :pretty-print  true
+                                                                          :source-map    "resources/public/js/main.js.map"
+                                                                          }
+                                                         }]}}})
