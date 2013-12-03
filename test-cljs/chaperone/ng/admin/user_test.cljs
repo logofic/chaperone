@@ -1,12 +1,13 @@
 (ns chaperone.ng.admin.user_test.cljs
     (:require [chaperone.ng.admin.user :as admin-user]
               [chaperone.user :as user])
-    (:use [purnam.cljs :only [aset-in aget-in]]
+    (:use [purnam.native :only [aset-in aget-in]]
           [cljs.core.async :only [chan put!]])
     (:use-macros
-        [purnam.js :only [obj !]]
+        [purnam.core :only [obj !]]
         [purnam.test :only [init describe it is]]
-        [purnam.test.angular :only [describe.controller describe.ng]]))
+        [purnam.test.angular :only [describe.controller describe.ng]]
+        [purnam.test.async :only [runs waits-for]]))
 
 (init)
 
@@ -37,8 +38,6 @@
         (let [ws-chan (chan)]
             (with-redefs [user/save-user (fn [user] ws-chan)]
                          ($scope.save-user)
-                         (js/runs (fn [] (put! ws-chan {})))
-                         (js/waitsFor (fn [] (= ($location.path) "/admin/users/list")), "Location never gets set", 1000)
-                         (js/runs (fn []
-                                      (is $scope.alert.category "success"))))))
-    )
+                         (runs (put! ws-chan {}))
+                         (waits-for "Location never gets set", 1000 (= ($location.path) "/admin/users/list"))
+                         (runs (is $scope.alert.category "success"))))))
