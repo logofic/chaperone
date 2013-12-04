@@ -1,4 +1,4 @@
-(ns chaperone.ng.admin.user_test.cljs
+(ns chaperone.ng.admin.user_test
     (:require [chaperone.ng.admin.user :as admin-user]
               [chaperone.user :as user])
     (:use [purnam.native :only [aset-in aget-in]]

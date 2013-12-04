@@ -1,15 +1,16 @@
-(ns ^{:doc "The angularJS core implementation for the front end of this site"}
-	chaperone.ng.core
-	(:use [purnam.native :only [aget-in aset-in]])
-	(:use-macros
-		[purnam.core :only [obj !]]
-		[purnam.angular :only [def.module def.config def.controller]]))
+(ns ^{:doc "Central core of the system. Lots of setting up of the system and starting / stopping it"}
+    chaperone.core
+    (:require [chaperone.websocket :as ws]))
 
-(def.module chaperone.app [ngRoute])
+;; System startup and shutdown
+(defn create-system
+    "Create the system context, but don't start it"
+    [host port]
+    (let [context {}]
+        (-> context (ws/create-sub-system host port))))
 
-;; configure routes
-(def.config chaperone.app [$routeProvider]
-			(doto $routeProvider
-				(.when "/admin/users/add" (obj :templateUrl "/public/partials/admin/user/user-form.html" :controller "AdminUserCtrl"))
-				(.when "/admin/users/list" (obj :templateUrl "/public/partials/admin/user/list.html" :controller "AdminUserCtrl"))
-				(.otherwise (obj :templateUrl "/public/partials/index.html"))))
+(defn start
+    "Starts the system"
+    [system]
+    (.log js/console "Starting the system")
+    system)
