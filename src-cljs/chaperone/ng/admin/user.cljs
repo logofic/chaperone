@@ -11,7 +11,7 @@
         [purnam.angular :only [def.controller]]
         [cljs.core.async.macros :only [go]]))
 
-(def.controller chaperone.app.AdminUserCtrl [$scope $location]
+(def.controller chaperone.app.AdminUserCtrl [$scope $location System]
                 (! $scope.init
                    (fn []
                        (! $scope.title "Add")))
