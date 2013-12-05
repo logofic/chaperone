@@ -14,3 +14,9 @@
     "Constructor function: Create a new RPC response"
     [^Request request data]
     (->Response request data))
+
+(defn edn-readers
+    "EDN readers map for this namespace"
+    []
+    {'chaperone.crossover.rpc.Request  map->Request
+     'chaperone.crossover.rpc.Response map->Response})
