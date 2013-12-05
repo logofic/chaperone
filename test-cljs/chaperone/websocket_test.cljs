@@ -1,4 +1,5 @@
-(ns chaperone.websocket-test
+(ns ^{:doc "Tests for the websocket system"}
+    chaperone.websocket-test
     (:require [chaperone.core :as core])
     (:use [purnam.native :only [aset-in aget-in]]
           [chaperone.websocket :only [create-system sub-system]])
