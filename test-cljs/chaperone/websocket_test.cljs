@@ -18,7 +18,7 @@
 (describe {:doc     "Websocket RPC"
            :globals [system (core/create-system "localhost" 8080)
                      ws-system (sub-system system)
-                     ws-chan (:chan ws-system)
+                     ws-chan (:request-chan ws-system)
                      rpc-map (:rpc-map ws-system)]}
           (it "It should take a RPC request, put it in the websocket channel, and setup the response channel handler"
               (let [request (new-request "Category" "Action" {:key "value"})

@@ -13,10 +13,11 @@
 (defn create-sub-system
     "Create the persistence system. Takes the existing system details"
     [system host port]
-    (let [sub-system {:host    host
-                      :port    port
-                      :chan    (chan)
-                      :rpc-map (atom {})}]
+    (let [sub-system {:host          host
+                      :port          port
+                      :request-chan  (chan)
+                      :response-chan (chan)
+                      :rpc-map       (atom {})}]
         (assoc system :websocket sub-system))
     )
 
@@ -29,7 +30,7 @@
     "Send a rpc request over the websocket channel. Returns the channel that the RPC response will come back to."
     [web-socket ^Request request]
     (let [id (:id request)
-          ws-chan (:chan web-socket)
+          ws-chan (:request-chan web-socket)
           response-chan (chan)
           rpc-map (:rpc-map web-socket)]
         (reset! rpc-map (assoc @rpc-map id response-chan))

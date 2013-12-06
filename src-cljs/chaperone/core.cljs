@@ -14,3 +14,9 @@
     [system]
     (.log js/console "Starting the system")
     system)
+
+(defn stop
+    "Stop the system"
+    [system]
+    (.log js/console "Stopping the system")
+    system)
