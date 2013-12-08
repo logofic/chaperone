@@ -9,14 +9,14 @@
     (let [context {}]
         (-> context (ws/create-sub-system host port))))
 
-(defn start
+(defn start!
     "Starts the system"
     [system]
     (.log js/console "Starting the system")
-    system)
+    (-> system ws/start!))
 
-(defn stop
+(defn stop!
     "Stop the system"
     [system]
     (.log js/console "Stopping the system")
-    system)
+    (-> system ws/stop!))

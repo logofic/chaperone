@@ -2,7 +2,7 @@
     chaperone.websocket
     (:require [cljs.reader :as reader])
     (:use
-        [cljs.core.async :only [chan put! !<]]
+        [cljs.core.async :only [chan put! <! close!]]
         [chaperone.crossover.rpc :only [new-request new-response edn-readers]])
     (:import (chaperone.crossover.rpc Request Response))
     (:use-macros
@@ -14,13 +14,13 @@
 (defn create-sub-system
     "Create the persistence system. Takes the existing system details"
     [system host port]
-    (let [sub-system {:host                   host
-                      :port                   port
-                      :request-chan           (chan)
-                      :response-chan          (chan)
-                      :reponse-chan-listening (atom false)
-                      :rpc-map                (atom {})
-                      :edn-readers            (edn-readers)}]
+    (let [sub-system {:host                    host
+                      :port                    port
+                      :request-chan            (chan)
+                      :response-chan           (chan)
+                      :response-chan-listening (atom false)
+                      :rpc-map                 (atom {})
+                      :edn-readers             (edn-readers)}]
         (assoc system :websocket sub-system))
     )
 
@@ -38,17 +38,26 @@
 (defn- start-response-chan-listen!
     "Listen to the response chan's channel and route responses appropriately"
     [web-socket]
-    (reset! (:reponse-chan-listening web-socket) true)
+    (reset! (:response-chan-listening web-socket) true)
     (go
         (while (-> web-socket :response-chan-listening deref)
-            (respond web-socket (reader/read-string (!< chan))))))
+            (respond web-socket (reader/read-string (<! (:response-chan web-socket)))))))
 
-(defn start
+(defn start!
     "Start the system"
     [system]
     ;;TODO: register each tag with the required map function: https://coderwall.com/p/3xqr7q
-    (-> system sub-system start-response-chan-listen!))
+    (-> system sub-system start-response-chan-listen!)
+    system)
 
+(defn stop!
+    "Stop the system"
+    [system]
+    (let [web-socket (sub-system system)]
+        (close! (:request-chan web-socket))
+        (close! (:response-chan web-socket))
+        (reset! (:response-chan-listening web-socket) false))
+    system)
 
 (defn send!
     "Send a rpc request over the websocket channel. Returns the channel that the RPC response will come back to."

@@ -9,8 +9,7 @@
 (def.module chaperone.app [ngRoute])
 
 (def.factory chaperone.app.System [$location]
-             (.log js/console "I've created a monster!")
-             (-> (core/create-system (!> $location.host) (!> $location.path)) core/start))
+             (-> (core/create-system (!> $location.host) (!> $location.path)) core/start!))
 
 ;; configure routes
 (def.config chaperone.app [$routeProvider]
