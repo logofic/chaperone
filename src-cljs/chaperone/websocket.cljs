@@ -46,7 +46,8 @@
 (defn start!
     "Start the system"
     [system]
-    ;;TODO: register each tag with the required map function: https://coderwall.com/p/3xqr7q
+    (doseq [[tag f] (edn-readers)]
+        (reader/register-tag-parser! tag f))
     (-> system sub-system start-response-chan-listen!)
     system)
 
