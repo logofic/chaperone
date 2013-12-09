@@ -33,11 +33,12 @@
     "Sends the final response to the RPC request's channel. Removes the response RPC channel in question after
     putting the response in it."
     [web-sockets ^Response response]
+
     (let [rpc-map (:rpc-map web-sockets)
           rpc-id (-> response :request :id)
-          rpc-chan (rpc-map rpc-id)]
+          rpc-chan (get @rpc-map rpc-id)]
         (put! rpc-chan response)
-        (reset! rpc-map (dissoc rpc-map rpc-id))
+        (reset! rpc-map (dissoc @rpc-map rpc-id))
         )
     )
 

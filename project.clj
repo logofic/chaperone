@@ -18,6 +18,7 @@
               [codox "0.6.4"]
               [lein-environ "0.4.0"]
               [lein-ancient "0.5.2"]]
+    :codox {:output-dir "doc/clj"}
     :profiles {:uberjar {:aot :all}
                :dev     {:dependencies [[midje "1.6-beta1"]
                                         [org.clojure/tools.namespace "0.2.4"]
@@ -34,6 +35,8 @@
                                         [im.chit/purnam "0.3.0-SNAPSHOT"]]
                          :exclusions   [dieter http-kit compojure environ clj-time selmer]
                          :plugins      [[lein-cljsbuild "0.3.3"]]
+                         :codox        {:sources    ["src-cljs"]
+                                        :output-dir "doc/cljs"}
                          :cljsbuild    {
                                            :crossovers [chaperone.crossover]
                                            ;; compile test first, it's a faster feedback loop.
