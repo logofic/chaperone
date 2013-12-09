@@ -29,10 +29,16 @@
     [system]
     (:websocket system))
 
-(defn respond
-    "Sends the final response to the RPC request's channel"
+(defn respond!
+    "Sends the final response to the RPC request's channel. Removes the response RPC channel in question after
+    putting the response in it."
     [web-sockets ^Response response]
-    ;;TODO: Need to actually make this work
+    (let [rpc-map (:rpc-map web-sockets)
+          rpc-id (-> response :request :id)
+          rpc-chan (rpc-map rpc-id)]
+        (put! rpc-chan response)
+        (reset! rpc-map (dissoc rpc-map rpc-id))
+        )
     )
 
 (defn- start-response-chan-listen!
@@ -41,7 +47,7 @@
     (reset! (:response-chan-listening web-socket) true)
     (go
         (while (-> web-socket :response-chan-listening deref)
-            (respond web-socket (reader/read-string (<! (:response-chan web-socket)))))))
+            (respond! web-socket (reader/read-string (<! (:response-chan web-socket)))))))
 
 (defn start!
     "Start the system"
