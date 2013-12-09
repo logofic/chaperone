@@ -21,7 +21,7 @@
                      ws-chan (:request-chan ws-system)
                      rpc-map (:rpc-map ws-system)]}
           (it "It should take a RPC request, put it in the websocket channel, and setup the response channel handler"
-              (let [request (new-request "Category" "Action" {:key "value"})
+              (let [request (new-request :request-category :request-action {:key "value"})
                     result (atom false)]
                   (take! ws-chan #(reset! result %))
                   (runs (send! ws-system request))
