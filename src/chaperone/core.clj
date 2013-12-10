@@ -17,11 +17,11 @@
     "Starts the system"
     [system]
     (println "user/Starting the system")
-    (-> system persist/start web/start))
+    (-> system persist/start web/start rpc/start!))
 
 (defn stop "stop the system"
     [system]
-    (-> system web/stop))
+    (-> system web/stop rpc/stop!))
 
 (defn -main
     "I don't do a whole lot ... yet."

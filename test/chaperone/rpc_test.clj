@@ -1,7 +1,8 @@
 (ns chaperone.rpc-test
     (:require [clojure.edn :as edn])
     (:use [midje.sweet]
-          [chaperone.crossover.rpc])
+          [chaperone.crossover.rpc]
+          [chaperone.rpc])
     (:require [test-helper :as test]))
 
 (defn- setup!
@@ -31,3 +32,7 @@
           request => (edn/read-string {:readers (edn-readers)} (prn-str request))
           response => (edn/read-string {:readers (edn-readers)} (prn-str response))
           ))
+
+(fact "Make sure the RPC system/subsystem works as expected"
+      (:rpc test/system) => truthy
+      (:rpc test/system) => (sub-system test/system))
