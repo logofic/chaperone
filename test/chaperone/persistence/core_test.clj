@@ -19,7 +19,7 @@
 	   []
 	   (test/stop)
 	   (test/create)
-	   (test/start start)
+	   (test/start start!)
 	   (esi/delete @test/es-index))
 
 (namespace-state-changes (before :facts (setup!)))

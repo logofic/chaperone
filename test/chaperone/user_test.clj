@@ -13,7 +13,7 @@
 	   []
 	   (test/stop)
 	   (test/create)
-	   (test/start pcore/start))
+	   (test/start pcore/start!))
 
 (namespace-state-changes (before :facts (setup!)))
 

@@ -40,7 +40,7 @@
 	[web port]
 	(server/run-server (-> (handler/site (create-routes web)) (dieter/asset-pipeline (:dieter web))) {:port port}))
 
-(defn start
+(defn start!
 	"Start the web server, and get this ball rolling"
 	[system]
 	(println "Starting server")
@@ -51,7 +51,7 @@
 						  (assoc web :server (run-server web port)))
 			system)))
 
-(defn stop
+(defn stop!
 	"Oh noes. Stop the server!"
 	[system]
 	(let [web (sub-system system)]

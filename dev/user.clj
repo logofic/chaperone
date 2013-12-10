@@ -25,13 +25,13 @@
 (defn start
 	"Starts the system running, updates the Var #'system."
 	[]
-	(alter-var-root #'system core/start))
+	(alter-var-root #'system core/start!))
 
 (defn stop
 	"Stops the system if it is currently running, updates the Var
 	  #'system."
 	[]
-	(alter-var-root #'system core/stop))
+	(alter-var-root #'system core/stop!))
 
 (defn go
 	"Initializes and starts the system running."

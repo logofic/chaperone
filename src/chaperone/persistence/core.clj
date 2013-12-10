@@ -32,7 +32,7 @@
     [system]
     (-> system sub-system :date-formatter))
 
-(defn start
+(defn start!
     "Start the persistence mechanism"
     [system]
     (esr/connect! (-> system sub-system :elasticsearch-url))

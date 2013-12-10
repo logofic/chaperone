@@ -27,4 +27,4 @@
 	"Stops the system if it is currently running, updates the Var
 	  #'system."
 	[]
-	(alter-var-root #'system core/stop))
+	(alter-var-root #'system core/stop!))

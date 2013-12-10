@@ -13,15 +13,15 @@
             rpc/create-sub-system
             web/create-sub-system)))
 
-(defn start
+(defn start!
     "Starts the system"
     [system]
     (println "user/Starting the system")
-    (-> system persist/start web/start rpc/start!))
+    (-> system persist/start! web/start! rpc/start!))
 
-(defn stop "stop the system"
+(defn stop! "stop the system"
     [system]
-    (-> system web/stop rpc/stop!))
+    (-> system web/stop! rpc/stop!))
 
 (defn -main
     "I don't do a whole lot ... yet."

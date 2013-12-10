@@ -11,7 +11,7 @@
 	   []
 	   (test/stop)
 	   (test/create)
-	   (test/start pcore/start)
+	   (test/start pcore/start!)
 	   (esi/delete @test/es-index)
 	   (create-index test/system))
 
