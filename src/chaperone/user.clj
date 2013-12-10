@@ -17,3 +17,9 @@
     "list all users"
     [persistence]
     (pcore/search-to-record persistence "user" (partial _source->User persistence) :query (esq/match-all) :sort {:lastname "asc"}))
+
+(defn rpc-response-map
+    "Response map of actions for the :user category"
+    [system]
+    (let [persistence (pcore/sub-system system)]
+        {:save #(pcore/save persistence (:data %))}))

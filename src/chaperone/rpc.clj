@@ -1,10 +1,16 @@
 (ns ^{:doc "RPC mechanisms for the server side."}
     chaperone.rpc
     (:use [chaperone.crossover.rpc]
-          [clojure.core.async :only [go >! <! chan close!]])
-    )
+          [clojure.core.async :only [go >! <! chan close!]]
+          [alex-and-georges.debug-repl])
+    (:require [chaperone.user :as user]))
 
 ;; system
+
+(defn- create-rpc-reponse-map
+    [system]
+    {:user (user/rpc-response-map system)})
+
 (defn create-sub-system
     "Create the RPC subsystem"
     [system]
@@ -12,7 +18,8 @@
                       :request-chan         (chan)
                       :request-chan-listen  (atom false)
                       :response-chan        (chan)
-                      :response-chan-listen (atom false)}]
+                      :response-chan-listen (atom false)
+                      :rpc-handler-map      (create-rpc-reponse-map system)}]
         (assoc system :rpc sub-system)))
 
 (defn sub-system

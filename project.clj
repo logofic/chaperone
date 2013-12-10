@@ -20,9 +20,10 @@
               [lein-ancient "0.5.2"]]
     :codox {:output-dir "doc/clj"}
     :profiles {:uberjar {:aot :all}
-               :dev     {:dependencies [[midje "1.6-beta1"]
+               :dev     {:dependencies [[midje "1.6.0"]
                                         [org.clojure/tools.namespace "0.2.4"]
-                                        [org.clojure/tools.trace "0.7.6"]]
+                                        [org.clojure/tools.trace "0.7.6"]
+                                        [org.clojars.gjahad/debug-repl "0.3.3"]]
                          :source-paths ["dev"]
                          :repl-options {:init-ns user}
                          :env          {:elasticsearch-url   "http://dev.chaperone:9200"
