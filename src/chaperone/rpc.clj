@@ -1,8 +1,8 @@
 (ns ^{:doc "RPC mechanisms for the server side."}
     chaperone.rpc
     (:use [chaperone.crossover.rpc]
-          [clojure.core.async :only [go >! <! chan close!]]
-          [alex-and-georges.debug-repl])
+          [clojure.core.async :only [go >! <! chan close!]])
+    (:import [chaperone.crossover.rpc Request])
     (:require [chaperone.user :as user]))
 
 ;; system
@@ -45,3 +45,11 @@
             (close! (:request-chan rpc))
             (close! (:response-chan rpc))))
     system)
+
+
+(defn run-rpc-request
+    "Actually run the function for a request"
+    [rpc ^Request request]
+    (let [handlers (:rpc-handler-map rpc)
+          f (get-in handlers (:category request) (:action request))]
+        (f (:data request))))

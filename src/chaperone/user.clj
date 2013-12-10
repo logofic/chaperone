@@ -22,4 +22,4 @@
     "Response map of actions for the :user category"
     [system]
     (let [persistence (pcore/sub-system system)]
-        {:save #(pcore/save persistence (:data %))}))
+        {:save #(pcore/save persistence %)}))
