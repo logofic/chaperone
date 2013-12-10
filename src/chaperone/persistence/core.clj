@@ -11,8 +11,8 @@
 (defn create-sub-system
     "Create the persistence system. Takes the existing system details"
     [system]
-    (let [sub-system {:elasticsearch-url   (env/env :elasticsearch-url)
-                      :elasticsearch-index (env/env :elasticsearch-index)
+    (let [sub-system {:elasticsearch-url   (get env/env :elasticsearch-url "http://localhost:9200")
+                      :elasticsearch-index (get env/env :elasticsearch-index "chaperone")
                       :date-formatter      (timef/formatters :date-time)}]
         (assoc system :persistence sub-system))
     )

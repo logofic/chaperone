@@ -27,7 +27,6 @@
                          :source-paths ["dev"]
                          :repl-options {:init-ns user}
                          :env          {:elasticsearch-url   "http://dev.chaperone:9200"
-                                        :elasticsearch-index "test_chaperone"
                                         :web-server-port     8080}}
 
                ;; profile specifically for compiling cljs, to remove unneccessary dependencies, and sinceA
