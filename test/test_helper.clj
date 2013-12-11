@@ -14,12 +14,9 @@
     "Creates and initializes the system under development in the Var
       #'system. For convenience, swap the es-index while we're in here"
     []
-    (let [system (core/create-system)
-          ; overwrite the environment variable for the es-index, so unit tests run in
-          ; their own index
-          system (assoc-in system [:persistence :elasticsearch-index] "test_chaperone")]
-        (alter-var-root #'system (constantly system))
-        (swap! es-index (constantly (pcore/get-es-index system)))))
+    (with-redefs [env/env (assoc env/env :elasticsearch-index "test_chaperone")]
+                 (alter-var-root #'system (constantly (core/create-system)))
+                 (swap! es-index (constantly (pcore/get-es-index system)))))
 
 (defn start
     "Starts the system, reducing the passed in start functions, so you can cherry pick what
