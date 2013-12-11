@@ -18,3 +18,11 @@
 	(let [mappings (merge user-mapping)
 		  es-index (pcore/get-es-index system)]
 		(esi/create es-index :mappings mappings)))
+
+
+(defn start!
+    [system]
+    "If the index does not exist, create it"
+    (when-not (esi/exists? (pcore/get-es-index system))
+        (create-index system))
+    system)

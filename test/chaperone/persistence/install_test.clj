@@ -18,8 +18,15 @@
 ;;clean out the index before we begin
 (namespace-state-changes (before :facts (setup!)))
 
-(fact :focus
+(fact
 	"Shall we look at this index of ours?"
 	(esi/exists? @test/es-index) => true
 	(-> (esi/get-mapping @test/es-index "user") :user :properties keys sort) => (-> user-mapping :user :properties keys sort)
 	)
+
+(fact "Index should auto create on start!"
+      (esi/delete @test/es-index)
+      (esi/exists? @test/es-index) => false
+      (test/create)
+      (test/start pcore/start! start!)
+      (esi/exists? @test/es-index) => true)

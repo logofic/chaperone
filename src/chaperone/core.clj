@@ -1,6 +1,7 @@
 (ns ^{:doc "Actually runs the application server."}
     chaperone.core
     (:require [chaperone.persistence.core :as persist]
+              [chaperone.persistence.install :as install]
               [chaperone.web.core :as web]
               [chaperone.rpc :as rpc])
     (:gen-class))
@@ -17,7 +18,7 @@
     "Starts the system"
     [system]
     (println "user/Starting the system")
-    (-> system persist/start! web/start! rpc/start!))
+    (-> system install/start! persist/start! web/start! rpc/start!))
 
 (defn stop! "stop the system"
     [system]

@@ -68,7 +68,7 @@
 		  (es-result-to-id (search persistence "user" :query (esq/match-all) :sort {:lastname "asc"})) => [(:id test-user1) (:id test-user2)]
 		  (es-result-to-id (search persistence "user" :query (esq/match-all) :sort {:lastname "desc"})) => [(:id test-user2) (:id test-user1)]))
 
-(fact "Should be able to transform search data to appropriate defrecords" :focus
+(fact "Should be able to transform search data to appropriate defrecords"
 	  (let [test-user1 (cx-user/new-user "Mark" "Mandel" "email" "password")
 			test-user2 (cx-user/new-user "ZAardvark" "ZAbigail" "email" "password")
 			_source->User (partial user/_source->User test/system)
