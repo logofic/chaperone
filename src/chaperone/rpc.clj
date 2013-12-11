@@ -28,12 +28,25 @@
     [system]
     (:rpc system))
 
+(defn run-rpc-request
+    "Actually run the function for a request"
+    [rpc ^Request request]
+    ;; on stop, the request can be nil. Ignore that
+    (when request
+        (let [handlers (:rpc-handler-map rpc)
+              f (get-in handlers [(:category request) (:action request)])]
+            (f (:data request)))))
+
 (defn start!
     "Start the rpc system"
     [system]
     (let [rpc (sub-system system)]
         (reset! (:request-chan-listen rpc) true)
-        (reset! (:response-chan-listen rpc) true))
+        (reset! (:response-chan-listen rpc) true)
+        (go (while (-> rpc :request-chan-listen deref)
+                (let [request (<! (:request-chan rpc))
+                      data (run-rpc-request rpc request)]
+                    (>! (:response-chan rpc) (new-response request data))))))
     system)
 
 (defn stop!
@@ -46,11 +59,3 @@
             (close! (:request-chan rpc))
             (close! (:response-chan rpc))))
     system)
-
-
-(defn run-rpc-request
-    "Actually run the function for a request"
-    [rpc ^Request request]
-    (let [handlers (:rpc-handler-map rpc)
-          f (get-in handlers [(:category request) (:action request)])]
-        (f (:data request))))

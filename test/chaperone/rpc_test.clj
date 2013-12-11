@@ -5,7 +5,9 @@
           [chaperone.rpc]
           [clojure.core.async :only [pipe put! <!! timeout]])
     (:require [test-helper :as test]
-              [chaperone.crossover.user :as user]))
+              [chaperone.crossover.user :as user]
+              [chaperone.persistence.core :as pcore]
+              [chaperone.persistence.install :as install]))
 
 (defn- setup!
     "Provides setup for the tests. Has side effects"
@@ -39,13 +41,14 @@
       (:rpc test/system) => truthy
       (:rpc test/system) => (sub-system test/system))
 
-(fact "RPC channel pipeline should take in a request, and spit out a response on the other side."
+(fact "RPC channel pipeline should take in a request, and spit out a response on the other side." :focus
       (let [rpc (sub-system test/system)
             request-chan (:request-chan rpc)
             response-chan (:response-chan rpc)
-            piped-timout (timeout 2000)
             test-user (user/new-user "Mark" "Mandel" "email" "password")
+            piped-timeout (pipe response-chan (timeout 2000))
             request (new-request :user :save test-user)]
+          (test/start install/start! pcore/start! start!)
           (put! request-chan request)
-          (pipe response-chan piped-timout)
-          (:request (<!! piped-timout)) => request))
+          ;; TODO: test the user we have is stored in elasticcache.
+          (:request (<!! piped-timeout)) => request))

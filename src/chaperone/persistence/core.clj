@@ -62,6 +62,11 @@
     [persistence type id]
     (esd/get (:elasticsearch-index persistence) type id))
 
+(defn refresh
+    "Refresh the the chaperone elastic search index"
+    [persistence]
+    (esi/refresh (:elasticsearch-index persistence)))
+
 (defn- search-with-options
     "Utilitiy function for passing through to esd/search with the required option map"
     [persistence mapping-type options]

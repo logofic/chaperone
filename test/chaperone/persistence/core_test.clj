@@ -64,7 +64,7 @@
 		  (install/create-index test/system)
 		  (save persistence test-user1)
 		  (save persistence test-user2)
-		  (esi/refresh @test/es-index)
+		  (refresh persistence)
 		  (es-result-to-id (search persistence "user" :query (esq/match-all) :sort {:lastname "asc"})) => [(:id test-user1) (:id test-user2)]
 		  (es-result-to-id (search persistence "user" :query (esq/match-all) :sort {:lastname "desc"})) => [(:id test-user2) (:id test-user1)]))
 
@@ -77,6 +77,6 @@
 		  (doto persistence
 			  (save test-user1)
 			  (save test-user2))
-		  (esi/refresh @test/es-index)
+		  (refresh persistence)
 		  (search-to-record persistence "user" _source->User :query (esq/match-all) :sort {:lastname "asc"}) => [test-user1 test-user2]
 		  (search-to-record persistence "user" _source->User :query (esq/match-all) :sort {:lastname "desc"}) => [test-user2 test-user1]))
