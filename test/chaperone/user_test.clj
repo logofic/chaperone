@@ -48,14 +48,14 @@
         (pcore/get-type test-user) => "user"))
 
 (fact
-    "Test if the _source->User works properly"
+    "Test if the _source->User works properly" :focus
     (esi/delete @test/es-index)
     (install/create-index test/system)
     (let [test-user (new-user "Mark" "Mandel" "email" "password" :last-logged-in (time/now) :photo "photo.jpg")
           persistence (pcore/sub-system test/system)]
         (pcore/save persistence test-user)
         (let [_source->User (partial _source->User persistence)
-              result (-> (pcore/get-by-id persistence "user" (:id test-user)) :_source _source->User)]
+              result (get-user-by-id persistence (:id test-user))]
             (doseq [key (keys result)]
                 (key test-user) => (key result))
             )

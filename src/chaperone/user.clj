@@ -18,6 +18,12 @@
     [persistence]
     (pcore/search-to-record persistence "user" (partial _source->User persistence) :query (esq/match-all) :sort {:lastname "asc"}))
 
+(defn get-user-by-id
+    "get a specific user by an id"
+    [persistence id]
+    (let [result (pcore/get-by-id persistence "user" id)]
+        (_source->User persistence (:_source result))))
+
 (defn rpc-response-map
     "Response map of actions for the :user category"
     [system]
