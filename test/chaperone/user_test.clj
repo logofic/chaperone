@@ -73,7 +73,7 @@
           (esi/refresh @test/es-index)
           (list-users persistence) => [test-user1 test-user2]))
 
-(fact "RPC response handlers should work" :focus
+(fact "RPC response handlers should work"
       (esi/delete @test/es-index)
       (install/create-index test/system)
       (let [test-user (new-user "Mark" "Mandel" "email" "password" :last-logged-in (time/now) :photo "photo.jpg")
