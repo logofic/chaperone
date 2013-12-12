@@ -78,9 +78,8 @@
       (install/create-index test/system)
       (let [test-user (new-user "Mark" "Mandel" "email" "password" :last-logged-in (time/now) :photo "photo.jpg")
             request (new-request :user :save test-user)
-            rpc (rpc/sub-system test/system)
             persistence (pcore/sub-system test/system)]
-          (rpc/run-rpc-request rpc request)
+          (rpc/run-rpc-request test/system request)
           (esi/refresh @test/es-index)
           (let [result-user (pcore/get-by-id persistence "user" (:id test-user))]
               (:id test-user) => (:id (_source->User persistence (:_source result-user))))))

@@ -1,9 +1,11 @@
 (ns ^{:doc "System user and user management"}
     chaperone.user
     (:use [chaperone.crossover.user])
-    (:import chaperone.crossover.user.User)
+    (:import chaperone.crossover.user.User
+             chaperone.crossover.rpc.Request)
     (:require [chaperone.persistence.core :as pcore]
-              [clojurewerkz.elastisch.query :as esq]))
+              [clojurewerkz.elastisch.query :as esq]
+              [chaperone.rpc :as rpc]))
 
 (defmethod pcore/get-type User [record] "user")
 
@@ -24,8 +26,9 @@
     (let [result (pcore/get-by-id persistence "user" id)]
         (_source->User persistence (:_source result))))
 
-(defn rpc-response-map
-    "Response map of actions for the :user category"
-    [system]
+;; handler functions
+(defmethod rpc/rpc-handler [:user :save]
+           [system ^Request request]
+    "Save the user please"
     (let [persistence (pcore/sub-system system)]
-        {:save #(pcore/save persistence %)}))
+        (pcore/save persistence (:data request))))

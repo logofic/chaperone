@@ -1,16 +1,10 @@
 (ns ^{:doc "RPC mechanisms for the server side."}
     chaperone.rpc
     (:use [chaperone.crossover.rpc]
-          [clojure.core.async :only [go >! <! chan close!]]
-          [alex-and-georges.debug-repl])
-    (:import [chaperone.crossover.rpc Request])
-    (:require [chaperone.user :as user]))
+          [clojure.core.async :only [go >! <! chan close!]])
+    (:import [chaperone.crossover.rpc Request]))
 
 ;; system
-
-(defn- create-rpc-reponse-map
-    [system]
-    {:user (user/rpc-response-map system)})
 
 (defn create-sub-system
     "Create the RPC subsystem"
@@ -19,8 +13,7 @@
                       :request-chan         (chan)
                       :request-chan-listen  (atom false)
                       :response-chan        (chan)
-                      :response-chan-listen (atom false)
-                      :rpc-handler-map      (create-rpc-reponse-map system)}]
+                      :response-chan-listen (atom false)}]
         (assoc system :rpc sub-system)))
 
 (defn sub-system
@@ -28,14 +21,16 @@
     [system]
     (:rpc system))
 
+(defmulti rpc-handler
+          "Is the function for a given request of type [:category :action] and returns the data to be sent back in the response"
+          (fn [system ^Request request] [(:category request) (:action request)]))
+
 (defn run-rpc-request
     "Actually run the function for a request"
-    [rpc ^Request request]
+    [system ^Request request]
     ;; on stop, the request can be nil. Ignore that
     (when request
-        (let [handlers (:rpc-handler-map rpc)
-              f (get-in handlers [(:category request) (:action request)])]
-            (f (:data request)))))
+        (rpc-handler system request)))
 
 (defn start!
     "Start the rpc system"
@@ -45,7 +40,7 @@
         (reset! (:response-chan-listen rpc) true)
         (go (while (-> rpc :request-chan-listen deref)
                 (let [request (<! (:request-chan rpc))
-                      data (run-rpc-request rpc request)]
+                      data (run-rpc-request system request)]
                     (>! (:response-chan rpc) (new-response request data))))))
     system)
 
