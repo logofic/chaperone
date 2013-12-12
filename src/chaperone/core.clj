@@ -18,7 +18,7 @@
     "Starts the system"
     [system]
     (println "user/Starting the system")
-    (-> system install/start! persist/start! web/start! rpc/start!))
+    (-> system persist/start! install/start! web/start! rpc/start!))
 
 (defn stop! "stop the system"
     [system]
