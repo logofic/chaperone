@@ -8,14 +8,14 @@ Current status: Barely started.
 
 ## Installation
 
-You will require a installation of [ElasticSearch](http://www.elasticsearch.org/)
+You will require an installation of [ElasticSearch](http://www.elasticsearch.org/)
 
-To create the required index run `lein run -m chaperone.persistance.install` with the required environment variables.
+If an index does not exist for chaperone, it will be created when the server is started.
 
 ## Enviornment Variables
 
- - ELASTICSEARCH_URL - The url of Elastic Search
- - ELATICSEARCH_INDEX - The name of the index to use for Chaperone.
+ - ELASTICSEARCH_URL - The url of Elastic Search. Defaults to ""http://localhost:9200""
+ - ELATICSEARCH_INDEX - The name of the index to use for Chaperone. Defaults to "chaperone"
  - WEB_SERVER_PORT - The port of the web server to run on. Defaults to 8080.
 
 ## Usage
