@@ -1,7 +1,9 @@
 (ns chaperone.ng.admin.user_test
     (:require [chaperone.ng.admin.user :as admin-user]
-              [chaperone.user :as user])
-    (:use [purnam.native :only [aset-in aget-in]]
+              [chaperone.user :as user]
+              [chaperone.websocket :as ws])
+    (:use [test-helper :only [init-tests]]
+          [purnam.native :only [aset-in aget-in]]
           [cljs.core.async :only [chan put!]])
     (:use-macros
         [purnam.core :only [obj !]]
@@ -9,7 +11,8 @@
         [purnam.test.angular :only [describe.controller describe.ng]]
         [purnam.test.async :only [runs waits-for]]))
 
-(init)
+
+(init-tests)
 
 (describe.ng
     {:doc    "Testing AdminUserCtrl"

@@ -50,14 +50,14 @@
         (while (-> web-socket :response-chan-listening deref)
             (respond! web-socket (reader/read-string (<! (:response-chan web-socket)))))))
 
-(defn- connect-websocket!
+(defn connect-websocket!
     "Create the websocket and connect it up. Returns the configured web socket."
     [web-socket]
     (let [ws-url (str "ws://" (:host web-socket) ":" (:port web-socket) "/rpc")
-             socket (js/WebSocket. ws-url)]
+          socket (js/WebSocket. ws-url)]
         (.log js.console "Connecting to WS: " ws-url)
         (! socket.onopen (fn [] (.log js/console "Connected!")))
-        (! socket.onerror (fn [e] (.log js/console "An error happened: " e)))
+        (! socket.onerror (fn [e] (.error js/console "Websocket Error: " e)))
         socket))
 
 (defn start!
