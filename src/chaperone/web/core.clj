@@ -6,7 +6,8 @@
 			 [compojure.handler :as handler]
 			 [compojure.route :as route]
 			 [selmer.parser :as selmer]
-			 [dieter.core :as dieter]))
+			 [dieter.core :as dieter]
+             [chaperone.rpc :as rpc]))
 
 ;;; system tools
 (defn create-sub-system

@@ -76,4 +76,5 @@
           rpc-map (:rpc-map web-socket)]
         (reset! rpc-map (assoc @rpc-map id response-chan))
         (put! ws-chan request)
+        (close! ws-chan) ; nothing else is going on, so let's be safe.
         response-chan))
