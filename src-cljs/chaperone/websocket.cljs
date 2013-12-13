@@ -38,7 +38,7 @@
           rpc-id (-> response :request :id)
           rpc-chan (get @rpc-map rpc-id)]
         (put! rpc-chan response)
-        (reset! rpc-map (dissoc @rpc-map rpc-id))
+        (swap! rpc-map dissoc rpc-id)
         )
     )
 
@@ -74,7 +74,7 @@
           ws-chan (:request-chan web-socket)
           response-chan (chan)
           rpc-map (:rpc-map web-socket)]
-        (reset! rpc-map (assoc @rpc-map id response-chan))
+        (swap! rpc-map assoc id response-chan)
         (put! ws-chan request)
         (close! ws-chan) ; nothing else is going on, so let's be safe.
         response-chan))
