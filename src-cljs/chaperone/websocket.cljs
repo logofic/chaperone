@@ -6,7 +6,7 @@
         [chaperone.crossover.rpc :only [new-request new-response edn-readers]])
     (:import (chaperone.crossover.rpc Request Response))
     (:use-macros
-        [purnam.core :only [obj !]]
+        [purnam.core :only [obj ! !>]]
         [cljs.core.async.macros :only [go]]))
 
 
@@ -50,13 +50,24 @@
         (while (-> web-socket :response-chan-listening deref)
             (respond! web-socket (reader/read-string (<! (:response-chan web-socket)))))))
 
+(defn- connect-websocket!
+    "Create the websocket and connect it up. Returns the configured web socket."
+    [web-socket]
+    (let [ws-url (str "ws://" (:host web-socket) ":" (:port web-socket) "/rpc")
+             socket (js/WebSocket. ws-url)]
+        (.log js.console "Connecting to WS: " ws-url)
+        (! socket.onopen (fn [] (.log js/console "Connected!")))
+        (! socket.onerror (fn [e] (.log js/console "An error happened: " e)))
+        socket))
+
 (defn start!
     "Start the system"
     [system]
     (doseq [[tag f] (edn-readers)]
         (reader/register-tag-parser! tag f))
-    (-> system sub-system start-response-chan-listen!)
-    system)
+    (let [web-socket (sub-system system)]
+        (start-response-chan-listen! web-socket)
+        (assoc-in system [:websocket :socket] (connect-websocket! web-socket))))
 
 (defn stop!
     "Stop the system"

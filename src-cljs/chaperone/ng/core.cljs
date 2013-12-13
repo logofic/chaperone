@@ -9,7 +9,7 @@
 (def.module chaperone.app [ngRoute])
 
 (def.factory chaperone.app.System [$location]
-             (-> (core/create-system ($location.host) ($location.path)) core/start!))
+             (-> (core/create-system ($location.host) ($location.port)) core/start!))
 
 ;; configure routes
 (def.config chaperone.app [$routeProvider]
