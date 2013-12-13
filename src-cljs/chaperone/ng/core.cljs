@@ -3,13 +3,13 @@
     (:require [chaperone.core :as core])
     (:use [purnam.native :only [aget-in aset-in]])
     (:use-macros
-        [purnam.core :only [obj ! !>]]
+        [purnam.core :only [obj !]]
         [purnam.angular :only [def.module def.config def.factory]]))
 
 (def.module chaperone.app [ngRoute])
 
 (def.factory chaperone.app.System [$location]
-             (-> (core/create-system (!> $location.host) (!> $location.path)) core/start!))
+             (-> (core/create-system ($location.host) ($location.path)) core/start!))
 
 ;; configure routes
 (def.config chaperone.app [$routeProvider]

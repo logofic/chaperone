@@ -7,7 +7,7 @@
               [cljs.core.async :refer [>! <!]])
     (:use [purnam.native :only [aget-in aset-in]])
     (:use-macros
-        [purnam.core :only [obj ! !>]]
+        [purnam.core :only [obj !]]
         [purnam.angular :only [def.controller]]
         [cljs.core.async.macros :only [go]]))
 
@@ -24,7 +24,7 @@
                        (let [user (x-user/map->User (js->clj $scope.user))
                              chan (user/save-user user)]
                            (go (let [result (<! chan)]
-                                   (!> $location.path "/admin/users/list")
+                                   ($location.path "/admin/users/list")
                                    (! $scope.alert (obj :category "success" :message "User has been saved successfully"))))))))
 
 
