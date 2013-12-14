@@ -5,8 +5,8 @@
           [chaperone.rpc]
           [clojure.core.async :only [pipe put! <!! timeout]])
     (:require [test-helper :as test]
-              chaperone.user
-              [chaperone.crossover.user :as user]
+              [chaperone.user :as user]
+              [chaperone.crossover.user :as x-user]
               [chaperone.persistence.core :as pcore]
               [chaperone.persistence.install :as install]))
 
@@ -46,10 +46,13 @@
       (let [rpc (sub-system test/system)
             request-chan (:request-chan rpc)
             response-chan (:response-chan rpc)
-            test-user (user/new-user "Mark" "Mandel" "email" "password")
+            test-user (x-user/new-user "Mark" "Mandel" "email" "password")
             piped-timeout (pipe response-chan (timeout 2000))
             request (new-request :user :save test-user)]
           (test/start pcore/start! install/start! start!)
           (put! request-chan request)
-          ;; TODO: test the user we have is stored in elasticcache.
-          (:request (<!! piped-timeout)) => request))
+          (let [response (<!! piped-timeout)
+                persistence (pcore/sub-system test/system)]
+              (:request response) => request
+              (pcore/refresh persistence)
+              (user/get-user-by-id persistence (:id test-user)) => test-user)))
