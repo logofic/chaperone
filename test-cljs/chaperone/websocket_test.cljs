@@ -35,22 +35,21 @@
 (describe {:doc     "Websocket RPC (Started)"
            :globals [system (-> (core/create-system "localhost" 8080) start!)
                      ws-system (sub-system system)
-                     ws-chan (:request-chan ws-system)
                      rpc-map (:rpc-map ws-system)
-                     response-chan (:response-chan ws-system)]}
+                     response-chan (:response-chan ws-system)
+                     socket (:socket ws-system)]}
           (it "Should send back a response on the returned request channel, when a response is sent back"
               (let [request (new-request :thing :do-thing {:key "value"})
                     ws-complete (atom false)
                     response (new-response request {:data "oooer"})
                     response-result (atom false)]
-                  ; don't do anything with it, we just need it because it's unbuffered.
-                  (take! ws-chan (fn [v] (reset! ws-complete v)))
-                  (runs (take! (send! ws-system request) (fn [v] (reset! response-result v))))
+                  (runs
+                      (! socket.send (fn [v] (reset! ws-complete v)))
+                      (take! (send! ws-system request) (fn [v] (reset! response-result v))))
                   (waits-for "No value placed in Websocket channel" 1000 @ws-complete)
                   (runs (let [socket (:socket ws-system)]
                             (!> socket.onmessage (obj :data (pr-str response)))))
                   (waits-for "No value returned on RPC's channel" 1000 @response-result)
                   (runs
                       (is (= (-> @response-result :request) request) true)
-                      (is (= (:data @response-result) {:data "oooer"}) true))
-                  )))
+                      (is (= (:data @response-result) {:data "oooer"}) true)))))
