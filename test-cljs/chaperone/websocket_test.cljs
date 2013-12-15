@@ -8,7 +8,7 @@
           [chaperone.crossover.rpc :only [new-request new-response]]
           [cljs.core.async :only [take! put!]])
     (:use-macros
-        [purnam.core :only [obj !]]
+        [purnam.core :only [obj ! !>]]
         [purnam.test :only [init describe it is]]
         [purnam.test.async :only [runs waits-for]]))
 
@@ -33,12 +33,11 @@
                   (runs (is (contains? @rpc-map (:id @result)) true)))))
 
 (describe {:doc     "Websocket RPC (Started)"
-           :globals [system (core/create-system "localhost" 8080)
+           :globals [system (-> (core/create-system "localhost" 8080) start!)
                      ws-system (sub-system system)
                      ws-chan (:request-chan ws-system)
                      rpc-map (:rpc-map ws-system)
                      response-chan (:response-chan ws-system)]}
-          (start! system)
           (it "Should send back a response on the returned request channel, when a response is sent back"
               (let [request (new-request :thing :do-thing {:key "value"})
                     ws-complete (atom false)
@@ -48,7 +47,8 @@
                   (take! ws-chan (fn [v] (reset! ws-complete v)))
                   (runs (take! (send! ws-system request) (fn [v] (reset! response-result v))))
                   (waits-for "No value placed in Websocket channel" 1000 @ws-complete)
-                  (runs (put! response-chan (prn-str response)))
+                  (runs (let [socket (:socket ws-system)]
+                            (!> socket.onmessage (obj :data (pr-str response)))))
                   (waits-for "No value returned on RPC's channel" 1000 @response-result)
                   (runs
                       (is (= (-> @response-result :request) request) true)

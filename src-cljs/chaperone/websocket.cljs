@@ -6,7 +6,7 @@
         [chaperone.crossover.rpc :only [new-request new-response edn-readers]])
     (:import (chaperone.crossover.rpc Request Response))
     (:use-macros
-        [purnam.core :only [obj ! !>]]
+        [purnam.core :only [obj ! ? !>]]
         [cljs.core.async.macros :only [go]]))
 
 
@@ -58,6 +58,7 @@
         (.log js.console "Connecting to WS: " ws-url)
         (! socket.onopen (fn [] (.log js/console "Connected!")))
         (! socket.onerror (fn [e] (.error js/console "Websocket Error: " e)))
+        (! socket.onmessage (fn [e] (put! (:response-chan web-socket) (? e.data))))
         socket))
 
 (defn start!
