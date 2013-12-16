@@ -8,7 +8,8 @@
               [clojurewerkz.elastisch.rest.index :as esi]
               [chaperone.persistence.install :as install]
               [chaperone.persistence.core :as pcore]
-              [chaperone.rpc :as rpc]))
+              [chaperone.rpc :as rpc]
+              [clojure.edn :as edn]))
 
 (defn- setup!
     "Provides setup for the tests. Has side effects"
@@ -83,3 +84,10 @@
           (esi/refresh @test/es-index)
           (let [result-user (pcore/get-by-id persistence "user" (:id test-user))]
               (:id test-user) => (:id (_source->User persistence (:_source result-user))))))
+
+(fact "EDN conversion should be able to happen"
+      (let [test-user1 (new-user "Mark" "Mandel" "email" "password")
+            rpc (rpc/sub-system test/system)
+            edn (pr-str test-user1)]
+          (edn/read-string {:readers (:edn-readers rpc)} edn) => test-user1
+          ))

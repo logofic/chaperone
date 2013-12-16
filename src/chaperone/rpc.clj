@@ -9,7 +9,7 @@
 (defn create-sub-system
     "Create the RPC subsystem"
     [system]
-    (let [sub-system {:edn-readers          (edn-readers)
+    (let [sub-system {:edn-readers          (all-edn-readers)
                       :request-chan         (chan)
                       :request-chan-listen  (atom false)
                       :response-chan        (chan)

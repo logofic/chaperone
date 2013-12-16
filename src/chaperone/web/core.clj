@@ -42,8 +42,8 @@
                              (println "Connected: " request channel)
                              (swap! (:clients web) assoc channel true)
                              (server/on-close channel (fn [status] (swap! (:clients web) dissoc channel)))
-                             (server/on-receive channel (fn [data] (put! request-chan (edn/read-string (:edn-readers rpc) data))))
-                             )))
+                             (server/on-receive channel
+                                                (fn [data] (put! request-chan (edn/read-string {:readers (:edn-readers rpc)} data)))))))
 
 (defn- create-routes
     [system]

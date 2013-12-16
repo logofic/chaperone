@@ -1,5 +1,6 @@
 (ns chaperone.ng.admin.user_test
-    (:require [chaperone.ng.admin.user :as admin-user]
+    (:require [chaperone.ng.core]
+              [chaperone.ng.admin.user :as admin-user]
               [chaperone.user :as user]
               [chaperone.websocket :as ws])
     (:use [test-helper :only [init-tests]]
@@ -26,21 +27,22 @@
         (is $scope.title "Add"))
 
     (it "Should create a new user into scope, when a non existent usersid is used"
-        ($scope.load-user)
+        ($scope.init)
         (is $scope.user.firstname "")
         (is $scope.user.lastname "")
         (is $scope.user.email "")
         (is $scope.user.password ""))
 
     (it "Should show a message and change the location when a user is saved"
-        ($scope.load-user)
+        ($scope.init)
         (! $scope.user.firstname "John")
         (! $scope.user.lastname "Doe")
         (! $scope.user.email "email@email.com")
         (! $scope.user.password "password")
         (let [ws-chan (chan)]
-            (with-redefs [user/save-user (fn [user] ws-chan)]
-                         ($scope.save-user)
+            (with-redefs [user/save-user (fn [system user] ws-chan)]
+                         ($scope.saveUser)
                          (runs (put! ws-chan {}))
                          (waits-for "Location never gets set", 1000 (= ($location.path) "/admin/users/list"))
                          (runs (is $scope.alert.category "success"))))))
+

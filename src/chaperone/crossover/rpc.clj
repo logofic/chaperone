@@ -1,6 +1,7 @@
 (ns ^{:doc "Crossover: RPC mechanism over web sockets"}
     chaperone.crossover.rpc
-    (:require [cljs-uuid.core :as uuid]))
+    (:require [cljs-uuid.core :as uuid]
+              [chaperone.crossover.user :as user]))
 
 (defrecord Request [id category action data])
 (defrecord Response [^Request request data])
@@ -20,3 +21,8 @@
     []
     {'chaperone.crossover.rpc.Request  map->Request
      'chaperone.crossover.rpc.Response map->Response})
+
+(defn all-edn-readers
+    "All EDN reader maps, merged into one handy map"
+    []
+    (merge (edn-readers) (user/edn-readers)))

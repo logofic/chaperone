@@ -11,18 +11,21 @@
         [purnam.angular :only [def.controller]]
         [cljs.core.async.macros :only [go]]))
 
+(defn load-user
+    "load up a user into the scope"
+    [system $scope]
+    (let [user (x-user/new-user "" "" "" "")]
+        (! $scope.user (clj->js user))))
+
 (def.controller chaperone.app.AdminUserCtrl [$scope $location System]
                 (! $scope.init
                    (fn []
                        (! $scope.title "Add")))
-                (! $scope.load-user
-                   (fn []
-                       (let [user (x-user/new-user "" "" "" "")]
-                           (! $scope.user (clj->js user)))))
-                (! $scope.save-user
+                       (load-user System $scope)
+                (! $scope.saveUser
                    (fn []
                        (let [user (x-user/map->User (js->clj $scope.user))
-                             chan (user/save-user user)]
+                             chan (user/save-user System user)]
                            (go (let [result (<! chan)]
                                    ($location.path "/admin/users/list")
                                    (! $scope.alert (obj :category "success" :message "User has been saved successfully"))))))))

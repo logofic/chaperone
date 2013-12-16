@@ -34,8 +34,8 @@
 (fact "EDN test - make sure everything works"
       (let [request (new-request :request-category :request-action {:key "value"})
             response (new-response request {:value "key"})]
-          request => (edn/read-string {:readers (edn-readers)} (prn-str request))
-          response => (edn/read-string {:readers (edn-readers)} (prn-str response))
+          request => (edn/read-string {:readers (all-edn-readers)} (prn-str request))
+          response => (edn/read-string {:readers (all-edn-readers)} (prn-str response))
           ))
 
 (fact "Make sure the RPC system/subsystem works as expected"

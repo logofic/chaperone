@@ -3,7 +3,7 @@
     (:require [cljs.reader :as reader])
     (:use
         [cljs.core.async :only [chan put! <! close!]]
-        [chaperone.crossover.rpc :only [new-request new-response edn-readers]])
+        [chaperone.crossover.rpc :only [new-request new-response all-edn-readers]])
     (:import (chaperone.crossover.rpc Request Response))
     (:use-macros
         [purnam.core :only [obj ! ? !>]]
@@ -21,7 +21,7 @@
                       :response-chan        (chan)
                       :response-chan-listen (atom false)
                       :rpc-map              (atom {})
-                      :edn-readers          (edn-readers)}]
+                      :edn-readers          (all-edn-readers)}]
         (assoc system :websocket sub-system))
     )
 
@@ -73,7 +73,7 @@
 (defn start!
     "Start the system"
     [system]
-    (doseq [[tag f] (edn-readers)]
+    (doseq [[tag f] (all-edn-readers)]
         (reader/register-tag-parser! tag f))
     (let [web-socket (sub-system system)
           socket (connect-websocket! web-socket)

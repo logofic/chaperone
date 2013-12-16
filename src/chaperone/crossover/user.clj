@@ -10,3 +10,8 @@
     [firstname lastname email password
      & {:keys [photo last-logged-in]}]
     (->User (uuid/make-random-string) firstname lastname password email photo last-logged-in))
+
+(defn edn-readers
+    "EDN readers map for this namespace"
+    []
+    {'chaperone.crossover.user.User map->User})
