@@ -11,8 +11,16 @@
               [ring.middleware.cookies :as cookies]
               [selmer.parser :as selmer]
               [dieter.core :as dieter]
-              [clojure.edn :as edn]
-              ))
+              [clojure.edn :as edn])
+    (:import (com.google.common.cache CacheBuilder)))
+
+(defn- create-rpc-map
+    "Use Google Guava to create the weak concurrent hashmap we want to use for RPC calls"
+    []
+    (let [builder (CacheBuilder/newBuilder)]
+        (doto builder
+            (.weakKeys))
+        (-> builder .build .asMap)))
 
 ;;; system tools
 (defn create-sub-system
@@ -24,7 +32,7 @@
                                 :cache-mode :production ; or :production. :development disables cacheing
                                 }
                       :clients (atom {})
-                      }]
+                      :rpc-map (create-rpc-map)}]
         (assoc system :web sub-system)))
 
 (defn sub-system
@@ -32,11 +40,16 @@
     [system]
     (:web system))
 
-(defn websocket-on-recieve
+(defn websocket-on-recieve!
     "Returns a handler function for when data is recieved by the websocket"
-    [rpc channel]
-    (let [request-chan (:request-chan rpc)]
-        (fn [data] (put! request-chan (edn/read-string {:readers (:edn-readers rpc)} data)))))
+    [web rpc channel]
+    (fn [data]
+        (let [request-chan (:request-chan rpc)
+              rpc-map (:rpc-map web)
+              request (edn/read-string {:readers (:edn-readers rpc)} data)
+              ]
+            (.put rpc-map request channel)
+            (put! request-chan request))))
 
 (defn websocket-on-close
     "Returns a handler function for when a websocket is closed"
@@ -58,7 +71,7 @@
         (server/with-channel request channel
                              (websocket-on-connect web request channel)
                              (server/on-close channel (websocket-on-close web channel))
-                             (server/on-receive channel (websocket-on-recieve rpc channel)))))
+                             (server/on-receive channel (websocket-on-recieve! web rpc channel)))))
 
 (defn- create-routes
     [system]
