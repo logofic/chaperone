@@ -8,6 +8,7 @@
               [compojure.core :as comp]
               [compojure.handler :as handler]
               [compojure.route :as route]
+              [ring.middleware.cookies :as cookies]
               [selmer.parser :as selmer]
               [dieter.core :as dieter]
               [clojure.edn :as edn]
@@ -31,19 +32,33 @@
     [system]
     (:web system))
 
+(defn websocket-on-recieve
+    "Returns a handler function for when data is recieved by the websocket"
+    [rpc channel]
+    (let [request-chan (:request-chan rpc)]
+        (fn [data] (put! request-chan (edn/read-string {:readers (:edn-readers rpc)} data)))))
+
+(defn websocket-on-close
+    "Returns a handler function for when a websocket is closed"
+    [web channel]
+    (fn [status] (swap! (:clients web) dissoc channel)))
+
+(defn websocket-on-connect
+    "Handler for when a websocket conenction is made"
+    [web request channel]
+    (println "Connected: " request channel)
+    (swap! (:clients web) assoc channel true))
+
 ;;; logic
 (defn- websocket-rpc-handler
     "Handle websocket requests"
     [system request]
     (let [web (sub-system system)
-          rpc (rpc/sub-system system)
-          request-chan (:request-chan rpc)]
+          rpc (rpc/sub-system system)]
         (server/with-channel request channel
-                             (println "Connected: " request channel)
-                             (swap! (:clients web) assoc channel true)
-                             (server/on-close channel (fn [status] (swap! (:clients web) dissoc channel)))
-                             (server/on-receive channel
-                                                (fn [data] (put! request-chan (edn/read-string {:readers (:edn-readers rpc)} data)))))))
+                             (websocket-on-connect web request channel)
+                             (server/on-close channel (websocket-on-close web channel))
+                             (server/on-receive channel (websocket-on-recieve rpc channel)))))
 
 (defn- create-routes
     [system]
@@ -55,12 +70,19 @@
             (route/resources "/public")
             (route/not-found "<h1>404 OMG</h1>"))))
 
+(defn site
+    "Creates a handler specific to what we need in this application. Cookies, but no session"
+    [routes]
+    (-> routes
+        handler/api
+        cookies/wrap-cookies))
+
 (defn run-server
     "runs the server, and returns the stop function"
     [system]
     (let [web (sub-system system)
           port (:port web)]
-        (server/run-server (-> (handler/site (create-routes system)) (dieter/asset-pipeline (:dieter web))) {:port port})))
+        (server/run-server (-> (site (create-routes system)) (dieter/asset-pipeline (:dieter web))) {:port port})))
 
 (defn start!
     "Start the web server, and get this ball rolling"
