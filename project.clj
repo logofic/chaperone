@@ -12,7 +12,8 @@
                    [selmer "0.5.4"]
                    [compojure "1.1.5"]
                    [dieter "0.4.1"]
-                   [org.clojure/core.async "0.1.242.0-44b1e3-alpha"]]
+                   [org.clojure/core.async "0.1.242.0-44b1e3-alpha"]
+                   [com.google.guava/guava "15"]]
     :main chaperone.core
     :plugins [[lein-midje "3.1.1"]
               [codox "0.6.4"]
@@ -26,14 +27,15 @@
                                         [org.clojars.gjahad/debug-repl "0.3.3"]]
                          :source-paths ["dev"]
                          :repl-options {:init-ns user}
-                         :env          {:elasticsearch-url   "http://dev.chaperone:9200"
-                                        :web-server-port     8080}}
+                         :env          {:elasticsearch-url "http://dev.chaperone:9200"
+                                        :web-server-port   8080}}
 
                ;; profile specifically for compiling cljs, to remove unneccessary dependencies, and sinceA
                ;; it will blow up with dieter as it looks for the v8 native
                :cljs    {:dependencies [[org.clojure/clojurescript "0.0-2080"]
-                                        [im.chit/purnam "0.3.0-SNAPSHOT"]]
-                         :exclusions   [dieter http-kit compojure environ clj-time selmer]
+                                        [im.chit/purnam "0.3.0-SNAPSHOT"]
+                                        [com.google.guava/guava "14.0.1"]]
+                         :exclusions   [dieter http-kit compojure environ clj-time selmer clojurewerkz/elastisch]
                          :plugins      [[lein-cljsbuild "0.3.3"]]
                          :codox        {:sources    ["src-cljs"]
                                         :output-dir "doc/cljs"}
