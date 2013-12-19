@@ -9,11 +9,10 @@
 (defn create-sub-system
     "Create the RPC subsystem"
     [system]
-    (let [sub-system {:edn-readers          (all-edn-readers)
-                      :request-chan         (chan)
-                      :request-chan-listen  (atom false)
-                      :response-chan        (chan)
-                      :response-chan-listen (atom false)}]
+    (let [sub-system {:edn-readers         (all-edn-readers)
+                      :request-chan        (chan)
+                      :request-chan-listen (atom false)
+                      :response-chan       (chan)}]
         (assoc system :rpc sub-system)))
 
 (defn sub-system
@@ -37,7 +36,6 @@
     [system]
     (let [rpc (sub-system system)]
         (reset! (:request-chan-listen rpc) true)
-        (reset! (:response-chan-listen rpc) true)
         (go (while (-> rpc :request-chan-listen deref)
                 (let [request (<! (:request-chan rpc))
                       data (run-rpc-request system request)]
@@ -50,7 +48,6 @@
     (let [rpc (sub-system system)]
         (when rpc
             (reset! (:request-chan-listen rpc) false)
-            (reset! (:response-chan-listen rpc) false)
             (close! (:request-chan rpc))
             (close! (:response-chan rpc))))
     system)

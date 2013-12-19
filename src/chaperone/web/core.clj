@@ -1,6 +1,6 @@
 (ns ^{:doc "Manage the web facing part of the application"}
     chaperone.web.core
-    (:use [clojure.core.async :only [put!]])
+    (:use [clojure.core.async :only [put! go <!]])
     (:require [chaperone.rpc :as rpc]
               [chaperone.crossover.rpc :as x-rpc]
               [org.httpkit.server :as server]
@@ -26,13 +26,14 @@
 (defn create-sub-system
     "Create the persistence system. Takes the existing system details"
     [system]
-    (let [sub-system {:port    (env/env :web-server-port 8080)
-                      :dieter  {:engine     :v8
-                                :compress   false ; minify using Google Closure Compiler & Less compression
-                                :cache-mode :production ; or :production. :development disables cacheing
-                                }
-                      :clients (atom {})
-                      :rpc-map (create-rpc-map)}]
+    (let [sub-system {:port                 (env/env :web-server-port 8080)
+                      :dieter               {:engine     :v8
+                                             :compress   false ; minify using Google Closure Compiler & Less compression
+                                             :cache-mode :production ; or :production. :development disables cacheing
+                                             }
+                      :clients              (atom {})
+                      :rpc-map              (create-rpc-map)
+                      :response-chan-listen (atom false)}]
         (assoc system :web sub-system)))
 
 (defn sub-system
@@ -97,12 +98,26 @@
           port (:port web)]
         (server/run-server (-> (site (create-routes system)) (dieter/asset-pipeline (:dieter web))) {:port port})))
 
+(defn start-rpc-response-listen
+    "Start listening to the rpc response channel"
+    [system]
+    (go
+        (let [web (sub-system system)
+              rpc (rpc/sub-system system)]
+            (while (-> web :response-chan-listen deref)
+                (let [response (<! (:response-chan rpc))
+                      request (:request response)
+                      rpc-map (:rpc-map rpc)
+                      channel (.get rpc-map request)]
+                    (server/send! channel (pr-str response)))))))
+
 (defn start!
     "Start the web server, and get this ball rolling"
     [system]
     (println "Starting server")
     (let [web (sub-system system)
           port (:port web)]
+        (reset! (:response-chan-listen web) true)
         (if-not (:server web)
             (assoc system :web
                           (assoc web :server (run-server system)))
@@ -112,6 +127,8 @@
     "Oh noes. Stop the server!"
     [system]
     (let [web (sub-system system)]
-        (if (:server web)
-            ((:server web))))
+        (when web
+            (reset! (:response-chan-listen web) false)
+            (when (:server web)
+                ((:server web)))))
     system)
