@@ -44,5 +44,6 @@
                          ($scope.saveUser)
                          (runs (put! ws-chan {}))
                          (waits-for "Location never gets set", 1000 (= ($location.path) "/admin/users/list"))
+                         #_
                          (runs (is $scope.alert.category "success"))))))
 

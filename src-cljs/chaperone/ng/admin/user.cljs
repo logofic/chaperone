@@ -7,6 +7,7 @@
               [cljs.core.async :refer [>! <!]])
     (:use [purnam.native :only [aget-in aset-in]])
     (:use-macros
+        [chaperone.ng.core :only [ng-apply]]
         [purnam.core :only [obj !]]
         [purnam.angular :only [def.controller]]
         [cljs.core.async.macros :only [go]]))
@@ -21,14 +22,13 @@
                 (! $scope.init
                    (fn []
                        (! $scope.title "Add")))
-                       (load-user System $scope)
+                (load-user System $scope)
                 (! $scope.saveUser
                    (fn []
                        (let [user (x-user/map->User (js->clj $scope.user))
                              chan (user/save-user System user)]
                            (go (let [result (<! chan)]
-                                   ($scope.$apply (fn []
-                                                     ($location.path "/admin/users/list")
-                                                     (! $scope.alert (obj :category "success" :message "User has been saved successfully"))))))))))
+                                   (ng-apply $scope
+                                             ($location.path "/admin/users/list"))))))))
 
 
