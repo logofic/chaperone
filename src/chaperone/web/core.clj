@@ -43,9 +43,11 @@
 
 (defn websocket-on-recieve!
     "Returns a handler function for when data is recieved by the websocket"
-    [web rpc channel]
+    [system channel]
     (fn [data]
-        (let [request-chan (:request-chan rpc)
+        (let [web (sub-system system)
+              rpc (rpc/sub-system system)
+              request-chan (:request-chan rpc)
               rpc-map (:rpc-map web)
               request (edn/read-string {:readers (:edn-readers rpc)} data)
               ]
@@ -72,7 +74,7 @@
         (server/with-channel request channel
                              (websocket-on-connect web request channel)
                              (server/on-close channel (websocket-on-close web channel))
-                             (server/on-receive channel (websocket-on-recieve! web rpc channel)))))
+                             (server/on-receive channel (websocket-on-recieve! system channel)))))
 
 (defn- create-routes
     [system]
@@ -101,15 +103,18 @@
 (defn start-rpc-response-listen
     "Start listening to the rpc response channel"
     [system]
-    (go
-        (let [web (sub-system system)
-              rpc (rpc/sub-system system)]
+    (let [web (sub-system system)
+          rpc (rpc/sub-system system)]
+        (reset! (:response-chan-listen web) true)
+        (go
             (while (-> web :response-chan-listen deref)
                 (let [response (<! (:response-chan rpc))
                       request (:request response)
-                      rpc-map (:rpc-map rpc)
-                      channel (.get rpc-map request)]
-                    (server/send! channel (pr-str response)))))))
+                      rpc-map (:rpc-map web)
+                      channel (.remove rpc-map request)]
+                    ;; manage closing of the channel
+                    (when (and response channel)
+                        (server/send! channel (pr-str response))))))))
 
 (defn start!
     "Start the web server, and get this ball rolling"
@@ -117,7 +122,7 @@
     (println "Starting server")
     (let [web (sub-system system)
           port (:port web)]
-        (reset! (:response-chan-listen web) true)
+        (start-rpc-response-listen system)
         (if-not (:server web)
             (assoc system :web
                           (assoc web :server (run-server system)))
