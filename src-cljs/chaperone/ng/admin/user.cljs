@@ -27,7 +27,8 @@
                        (let [user (x-user/map->User (js->clj $scope.user))
                              chan (user/save-user System user)]
                            (go (let [result (<! chan)]
-                                   ($location.path "/admin/users/list")
-                                   (! $scope.alert (obj :category "success" :message "User has been saved successfully"))))))))
+                                   ($scope.$apply (fn []
+                                                     ($location.path "/admin/users/list")
+                                                     (! $scope.alert (obj :category "success" :message "User has been saved successfully"))))))))))
 
 
