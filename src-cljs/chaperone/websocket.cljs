@@ -67,7 +67,9 @@
         (.log js.console "Connecting to WS: " ws-url)
         (! socket.onopen (fn [] (.log js/console "Connected!")))
         (! socket.onerror (fn [e] (.error js/console "Websocket Error: " e)))
-        (! socket.onmessage (fn [e] (put! (:response-chan web-socket) (? e.data))))
+        (! socket.onmessage (fn [e]
+                                (.log js/console "On Message: " (? e.data))
+                                (put! (:response-chan web-socket) (? e.data))))
         socket))
 
 (defn start!
