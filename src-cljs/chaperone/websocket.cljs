@@ -49,7 +49,6 @@
     (reset! (:request-chan-listen web-socket) true)
     (go (while (-> web-socket :request-chan-listen deref)
             (let [socket (:socket web-socket)]
-                (.log js/console "Socket is: " socket)
                 (.send socket (-> web-socket :request-chan <! pr-str))))))
 
 (defn- start-response-chan-listen!

@@ -25,7 +25,7 @@
                        (load-user System $scope)))
                 (! $scope.saveUser
                    (fn []
-                       (let [user (x-user/map->User (js->clj $scope.user))
+                       (let [user (x-user/map->User (js->clj $scope.user :keywordize-keys true))
                              chan (user/save-user System user)]
                            (go (let [result (<! chan)]
                                    (ng-apply $scope

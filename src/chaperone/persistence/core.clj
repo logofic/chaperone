@@ -55,7 +55,7 @@
 (defn save
     "utility class for easy inserting of a Persistent record"
     [persistence record]
-    (esd/create (:elasticsearch-index persistence) (get-type record) record :id (:id record)))
+    (esd/put (:elasticsearch-index persistence) (get-type record) (:id record) record))
 
 (defn get-by-id
     "Get a specific type by id"
