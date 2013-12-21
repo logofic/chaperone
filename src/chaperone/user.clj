@@ -32,3 +32,9 @@
     "Save the user please"
     (let [persistence (pcore/sub-system system)]
         (pcore/save persistence (:data request))))
+
+(defmethod rpc/rpc-handler [:user :list]
+           [system ^Request request]
+    "Give me a list of users please"
+    (let [persistence (pcore/sub-system system)]
+        (list-users persistence)))

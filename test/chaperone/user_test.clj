@@ -49,7 +49,7 @@
         (pcore/get-type test-user) => "user"))
 
 (fact
-    "Test if the _source->User works properly" :focus
+    "Test if the _source->User works properly"
     (esi/delete @test/es-index)
     (install/create-index test/system)
     (let [test-user (new-user "Mark" "Mandel" "email" "password" :last-logged-in (time/now) :photo "photo.jpg")
@@ -74,7 +74,20 @@
           (esi/refresh @test/es-index)
           (list-users persistence) => [test-user1 test-user2]))
 
-(fact "RPC response handlers should work"
+(fact "RPC: Be able to list all users"
+      (let [test-user1 (new-user "Mark" "Mandel" "email" "password")
+            test-user2 (new-user "ZAardvark" "ZAbigail" "email" "password")
+            persistence (pcore/sub-system test/system)
+            request (new-request :user :list {})]
+          (esi/delete @test/es-index)
+          (install/create-index test/system)
+          (doto persistence
+              (pcore/save test-user1)
+              (pcore/save test-user2))
+          (pcore/refresh persistence)
+          (rpc/run-rpc-request test/system request) => [test-user1 test-user2]))
+
+(fact "RPC: Save user should store a user"
       (esi/delete @test/es-index)
       (install/create-index test/system)
       (let [test-user (new-user "Mark" "Mandel" "email" "password" :last-logged-in (time/now) :photo "photo.jpg")

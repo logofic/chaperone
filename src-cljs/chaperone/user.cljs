@@ -8,7 +8,6 @@
 (defn save-user
     "Send a user back to the server and save it"
     [system ^User user]
-    ;;TODO: Need to actually make this work
     (let [request (rpc/new-request :user :save user)
           web-socket (ws/sub-system system)]
         (ws/send! web-socket request)))
