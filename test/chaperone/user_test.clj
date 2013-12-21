@@ -48,6 +48,29 @@
     (let [test-user (new-user "Mark" "Mandel" "email" "password")]
         (pcore/get-type test-user) => "user"))
 
+(fact "Saving a new user should encrypt the password."
+      (let [test-user (new-user "Mark" "Mandel" "email" "password")
+            persistence (pcore/sub-system test/system)]
+          (:password test-user) => "password"
+          (save-user persistence test-user)
+          (pcore/refresh persistence)
+          (let [reget-user (get-user-by-id persistence (:id test-user))]
+              test-user => (contains (dissoc reget-user :password))
+              (:password test-user) =not=> (:password reget-user))))
+
+(fact "Updating a user should not re-encrypt the password."
+      (let [test-user (new-user "Mark" "Mandel" "email" "password")
+            persistence (pcore/sub-system test/system)]
+          (:password test-user) => "password"
+          (save-user persistence test-user)
+          (pcore/refresh persistence)
+          (let [reget-user (get-user-by-id persistence (:id test-user))]
+              (:password test-user) =not=> (:password reget-user)
+              (save-user persistence reget-user)
+              (pcore/refresh persistence)
+              (let [reget-user2 (get-user-by-id persistence (:id reget-user))]
+                  reget-user => reget-user2))))
+
 (fact
     "Test if the _source->User works properly"
     (esi/delete @test/es-index)
