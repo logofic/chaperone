@@ -19,16 +19,21 @@
         (! $scope.user (clj->js user))))
 
 (def.controller chaperone.app.AdminUserCtrl [$scope $location System]
-                (! $scope.init
+                (! $scope.initUserForm
                    (fn []
-                       (! $scope.title "Add")))
-                (load-user System $scope)
+                       (! $scope.title "Add")
+                       (load-user System $scope)))
                 (! $scope.saveUser
                    (fn []
                        (let [user (x-user/map->User (js->clj $scope.user))
                              chan (user/save-user System user)]
                            (go (let [result (<! chan)]
                                    (ng-apply $scope
-                                             ($location.path "/admin/users/list"))))))))
+                                             ($location.path "/admin/users/list")))))))
+                (! $scope.initListUsers
+                   (fn []
+                       (let [chan (user/list-users System)]
+                           (go (let [result (<! chan)]
+                                   (ng-apply $scope (! $scope.userList (-> result :data clj->js)))))))))
 
 

@@ -23,18 +23,18 @@
               [$location ([$location] $location)]]}
 
     (it "Should have a title in the scope"
-        ($scope.init)
+        ($scope.initUserForm)
         (is $scope.title "Add"))
 
     (it "Should create a new user into scope, when a non existent usersid is used"
-        ($scope.init)
+        ($scope.initUserForm)
         (is $scope.user.firstname "")
         (is $scope.user.lastname "")
         (is $scope.user.email "")
         (is $scope.user.password ""))
 
-    (it "Should show a message and change the location when a user is saved"
-        ($scope.init)
+    (it "Should change the location when a user is saved"
+        ($scope.initUserForm)
         (! $scope.user.firstname "John")
         (! $scope.user.lastname "Doe")
         (! $scope.user.email "email@email.com")

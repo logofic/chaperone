@@ -11,3 +11,10 @@
     (let [request (rpc/new-request :user :save user)
           web-socket (ws/sub-system system)]
         (ws/send! web-socket request)))
+
+(defn list-users
+    "List some users for me please"
+    [system]
+    (let [request (rpc/new-request :user :list {})
+          web-socket (ws/sub-system system)]
+        (ws/send! web-socket request)))
