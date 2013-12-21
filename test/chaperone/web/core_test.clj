@@ -29,7 +29,7 @@
           (count @clients) => 1
           (first @clients) => [channel true]))
 
-(fact "Disconnecting a websocket should remove the channel" :focus
+(fact "Disconnecting a websocket should remove the channel"
       (let [web (sub-system test/system)
             channel {:channel true}
             request {:request true}
@@ -40,7 +40,7 @@
           ((websocket-on-close web channel) "test")
           (count @clients) => 0))
 
-(fact "Sending a request will result in a response coming back on the same channel" :focus
+(fact "Sending a request will result in a response coming back on the same channel"
       (let [channel {:channel true}
             test-user (x-user/new-user "Mark" "Mandel" "email" "password")
             request (x-rpc/new-request :user :save test-user)

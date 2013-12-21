@@ -43,6 +43,7 @@
       (:rpc test/system) => (sub-system test/system))
 
 (fact "RPC channel pipeline should take in a request, and spit out a response on the other side."
+      :focus
       (let [rpc (sub-system test/system)
             request-chan (:request-chan rpc)
             response-chan (:response-chan rpc)
@@ -55,4 +56,5 @@
                 persistence (pcore/sub-system test/system)]
               (:request response) => request
               (pcore/refresh persistence)
-              (user/get-user-by-id persistence (:id test-user)) => test-user)))
+              ;ignore password, as it gets encrypted
+              (user/get-user-by-id persistence (:id test-user)) => (contains (dissoc test-user :password)))))
