@@ -52,6 +52,11 @@
     [persistence date]
     (if date (timef/parse (:date-formatter persistence) date)))
 
+(defn present?
+    "Does this actually exist in the index?"
+    [persistence type id]
+    (esd/present? (:elasticsearch-index persistence) type id))
+
 (defn save
     "utility class for easy inserting of a Persistent record"
     [persistence record]

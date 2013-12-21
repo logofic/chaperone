@@ -13,7 +13,8 @@
                    [compojure "1.1.5"]
                    [dieter "0.4.1"]
                    [org.clojure/core.async "0.1.242.0-44b1e3-alpha"]
-                   [com.google.guava/guava "15.0"]]
+                   [com.google.guava/guava "15.0"]
+                   [clojurewerkz/scrypt "1.0.0"]]
     :main chaperone.core
     :plugins [[lein-midje "3.1.1"]
               [codox "0.6.4"]

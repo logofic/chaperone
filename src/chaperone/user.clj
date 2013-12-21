@@ -5,6 +5,7 @@
              chaperone.crossover.rpc.Request)
     (:require [chaperone.persistence.core :as pcore]
               [clojurewerkz.elastisch.query :as esq]
+              [clojurewerkz.scrypt.core :as sc]
               [chaperone.rpc :as rpc]))
 
 (defmethod pcore/get-type User [record] "user")
@@ -26,12 +27,22 @@
     (let [result (pcore/get-by-id persistence "user" id)]
         (_source->User persistence (:_source result))))
 
+(defn save-user
+    "Save a user"
+    [persistence user]
+    (if (pcore/present? persistence (pcore/get-type user) (:id user))
+        (pcore/save persistence user)
+        (do
+            (let [password (sc/encrypt (:password user) 16384 8 1)
+                  user (assoc user :password password)]
+                (pcore/save persistence user)))))
+
 ;; handler functions
 (defmethod rpc/rpc-handler [:user :save]
            [system ^Request request]
     "Save the user please"
     (let [persistence (pcore/sub-system system)
-          result (pcore/save persistence (:data request))]
+          result (save-user persistence (:data request))]
         (pcore/refresh persistence)
         result))
 
