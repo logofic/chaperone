@@ -2,6 +2,8 @@
     (:require [chaperone.ng.core]
               [chaperone.ng.admin.user :as admin-user]
               [chaperone.user :as user]
+              [chaperone.crossover.user :as x-user]
+              [chaperone.crossover.rpc :as rpc]
               [chaperone.websocket :as ws])
     (:use [test-helper :only [init-tests]]
           [purnam.native :only [aset-in aget-in]]
@@ -43,7 +45,22 @@
             (with-redefs [user/save-user (fn [system user] ws-chan)]
                          ($scope.saveUser)
                          (runs (put! ws-chan {}))
-                         (waits-for "Location never gets set", 1000 (= ($location.path) "/admin/users/list"))
-                         #_
-                         (runs (is $scope.alert.category "success"))))))
+                         (waits-for "Location never gets set" 1000 (= ($location.path) "/admin/users/list")))))
 
+    ; (! $scope.userList (-> result :data clj->js))
+    (it "Should load a list of users in scope"
+        (let [ws-chan (chan)]
+            (with-redefs [user/list-users (fn [system]
+                                              (put! ws-chan
+                                                    (rpc/new-response
+                                                        (rpc/new-request :user :list {})
+                                                        [(x-user/new-user "M" "M" "E" "P")]))
+                                              ws-chan)]
+                         ($scope.initListUsers)
+                         (waits-for "User list never gets set" 1000 $scope.userList)
+                         (runs
+                             (is $scope.userList.length 1)
+                             (is $scope.userList.0.firstname "M")
+                             (is $scope.userList.0.lastname "M")
+                             (is $scope.userList.0.email "E")
+                             (is $scope.userList.0.password "P"))))))
