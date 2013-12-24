@@ -10,11 +10,11 @@
      development."
     nil)
 
-(defn create
+(defn createc
     "Creates and initializes the system under development in the Var
       #'system. For convenience, swap the es-index while we're in here"
     []
-    (with-redefs [env/env (assoc env/env :elasticsearch-index "test_chaperone")]
+    (with-redefs [env/env (merge env/env {:elasticsearch-index "test_chaperone" :web-server-port 9080})]
                  (alter-var-root #'system (constantly (core/create-system)))
                  (swap! es-index (constantly (pcore/get-es-index system)))))
 
