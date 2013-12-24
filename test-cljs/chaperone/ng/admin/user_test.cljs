@@ -47,7 +47,6 @@
                          (runs (put! ws-chan {}))
                          (waits-for "Location never gets set" 1000 (= ($location.path) "/admin/users/list")))))
 
-    ; (! $scope.userList (-> result :data clj->js))
     (it "Should load a list of users in scope"
         (let [ws-chan (chan)]
             (with-redefs [user/list-users (fn [system]
