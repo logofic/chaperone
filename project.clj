@@ -7,9 +7,9 @@
                    [clj-time "0.6.0"]
                    [cljs-uuid "0.0.5"]
                    [environ "0.4.0"]
-                   [clojurewerkz/elastisch "1.3.0-beta3"]
-                   [http-kit "2.1.13"]
-                   [selmer "0.5.4"]
+                   [clojurewerkz/elastisch "1.3.0"]
+                   [http-kit "2.1.16"]
+                   [selmer "0.5.5"]
                    [compojure "1.1.5"]
                    [dieter "0.4.1"]
                    [org.clojure/core.async "0.1.242.0-44b1e3-alpha"]
@@ -34,9 +34,10 @@
 
                ;; profile specifically for compiling cljs, to remove unneccessary dependencies, and sinceA
                ;; it will blow up with dieter as it looks for the v8 native
-               :cljs    {:dependencies [[org.clojure/clojurescript "0.0-2080"]
+               :cljs    {:dependencies [[org.clojure/clojurescript "0.0-2138"]
                                         [im.chit/purnam "0.3.0-SNAPSHOT"]
-                                        [com.google.guava/guava "14.0.1"]]
+                                        [com.google.guava/guava "14.0.1"]
+                                        [com.google.javascript/closure-compiler "v20131014"]]
                          :exclusions   [dieter http-kit compojure environ clj-time selmer clojurewerkz/elastisch]
                          :plugins      [[lein-cljsbuild "0.3.3"]]
                          :codox        {:sources    ["src-cljs"]

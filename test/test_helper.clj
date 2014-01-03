@@ -10,7 +10,7 @@
      development."
     nil)
 
-(defn createc
+(defn create
     "Creates and initializes the system under development in the Var
       #'system. For convenience, swap the es-index while we're in here"
     []
