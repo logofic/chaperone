@@ -12,17 +12,11 @@
         [purnam.angular :only [def.controller]]
         [cljs.core.async.macros :only [go]]))
 
-(defn load-user
-    "load up a user into the scope"
-    [system $scope]
-    (let [user (x-user/new-user "" "" "" "")]
-        (! $scope.user (clj->js user))))
-
 (def.controller chaperone.app.AdminUserCtrl [$scope $location System]
-                (! $scope.initUserForm
+                (! $scope.initAddUserForm
                    (fn []
-                       (! $scope.title "Add")
-                       (load-user System $scope)))
+                       (let [user (x-user/new-user "" "" "" "")]
+                           (! $scope.user (clj->js user)))))
                 (! $scope.saveUser
                    (fn []
                        (let [user (x-user/map->User (js->clj $scope.user :keywordize-keys true))

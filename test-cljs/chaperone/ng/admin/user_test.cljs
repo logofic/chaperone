@@ -24,19 +24,15 @@
                        ($controller "AdminUserCtrl" (obj :$scope ($rootScope.$new) :$location $location)))]
               [$location ([$location] $location)]]}
 
-    (it "Should have a title in the scope"
-        ($scope.initUserForm)
-        (is $scope.title "Add"))
-
     (it "Should create a new user into scope, when a non existent usersid is used"
-        ($scope.initUserForm)
+        ($scope.initAddUserForm)
         (is $scope.user.firstname "")
         (is $scope.user.lastname "")
         (is $scope.user.email "")
         (is $scope.user.password ""))
 
     (it "Should change the location when a user is saved"
-        ($scope.initUserForm)
+        ($scope.initAddUserForm)
         (! $scope.user.firstname "John")
         (! $scope.user.lastname "Doe")
         (! $scope.user.email "email@email.com")

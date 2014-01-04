@@ -51,3 +51,9 @@
     "Give me a list of users please"
     (let [persistence (pcore/sub-system system)]
         (list-users persistence)))
+
+(defmethod rpc/rpc-handler [:user :load]
+           [system ^Request request]
+    "Load a user by id"
+    (let [persistence (pcore/sub-system system)]
+        (get-user-by-id persistence (:data request))))

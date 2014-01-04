@@ -117,7 +117,7 @@
             request (new-request :user :save test-user)
             persistence (pcore/sub-system test/system)]
           (rpc/run-rpc-request test/system request)
-          (esi/refresh @test/es-index)
+          (pcore/refresh persistence)
           (let [result-user (pcore/get-by-id persistence "user" (:id test-user))]
               (:id test-user) => (:id (_source->User persistence (:_source result-user))))))
 
@@ -127,3 +127,14 @@
             edn (pr-str test-user1)]
           (edn/read-string {:readers (:edn-readers rpc)} edn) => test-user1
           ))
+
+(fact "RPC: Save user should store a user"
+      (esi/delete @test/es-index)
+      (install/create-index test/system)
+      (let [test-user (new-user "Mark" "Mandel" "email" "password" :last-logged-in (time/now) :photo "photo.jpg")
+            persistence (pcore/sub-system test/system)]
+          (save-user persistence test-user)
+          (pcore/refresh persistence)
+          (let [test-user (get-user-by-id persistence (:id test-user))
+                request (new-request :user :load (:id test-user))]
+              (rpc/run-rpc-request test/system request) => test-user)))
