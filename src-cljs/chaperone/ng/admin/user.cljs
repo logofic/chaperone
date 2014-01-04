@@ -16,6 +16,7 @@
                 (! $scope.initAddUserForm
                    (fn []
                        (let [user (x-user/new-user "" "" "" "")]
+                           (! $scope.clj-user user)
                            (! $scope.user (clj->js user)))))
 
                 (! $scope.initEditUserForm
@@ -23,11 +24,14 @@
                        (let [chan (user/get-user-by-id System $routeParams.id)]
                            (go (let [response (<! chan)
                                      user (:data response)]
-                                   (ng-apply $scope (! $scope.user (clj->js user))))))))
+                                   (ng-apply $scope
+                                             (! $scope.clj-user user)
+                                             (! $scope.user (clj->js user))))))))
 
                 (! $scope.saveUser
                    (fn []
-                       (let [user (x-user/map->User (js->clj $scope.user :keywordize-keys true))
+                       (let [data (merge $scope.clj-user (js->clj $scope.user :keywordize-keys true))
+                             user (x-user/map->User data)
                              chan (user/save-user System user)]
                            (go (let [result (<! chan)]
                                    (ng-apply $scope
