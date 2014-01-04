@@ -22,14 +22,19 @@
 (namespace-state-changes (before :facts (setup!))
                          (after :facts (teardown!)))
 
+(defn- make-user
+    "create a user"
+    []
+    (to "http://localhost:9080")
+    (click "div.navbar a.dropdown-toggle")
+    (click "li.dropdown.open a[href='#/admin/users/add']")
+
+    (quick-fill-submit {"#first-name" "Mark"} {"#last-name" "Mandel"}
+                       {"#email" "e@e.com"} {"#password" "password"}
+                       {"form button[type='submit']" click}))
+
 (fact "Adding a user to the admin shows up on the list" :webdriver
       (with-driver {:browser :chrome}
                    (implicit-wait 5000)
-                   (to "http://localhost:9080")
-                   (click "div.navbar a.dropdown-toggle")
-                   (click "li.dropdown.open a[href='#/admin/users/add']")
-
-                   (quick-fill-submit {"#first-name" "Mark"} {"#last-name" "Mandel"}
-                                      {"#email" "e@e.com"} {"#password" "password"}
-                                      {"form button[type='submit']" click})
+                   (make-user)
                    (text "table tbody tr") => "1 Mark Mandel e@e.com"))
