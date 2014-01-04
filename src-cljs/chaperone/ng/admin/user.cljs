@@ -12,11 +12,17 @@
         [purnam.angular :only [def.controller]]
         [cljs.core.async.macros :only [go]]))
 
-(def.controller chaperone.app.AdminUserCtrl [$scope $location System]
+(def.controller chaperone.app.AdminUserCtrl [$scope $location $routeParams System]
                 (! $scope.initAddUserForm
                    (fn []
                        (let [user (x-user/new-user "" "" "" "")]
                            (! $scope.user (clj->js user)))))
+                (! $scope.initEditUserForm
+                   (fn []
+                       (let [chan (user/get-user-by-id System $routeParams.id)]
+                           (go
+                               (ng-apply $scope
+                                         (! $scope.user (clj->js (<! chan))))))))
                 (! $scope.saveUser
                    (fn []
                        (let [user (x-user/map->User (js->clj $scope.user :keywordize-keys true))

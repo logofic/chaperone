@@ -1,20 +1,17 @@
 (ns chaperone.user
-    (:require [chaperone.crossover.rpc :as rpc]
-              [chaperone.websocket :as ws])
-    (:use [cljs.core.async :only [chan >! <!]])
-    (:import chaperone.crossover.user.User)
-    (:use-macros [cljs.core.async.macros :only [go]]))
+    (:require [chaperone.rpc :as rpc])
+    (:import chaperone.crossover.user.User))
 
 (defn save-user
     "Send a user back to the server and save it"
     [system ^User user]
-    (let [request (rpc/new-request :user :save user)
-          web-socket (ws/sub-system system)]
-        (ws/send! web-socket request)))
+    (rpc/send-request system :user :save user))
 
 (defn list-users
     "List some users for me please"
     [system]
-    (let [request (rpc/new-request :user :list {})
-          web-socket (ws/sub-system system)]
-        (ws/send! web-socket request)))
+    (rpc/send-request system :user :list {}))
+
+(defn get-user-by-id
+    [system id]
+    (rpc/send-request system :user :load id))
