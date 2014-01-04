@@ -1,8 +1,7 @@
 (ns ^{:doc "Function tests around user admin"}
     chaperone.functional.admin.user
     (:use [midje.sweet]
-          [clj-webdriver.taxi]
-          [alex-and-georges.debug-repl :only [debug-repl]])
+          [clj-webdriver.taxi])
     (:require [test-helper :as test]
               [chaperone.persistence.install :as install]
               [clojurewerkz.elastisch.rest.index :as esi]))
@@ -23,7 +22,7 @@
 (namespace-state-changes (before :facts (setup!))
                          (after :facts (teardown!)))
 
-(fact "Adding a user to the admin shows up on the list" :webdriver :focus
+(fact "Adding a user to the admin shows up on the list" :webdriver
       (with-driver {:browser :chrome}
                    (implicit-wait 5000)
                    (to "http://localhost:9080")
