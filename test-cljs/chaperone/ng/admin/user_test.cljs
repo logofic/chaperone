@@ -66,11 +66,14 @@
               test-user (x-user/new-user "M" "M" "E" "P")]
             (! $routeParams.id (:id test-user))
             (with-redefs [user/get-user-by-id (fn [system id]
-                                                  (put! ws-chan test-user)
+                                                  (put! ws-chan (rpc/new-response
+                                                                    (rpc/new-request :user :load (:id test-user))
+                                                                    test-user))
                                                   ws-chan)]
-                        ($scope.initEditUserForm)
-                        (waits-for "User never gets set " 1000 $scope.user)
-
-
-
-                         ))))
+                         ($scope.initEditUserForm)
+                         (waits-for "User never gets set " 1000 $scope.user)
+                         (runs
+                             (is $scope.user.id (:id test-user))
+                             (is $scope.user.firstname (:firstname test-user))
+                             (is $scope.user.lastname (:lastname test-user))
+                             (is $scope.user.email (:email test-user)))))))

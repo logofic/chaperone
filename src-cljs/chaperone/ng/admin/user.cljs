@@ -21,7 +21,8 @@
                 (! $scope.initEditUserForm
                    (fn []
                        (let [chan (user/get-user-by-id System $routeParams.id)]
-                           (go (let [user (<! chan)]
+                           (go (let [response (<! chan)
+                                     user (:data response)]
                                    (ng-apply $scope (! $scope.user (clj->js user))))))))
 
                 (! $scope.saveUser

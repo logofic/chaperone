@@ -18,7 +18,7 @@
 			<tbody>
 				<tr ng-repeat="user in userList">
 					<td>{{ $index + 1 }}</td>
-					<td>{{ user.firstname }}</td>
+					<td><a ng-href="#/admin/users/edit/{{ user.id }}">{{ user.firstname }}</a></td>
 					<td>{{ user.lastname }}</td>
 					<td>{{ user.email }}</td>
 				</tr>
