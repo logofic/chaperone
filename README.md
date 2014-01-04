@@ -30,6 +30,9 @@ There is a [VagrantFile](http://www.vagrantup.com/) that provides the test infra
 Provisioning for Vagrant is provided by an [Ansible](http://www.ansibleworks.com/), that could also be reused to deploy to a production
 instance.
 
+You will need to extract the binary for the the appropriate [chrome driver](https://code.google.com/p/selenium/wiki/ChromeDriver)
+for your system in the root of this project so that web driver can find it.
+
 ### Compiling ClojureScript
 
 Make sure to use `with-profile cljs` when interacting with Clojurescript. This is required to remove certain dependencies that otherwise

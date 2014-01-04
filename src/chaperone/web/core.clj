@@ -119,9 +119,9 @@
 (defn start!
     "Start the web server, and get this ball rolling"
     [system]
-    (println "Starting server")
     (let [web (sub-system system)
           port (:port web)]
+        (println "Starting server on port " port)
         (start-rpc-response-listen system)
         (if-not (:server web)
             (assoc system :web

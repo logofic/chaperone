@@ -25,6 +25,12 @@
     (alter-var-root #'system
                     (fn [s] (reduce (fn [memo f] (apply f [memo])) s args))))
 
+(defn start-all
+    "Start the entire system, including the web server. Mainly useful for the functionl tests"
+    []
+    (alter-var-root #'system core/start!)
+    )
+
 (defn stop
     "Stops the system if it is currently running, updates the Var
       #'system."

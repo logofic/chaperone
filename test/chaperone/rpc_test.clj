@@ -43,7 +43,6 @@
       (:rpc test/system) => (sub-system test/system))
 
 (fact "RPC channel pipeline should take in a request, and spit out a response on the other side."
-      :focus
       (let [rpc (sub-system test/system)
             request-chan (:request-chan rpc)
             response-chan (:response-chan rpc)
