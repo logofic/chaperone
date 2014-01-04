@@ -17,12 +17,13 @@
                    (fn []
                        (let [user (x-user/new-user "" "" "" "")]
                            (! $scope.user (clj->js user)))))
+
                 (! $scope.initEditUserForm
                    (fn []
                        (let [chan (user/get-user-by-id System $routeParams.id)]
-                           (go
-                               (ng-apply $scope
-                                         (! $scope.user (clj->js (<! chan))))))))
+                           (go (let [user (<! chan)]
+                                   (ng-apply $scope (! $scope.user (clj->js user))))))))
+
                 (! $scope.saveUser
                    (fn []
                        (let [user (x-user/map->User (js->clj $scope.user :keywordize-keys true))

@@ -22,7 +22,8 @@
      :module chaperone.app
      :inject [[$scope ([$rootScope $controller $location]
                        ($controller "AdminUserCtrl" (obj :$scope ($rootScope.$new) :$location $location)))]
-              [$location ([$location] $location)]]}
+              [$location ([$location] $location)]
+              [$routeParams ([$routeParams] $routeParams)]]}
 
     (it "Should create a new user into scope, when a non existent usersid is used"
         ($scope.initAddUserForm)
@@ -58,4 +59,18 @@
                              (is $scope.userList.0.firstname "M")
                              (is $scope.userList.0.lastname "M")
                              (is $scope.userList.0.email "E")
-                             (is $scope.userList.0.password "P"))))))
+                             (is $scope.userList.0.password "P")))))
+
+    (it "Should load a user of a specific id"
+        (let [ws-chan (chan)
+              test-user (x-user/new-user "M" "M" "E" "P")]
+            (! $routeParams.id (:id test-user))
+            (with-redefs [user/get-user-by-id (fn [system id]
+                                                  (put! ws-chan test-user)
+                                                  ws-chan)]
+                        ($scope.initEditUserForm)
+                        (waits-for "User never gets set " 1000 $scope.user)
+
+
+
+                         ))))

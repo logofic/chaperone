@@ -39,7 +39,6 @@
                      response-chan (:response-chan ws-system)
                      socket (:socket ws-system)]}
           (it "Should send back a response on the returned request channel, when a response is sent back"
-              (js/console.log "socket: " socket)
               (socket.onopen)
               (let [request (new-request :thing :do-thing {:key "value"})
                     ws-complete (atom false)
