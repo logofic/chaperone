@@ -16,7 +16,7 @@
 				<th>Email</th>
 			</tr>
 			<tbody>
-				<tr ng-repeat="user in userList">
+				<tr ng-repeat="user in userList" click-row>
 					<td>{{ $index + 1 }}</td>
 					<td><a ng-href="#/admin/users/edit/{{ user.id }}">{{ user.firstname }}</a></td>
 					<td>{{ user.lastname }}</td>
