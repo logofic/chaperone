@@ -43,7 +43,7 @@
       (with-driver {:browser :chrome}
                    (implicit-wait 5000)
                    (make-user)
-                   (click "table tbody tr a")
+                   (click "table tbody tr")
                    (quick-fill-submit {"#first-name" "X"} {"#last-name" "X"}
                                       {"#email" clear}
                                       {"#email" "ex@e.com"}
