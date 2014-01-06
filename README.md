@@ -43,6 +43,12 @@ For example:
 
 To automatically compile the ClojureScript.
 
+### Karma Testing
+To run the ClojureScript tests, you will need to install karma via NPM. The NPM modules required are:
+
+- karma
+- karma-ng-html2js-preprocessor
+
 ## License
 
 Copyright © 2013 Mark Mandel

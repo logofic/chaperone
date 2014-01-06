@@ -17,4 +17,17 @@
     (it "when using row-click directive, the path should be the href location when the row is clicked"
         (let [table (($compile "<table><tbody><tr click-row><td><a href='/link'>link</a></td></tr></tbody></table>") $rootScope)]
             (-> table j/$ (j/find :tr) (j/trigger :click))
-            ($location.path) => "/link")))
+            (is ($location.path) "/link"))))
+
+(describe.ng
+    {:doc    "Submit button directive"
+     :module chaperone.app
+     :inject [$compile $rootScope]}
+
+    (it "should show a submit button with a glyph on it"
+        (let [submit (($compile "<div> <p>foo</p> <submit-button/> <p>foo</p> </div>") $rootScope)]
+            (js/console.log "submit v3: " (.html (j/$ submit)))
+
+            ))
+
+    )

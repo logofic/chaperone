@@ -20,8 +20,13 @@ module.exports = function(config)
 			,'resources/public/js/angular-route.min.js'
 			, 'resources/public/js/test/angular-mocks.js'
 			, 'resources/public/js/test/main.js'
+			, 'resources/public/directives/*.html'
 		],
 
+		ngHtml2JsPreprocessor: {
+			// strip this from the file path
+			stripPrefix: 'resources'
+		},
 
 		// list of files to exclude
 		exclude: [

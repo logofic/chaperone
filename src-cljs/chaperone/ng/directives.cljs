@@ -18,3 +18,9 @@
                                                          (let [href (-> row (j/find :a) (j/attr :href))]
                                                              (ng-apply scope ($location.path (replace-first href "#" ""))))))))]
                    (obj :link link)))
+
+;; standard submit button on a form
+(def.directive chaperone.app.submitButton
+               []
+               (js/console.log "submitButton")
+               (obj :restrict "E" :templateUrl "/public/directives/submit.html"))
