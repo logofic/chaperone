@@ -22,8 +22,8 @@
      :module chaperone.app
      :inject [[$scope ([$rootScope $controller $location]
                        ($controller "AdminUserCtrl" (obj :$scope ($rootScope.$new) :$location $location)))]
-              [$location ([$location] $location)]
-              [$routeParams ([$routeParams] $routeParams)]]}
+              $location
+              $routeParams]}
 
     (it "Should create a new user into scope, when a non existent usersid is used"
         ($scope.initAddUserForm)
