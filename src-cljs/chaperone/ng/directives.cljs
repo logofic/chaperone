@@ -22,5 +22,4 @@
 ;; standard submit button on a form
 (def.directive chaperone.app.submitButton
                []
-               (js/console.log "submitButton")
                (obj :restrict "E" :templateUrl "/public/directives/submit.html"))

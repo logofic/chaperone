@@ -26,6 +26,7 @@ module.exports = function(config)
 		ngHtml2JsPreprocessor: {
 			// strip this from the file path
 			stripPrefix: 'resources'
+			,moduleName: 'chaperone.app'
 		},
 
 		// list of files to exclude
