@@ -19,7 +19,6 @@
                     chan (:message-queue mb)
                     result (atom false)]
                   (runs
-                      (js/console.log "WHAT?")
                       (take! chan #(reset! result %))
                       (send-message! mb :info "Hello World!")
                       )

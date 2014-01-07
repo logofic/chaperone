@@ -28,7 +28,6 @@
      :inject [$compile $rootScope $templateCache]}
 
     (it "should show a submit button with a glyph on it"
-        (js/console.log "templates: " ($templateCache.info))
         (let [submit (($compile "<submit-button/>") $rootScope)]
             ($rootScope.$digest)
             (let [html (-> submit j/$ j/html)]

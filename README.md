@@ -4,7 +4,7 @@ Collaborative work environment with Chat, Audio and Video conferencing over WebR
 
 First installation will only only offer Chrome support. Firefox will come later.
 
-Current status: Barely started.
+Current status: Some admin functionality complete.
 
 ## Installation
 
