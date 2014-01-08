@@ -1,6 +1,7 @@
 (ns ^{:doc "Manage the web facing part of the application"}
     chaperone.web.core
-    (:use [clojure.core.async :only [put! go <!]])
+    (:use [clojure.core.async :only [put! go <!]]
+          [while-let.core])
     (:require [chaperone.rpc :as rpc]
               [chaperone.crossover.rpc :as x-rpc]
               [org.httpkit.server :as server]
@@ -26,14 +27,13 @@
 (defn create-sub-system
     "Create the persistence system. Takes the existing system details"
     [system]
-    (let [sub-system {:port                 (env/env :web-server-port 8080)
-                      :dieter               {:engine     :v8
-                                             :compress   false ; minify using Google Closure Compiler & Less compression
-                                             :cache-mode :production ; or :production. :development disables cacheing
-                                             }
-                      :clients              (atom {})
-                      :rpc-map              (create-rpc-map)
-                      :response-chan-listen (atom false)}]
+    (let [sub-system {:port    (env/env :web-server-port 8080)
+                      :dieter  {:engine     :v8
+                                :compress   false ; minify using Google Closure Compiler & Less compression
+                                :cache-mode :production ; or :production. :development disables cacheing
+                                }
+                      :clients (atom {})
+                      :rpc-map (create-rpc-map)}]
         (assoc system :web sub-system)))
 
 (defn sub-system
@@ -105,16 +105,14 @@
     [system]
     (let [web (sub-system system)
           rpc (rpc/sub-system system)]
-        (reset! (:response-chan-listen web) true)
         (go
-            (while (-> web :response-chan-listen deref)
-                (let [response (<! (:response-chan rpc))
-                      request (:request response)
-                      rpc-map (:rpc-map web)
-                      channel (.remove rpc-map request)]
-                    ;; manage closing of the channel
-                    (when (and response channel)
-                        (server/send! channel (pr-str response))))))))
+            (while-let [response (<! (:response-chan rpc))]
+                       (let [request (:request response)
+                             rpc-map (:rpc-map web)
+                             channel (.remove rpc-map request)]
+                           ;; manage closing of the channel
+                           (when (and response channel)
+                               (server/send! channel (pr-str response))))))))
 
 (defn start!
     "Start the web server, and get this ball rolling"
@@ -133,7 +131,6 @@
     [system]
     (let [web (sub-system system)]
         (when web
-            (reset! (:response-chan-listen web) false)
             (when (:server web)
                 ((:server web)))))
     system)

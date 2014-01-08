@@ -1,7 +1,8 @@
 (ns ^{:doc "RPC mechanisms for the server side."}
     chaperone.rpc
     (:use [chaperone.crossover.rpc]
-          [clojure.core.async :only [go >! <! chan close!]])
+          [clojure.core.async :only [go >! <! chan close!]]
+          [while-let.core])
     (:import [chaperone.crossover.rpc Request]))
 
 ;; system
@@ -11,7 +12,6 @@
     [system]
     (let [sub-system {:edn-readers         (all-edn-readers)
                       :request-chan        (chan)
-                      :request-chan-listen (atom false)
                       :response-chan       (chan)}]
         (assoc system :rpc sub-system)))
 
@@ -35,10 +35,8 @@
     "Start the rpc system"
     [system]
     (let [rpc (sub-system system)]
-        (reset! (:request-chan-listen rpc) true)
-        (go (while (-> rpc :request-chan-listen deref)
-                (let [request (<! (:request-chan rpc))
-                      data (run-rpc-request system request)]
+        (go (while-let [request (<! (:request-chan rpc))]
+                (let [data (run-rpc-request system request)]
                     (>! (:response-chan rpc) (new-response request data))))))
     system)
 
@@ -47,7 +45,6 @@
     [system]
     (let [rpc (sub-system system)]
         (when rpc
-            (reset! (:request-chan-listen rpc) false)
             (close! (:request-chan rpc))
             (close! (:response-chan rpc))))
     system)

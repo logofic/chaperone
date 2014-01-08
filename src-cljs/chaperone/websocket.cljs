@@ -7,7 +7,8 @@
     (:import (chaperone.crossover.rpc Request Response))
     (:use-macros
         [purnam.core :only [obj ! ? !>]]
-        [cljs.core.async.macros :only [go]]))
+        [cljs.core.async.macros :only [go]]
+        [while-let.core :only [while-let]]))
 
 
 ;;; system
@@ -17,9 +18,7 @@
     (let [sub-system {:host                 host
                       :port                 port
                       :request-chan         (chan)
-                      :request-chan-listen  (atom false)
                       :response-chan        (chan)
-                      :response-chan-listen (atom false)
                       :rpc-map              (atom {})
                       :edn-readers          (all-edn-readers)}]
         (assoc system :websocket sub-system))
@@ -46,18 +45,15 @@
 (defn- start-request-chan-listen!
     "Start listening to requests, and route requests to the websocket.send()"
     [web-socket]
-    (reset! (:request-chan-listen web-socket) true)
-    (go (while (-> web-socket :request-chan-listen deref)
-            (let [socket (:socket web-socket)]
-                (.send socket (-> web-socket :request-chan <! pr-str))))))
+    (let [socket (:socket web-socket)]
+        (go (while-let [request (<! (:request-chan web-socket))]
+                       (.send socket (pr-str request))))))
 
 (defn- start-response-chan-listen!
     "Listen to the response chan's channel and route responses appropriately"
     [web-socket]
-    (reset! (:response-chan-listen web-socket) true)
-    (go
-        (while (-> web-socket :response-chan-listen deref)
-            (respond! web-socket (reader/read-string (<! (:response-chan web-socket)))))))
+    (go (while-let [response (<! (:response-chan web-socket))]
+                   (respond! web-socket (reader/read-string response)))))
 
 (defn connect-websocket!
     "Create the websocket and connect it up. Returns the configured web socket.
@@ -97,8 +93,7 @@
     (let [web-socket (sub-system system)]
         (close! (:request-chan web-socket))
         (close! (:response-chan web-socket))
-        (reset! (:response-chan-listen web-socket) false)
-        (reset! (:response-chan-listen web-socket) false))
+        )
     system)
 
 (defn send!
