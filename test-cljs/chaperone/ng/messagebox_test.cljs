@@ -48,7 +48,6 @@
             (mb/send-message! (mb/sub-system System) :info "Hello World!"))
         (waits-for "Messages doesn't get the message" 1000 (not (empty? $scope.messages)))
         (runs
-            (.log js/console $timeout)
             ($timeout.flush)
             (is (empty? $scope.messages) true))
         )

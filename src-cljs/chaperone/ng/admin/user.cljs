@@ -4,6 +4,7 @@
     (:require [chaperone.ng.core :as core]
               [chaperone.crossover.user :as x-user]
               [chaperone.user :as user]
+              [chaperone.messagebox :as mb]
               [cljs.core.async :refer [>! <!]])
     (:use [purnam.native :only [aget-in aset-in]])
     (:use-macros
@@ -33,7 +34,9 @@
                        (let [data (merge $scope.clj-user (js->clj $scope.user :keywordize-keys true))
                              user (x-user/map->User data)
                              chan (user/save-user System user)]
-                           (go (let [result (<! chan)]
+                           (go (let [result (<! chan)
+                                     mb (mb/sub-system System)]
+                                   (mb/send-message! mb :success "User has been saved successfully")
                                    (ng-apply $scope
                                              ($location.path "/admin/users/list")))))))
                 (! $scope.initListUsers

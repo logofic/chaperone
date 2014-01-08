@@ -20,7 +20,9 @@
                   (! $scope.messages (-> js-message (cons $scope.messages) clj->js)))
         ($timeout (f.n []
                        (! $scope.messages
-                          (-> (remove #(js-equals js-message %) $scope.messages) clj->js))) 4000)))
+                          ;; use angular.equals to dodge the angular added properties.
+                          (-> (remove #(js/angular.equals js-message %) $scope.messages) clj->js))
+                       ) 4000)))
 
 (defn- start-message-queue-listening!
     "Start listening to the message queue"

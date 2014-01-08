@@ -1,12 +1,47 @@
 // Bootstrap 3.0.3
-@import "./less/bootstrap";
+@import "./bootstrap/bootstrap";
+@import "./lesshat-prefixed";
 
 //main layout
 #main-body {
 	padding: 50px 20px 0 20px;
 }
 
+.container-fluid {
+	padding: 0 15px;
+}
+
+//messagebox
+
+.lh-keyframes(~'slidedown, from {top: -50px;} to {top: 0px;}');
+.lh-keyframes(~'fadeout, from { opacity: 100; }	to { opacity: 0; }');
+
+@-webkit-keyframes scrap {
+	from { opacity: 100; }
+	to { opacity: 0; }
+}
+
+#messageboxes {
+	position: fixed;
+	z-index: 5000;
+	width: 50%;
+	left: 25%;
+
+	.alert {
+		margin-top: 10px;
+		position: relative;
+
+		.lh-animation-name(slidedown, fadeout);
+		.lh-animation-duration(0.5s, 0.5s);
+		.lh-animation-timing-function(ease-in, linear);
+		.lh-animation-delay(0, 3s);
+		.lh-animation-iteration-count(1);
+		.lh-animation-fill-mode(forwards);
+	}
+}
+
 // clickable table rows
 table.table-hover tbody tr {
 	cursor: pointer;
 }
+

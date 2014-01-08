@@ -9,11 +9,17 @@
 	<title>Chaperone</title>
 
 	<!-- Bootstrap core CSS -->
-	<link href="{{ less }}" rel="stylesheet">
+	<link href="[{ less }]" rel="stylesheet">
 	<!-- Custom styles for this template -->
 </head>
 
 <body>
+
+<div id="messageboxes" ng-controller="MessageBoxCtrl" ng-init="init();" class="container-fluid">
+	<div class="alert alert-success" ng-repeat="m in messages">
+		{{ m.message }}
+	</div>
+</div>
 
 <div class="navbar navbar-default navbar-fixed-top">
 	<div class="container-fluid">
@@ -37,6 +43,7 @@
 		</div><!--/.nav-collapse -->
 	</div>
 </div>
+
 
 <div id="main-body" class="container-fluid" ng-view></div>
 

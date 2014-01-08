@@ -81,7 +81,8 @@
     (let [web (sub-system system)]
         (comp/routes
             (comp/GET "/" [] (selmer/render-file "views/index.html"
-                                                 {:less (dieter/link-to-asset "main.less" (:dieter web))}))
+                                                 {:less (dieter/link-to-asset "main.less" (:dieter web))}
+                                                 {:tag-open \[ :tag-close \]}))
             (comp/GET "/rpc" [] (partial websocket-rpc-handler system))
             (route/resources "/public")
             (route/not-found "<h1>404 OMG</h1>"))))
