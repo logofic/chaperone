@@ -4,26 +4,34 @@
     (:require chaperone.ng.core
               [chaperone.messagebox :as mb]
               purnam.types.clojure)
-    (:use [purnam.native :only [aget-in aset-in]]
+    (:use [purnam.native :only [aget-in aset-in js-equals]]
           [cljs.core.async :only [<!]])
     (:use-macros
         [chaperone.ng.core :only [ng-apply]]
-        [purnam.core :only [obj ! ?]]
+        [purnam.core :only [obj ! ? f.n]]
         [purnam.angular :only [def.controller]]
         [cljs.core.async.macros :only [go]]
         [while-let.core :only [while-let]]))
 
+(defn- add-message!
+    [$scope $timeout message]
+    (let [js-message (clj->js message)]
+        (ng-apply $scope
+                  (! $scope.messages (-> js-message (cons $scope.messages) clj->js)))
+        ($timeout (f.n []
+                       (! $scope.messages
+                          (-> (remove #(js-equals js-message %) $scope.messages) clj->js))) 4000)))
+
 (defn- start-message-queue-listening!
     "Start listening to the message queue"
-    [system $scope]
+    [system $scope $timeout]
     (let [mb (mb/sub-system system)
           queue (:message-queue mb)]
         (go (while-let [message (<! queue)]
-                       (ng-apply
-                           (! $scope.messages (-> (clj->js message) (cons $scope.messages) clj->js)))))))
+                       (add-message! $scope $timeout message)))))
 
 (def.controller chaperone.app.MessageBoxCtrl [$scope $timeout System]
                 (! $scope.init
                    (fn []
                        (! $scope.messages (array))
-                       (start-message-queue-listening! System $scope))))
+                       (start-message-queue-listening! System $scope $timeout))))

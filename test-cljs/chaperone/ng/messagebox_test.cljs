@@ -19,7 +19,8 @@
      :module chaperone.app
      :inject [[$scope ([$rootScope $controller]
                        ($controller "MessageBoxCtrl" (obj :$scope ($rootScope.$new))))]
-              System]}
+              System
+              $timeout]}
 
     (it "Should have an empty array in scope on init"
         ($scope.init)
@@ -38,4 +39,18 @@
             )
         (waits-for "Messages should have a second message" 1000 (= (count $scope.messages) 2))
         (runs
-            (is (first $scope.messages) (obj :level "warning" :message "Hello World!")))))
+            (is (first $scope.messages) (obj :level "warning" :message "Hello World!"))))
+
+    (it "should remove a message from the array after 4 seconds"
+        ($scope.init)
+        (runs
+            (is $scope.messages (array))
+            (mb/send-message! (mb/sub-system System) :info "Hello World!"))
+        (waits-for "Messages doesn't get the message" 1000 (not (empty? $scope.messages)))
+        (runs
+            (.log js/console $timeout)
+            ($timeout.flush)
+            (is (empty? $scope.messages) true))
+        )
+
+    )
