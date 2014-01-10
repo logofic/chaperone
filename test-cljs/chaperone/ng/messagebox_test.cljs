@@ -52,4 +52,8 @@
             (is (empty? $scope.messages) true))
         )
 
-    )
+     (it "should return the correct class for a messagebox by it's level"
+        (is ($scope.messageClass "success") "alert-success")))
+
+
+

@@ -16,7 +16,7 @@
 <body>
 
 <div id="messageboxes" ng-controller="MessageBoxCtrl" ng-init="init();" class="container-fluid">
-	<div class="alert alert-success" ng-repeat="m in messages">
+	<div class="alert" ng-class="messageClass(m.level)" ng-repeat="m in messages">
 		{{ m.message }}
 	</div>
 </div>

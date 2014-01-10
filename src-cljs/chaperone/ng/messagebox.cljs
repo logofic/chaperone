@@ -36,4 +36,8 @@
                 (! $scope.init
                    (fn []
                        (! $scope.messages (array))
-                       (start-message-queue-listening! System $scope $timeout))))
+                       (start-message-queue-listening! System $scope $timeout)))
+
+                (! $scope.messageClass
+                   (fn [level]
+                       (str "alert-" level))))
