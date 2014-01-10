@@ -3,16 +3,26 @@
     (:use [chaperone.crossover.rpc]
           [clojure.core.async :only [go >! <! chan close!]]
           [while-let.core])
-    (:import [chaperone.crossover.rpc Request]))
+    (:import [chaperone.crossover.rpc Request]
+             [com.google.common.cache CacheBuilder]))
 
 ;; system
+
+(defn- create-rpc-map
+    "Use Google Guava to create the weak concurrent hashmap we want to use for RPC calls"
+    []
+    (let [builder (CacheBuilder/newBuilder)]
+        (doto builder
+            (.weakKeys))
+        (-> builder .build .asMap)))
 
 (defn create-sub-system
     "Create the RPC subsystem"
     [system]
-    (let [sub-system {:edn-readers         (all-edn-readers)
-                      :request-chan        (chan)
-                      :response-chan       (chan)}]
+    (let [sub-system {:edn-readers   (all-edn-readers)
+                      :request-chan  (chan)
+                      :response-chan (chan)
+                      :rpc-map       (create-rpc-map)}]
         (assoc system :rpc sub-system)))
 
 (defn sub-system
@@ -36,8 +46,8 @@
     [system]
     (let [rpc (sub-system system)]
         (go (while-let [request (<! (:request-chan rpc))]
-                (let [data (run-rpc-request system request)]
-                    (>! (:response-chan rpc) (new-response request data))))))
+                       (let [data (run-rpc-request system request)]
+                           (>! (:response-chan rpc) (new-response request data))))))
     system)
 
 (defn stop!
@@ -48,3 +58,13 @@
             (close! (:request-chan rpc))
             (close! (:response-chan rpc))))
     system)
+
+(defn put-client!
+    "Starts a request, and stores the websocket client for later retrieval"
+    [rpc ^Request request client]
+    (.put (:rpc-map rpc) request client))
+
+(defn get-client!
+    "After putting a client in for a request. Returns the websocket client the RPC request originated from."
+    [rpc ^Request request]
+    (.remove (:rpc-map rpc) request))

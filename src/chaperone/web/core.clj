@@ -13,15 +13,7 @@
               [selmer.parser :as selmer]
               [dieter.core :as dieter]
               [clojure.edn :as edn])
-    (:import (com.google.common.cache CacheBuilder)))
-
-(defn- create-rpc-map
-    "Use Google Guava to create the weak concurrent hashmap we want to use for RPC calls"
-    []
-    (let [builder (CacheBuilder/newBuilder)]
-        (doto builder
-            (.weakKeys))
-        (-> builder .build .asMap)))
+    )
 
 ;;; system tools
 (defn create-sub-system
@@ -32,8 +24,7 @@
                                 :compress   false ; minify using Google Closure Compiler & Less compression
                                 :cache-mode :production ; or :production. :development disables cacheing
                                 }
-                      :clients (atom {})
-                      :rpc-map (create-rpc-map)}]
+                      :clients (atom {})}]
         (assoc system :web sub-system)))
 
 (defn sub-system
@@ -43,27 +34,25 @@
 
 (defn websocket-on-recieve!
     "Returns a handler function for when data is recieved by the websocket"
-    [system channel]
+    [system client]
     (fn [data]
-        (let [web (sub-system system)
-              rpc (rpc/sub-system system)
+        (let [rpc (rpc/sub-system system)
               request-chan (:request-chan rpc)
-              rpc-map (:rpc-map web)
               request (edn/read-string {:readers (:edn-readers rpc)} data)
               ]
-            (.put rpc-map request channel)
+            (rpc/put-client! rpc request client)
             (put! request-chan request))))
 
 (defn websocket-on-close
     "Returns a handler function for when a websocket is closed"
-    [web channel]
-    (fn [status] (swap! (:clients web) dissoc channel)))
+    [web client]
+    (fn [status] (swap! (:clients web) dissoc client)))
 
 (defn websocket-on-connect
     "Handler for when a websocket conenction is made"
-    [web request channel]
-    (println "Connected: " request channel)
-    (swap! (:clients web) assoc channel true))
+    [web request client]
+    (println "Connected: " request client)
+    (swap! (:clients web) assoc client true))
 
 ;;; logic
 (defn- websocket-rpc-handler
@@ -71,10 +60,10 @@
     [system request]
     (let [web (sub-system system)
           rpc (rpc/sub-system system)]
-        (server/with-channel request channel
-                             (websocket-on-connect web request channel)
-                             (server/on-close channel (websocket-on-close web channel))
-                             (server/on-receive channel (websocket-on-recieve! system channel)))))
+        (server/with-channel request client
+                             (websocket-on-connect web request client)
+                             (server/on-close client (websocket-on-close web client))
+                             (server/on-receive client (websocket-on-recieve! system client)))))
 
 (defn- create-routes
     [system]
@@ -109,11 +98,9 @@
         (go
             (while-let [response (<! (:response-chan rpc))]
                        (let [request (:request response)
-                             rpc-map (:rpc-map web)
-                             channel (.remove rpc-map request)]
-                           ;; manage closing of the channel
-                           (when (and response channel)
-                               (server/send! channel (pr-str response))))))))
+                             client (rpc/get-client! rpc request)]
+                           (when (and response client)
+                               (server/send! client (pr-str response))))))))
 
 (defn start!
     "Start the web server, and get this ball rolling"
