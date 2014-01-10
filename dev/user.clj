@@ -4,11 +4,22 @@
     (:use [midje.repl :only (autotest load-facts)]
           [clojure.pprint :only (pprint)]
           [clojure.repl]
-          [clojure.tools.namespace.repl :only (refresh refresh-all)]
+          [clojure.tools.namespace.repl :only (refresh refresh-all set-refresh-dirs)]
           [clojure.tools.trace])
     (:require [chaperone.core :as core]))
 
 ;; system init functions
+
+;; dont' refresh the tests. This fires off the functional tests.
+(defn set-refresh-src!
+    "Just set source as the refresh dirs"
+    []
+    (set-refresh-dirs "./src" "./dev"))
+
+(defn set-refresh-all!
+    "Set src, dev and test as the directories"
+    []
+    (set-refresh-dirs "./src" "./dev" "./test"))
 
 (def system
     "A Var containing an object representing the application under
@@ -44,6 +55,7 @@
     "Stops the system, optionally reloads modified source files, and restarts it."
     []
     (stop)
+    (set-refresh-src!)
     (refresh :after 'user/go))
 
 ;; helper functions
