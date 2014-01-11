@@ -40,7 +40,7 @@
           ((websocket-on-close web channel) "test")
           (count @clients) => 0))
 
-(fact "Sending a request will result in a response coming back on the same channel"
+(fact "Sending a request will result in a response coming back on the same channel" :focus
       (let [channel {:channel true}
             test-user (x-user/new-user "Mark" "Mandel" "email" "password")
             request (x-rpc/new-request :user :save test-user)

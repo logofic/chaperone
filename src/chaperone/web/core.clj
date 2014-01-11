@@ -1,9 +1,8 @@
 (ns ^{:doc "Manage the web facing part of the application"}
     chaperone.web.core
-    (:use [clojure.core.async :only [put! go <!]]
+    (:use [clojure.core.async :only [go <!]]
           [while-let.core])
     (:require [chaperone.rpc :as rpc]
-              [chaperone.crossover.rpc :as x-rpc]
               [org.httpkit.server :as server]
               [environ.core :as env]
               [compojure.core :as comp]
@@ -37,11 +36,8 @@
     [system client]
     (fn [data]
         (let [rpc (rpc/sub-system system)
-              request-chan (:request-chan rpc)
-              request (edn/read-string {:readers (:edn-readers rpc)} data)
-              ]
-            (rpc/put-client! rpc request client)
-            (put! request-chan request))))
+              request (edn/read-string {:readers (:edn-readers rpc)} data)]
+            (rpc/send-request! rpc client request))))
 
 (defn websocket-on-close
     "Returns a handler function for when a websocket is closed"
@@ -90,25 +86,12 @@
           port (:port web)]
         (server/run-server (-> (site (create-routes system)) (dieter/asset-pipeline (:dieter web))) {:port port})))
 
-(defn start-rpc-response-listen
-    "Start listening to the rpc response channel"
-    [system]
-    (let [web (sub-system system)
-          rpc (rpc/sub-system system)]
-        (go
-            (while-let [response (<! (:response-chan rpc))]
-                       (let [request (:request response)
-                             client (rpc/get-client! rpc request)]
-                           (when (and response client)
-                               (server/send! client (pr-str response))))))))
-
 (defn start!
     "Start the web server, and get this ball rolling"
     [system]
     (let [web (sub-system system)
           port (:port web)]
         (println "Starting server on port " port)
-        (start-rpc-response-listen system)
         (if-not (:server web)
             (assoc system :web
                           (assoc web :server (run-server system)))

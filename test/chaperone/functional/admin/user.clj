@@ -39,7 +39,7 @@
                    (make-user)
                    (text "table tbody tr") => "1 Mark Mandel e@e.com"))
 
-(fact "Am able to edit a user" :webdriver :focus
+(fact "Am able to edit a user" :webdriver
       (with-driver {:browser :chrome}
                    (implicit-wait 5000)
                    (make-user)

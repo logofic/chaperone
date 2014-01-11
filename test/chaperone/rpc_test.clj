@@ -50,7 +50,7 @@
             piped-timeout (pipe response-chan (timeout 2000))
             request (new-request :user :save test-user)]
           (test/start pcore/start! install/start! start!)
-          (put! request-chan request)
+          (send-request! rpc {} request)
           (let [response (<!! piped-timeout)
                 persistence (pcore/sub-system test/system)]
               (:request response) => request
