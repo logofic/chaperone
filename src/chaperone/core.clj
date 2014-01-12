@@ -3,7 +3,8 @@
     (:require [chaperone.persistence.core :as persist]
               [chaperone.persistence.install :as install]
               [chaperone.web.core :as web]
-              [chaperone.rpc :as rpc])
+              [chaperone.rpc :as rpc]
+              [chaperone.websocket :as ws])
     (:gen-class))
 
 (defn create-system
@@ -12,7 +13,8 @@
     (let [context {}]
         (-> context persist/create-sub-system
             rpc/create-sub-system
-            web/create-sub-system)))
+            web/create-sub-system
+            ws/create-sub-system)))
 
 (defn start!
     "Starts the system"

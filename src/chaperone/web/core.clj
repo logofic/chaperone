@@ -11,8 +11,7 @@
               [ring.middleware.cookies :as cookies]
               [selmer.parser :as selmer]
               [dieter.core :as dieter]
-              [clojure.edn :as edn])
-    )
+              [chaperone.websocket :as ws]))
 
 ;;; system tools
 (defn create-sub-system
@@ -31,35 +30,15 @@
     [system]
     (:web system))
 
-(defn websocket-on-recieve!
-    "Returns a handler function for when data is recieved by the websocket"
-    [system client]
-    (fn [data]
-        (let [rpc (rpc/sub-system system)
-              request (edn/read-string {:readers (:edn-readers rpc)} data)]
-            (rpc/send-request! rpc client request))))
-
-(defn websocket-on-close
-    "Returns a handler function for when a websocket is closed"
-    [web client]
-    (fn [status] (swap! (:clients web) dissoc client)))
-
-(defn websocket-on-connect
-    "Handler for when a websocket conenction is made"
-    [web request client]
-    (println "Connected: " request client)
-    (swap! (:clients web) assoc client true))
-
 ;;; logic
 (defn- websocket-rpc-handler
     "Handle websocket requests"
     [system request]
-    (let [web (sub-system system)
-          rpc (rpc/sub-system system)]
+    (let [ws (ws/sub-system system)]
         (server/with-channel request client
-                             (websocket-on-connect web request client)
-                             (server/on-close client (websocket-on-close web client))
-                             (server/on-receive client (websocket-on-recieve! system client)))))
+                             (ws/websocket-on-connect! ws request client)
+                             (server/on-close client (ws/websocket-on-close! ws client))
+                             (server/on-receive client (ws/websocket-on-recieve! system client)))))
 
 (defn- create-routes
     [system]
