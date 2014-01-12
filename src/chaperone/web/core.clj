@@ -11,7 +11,8 @@
               [ring.middleware.cookies :as cookies]
               [selmer.parser :as selmer]
               [dieter.core :as dieter]
-              [chaperone.websocket :as ws]))
+              [chaperone.websocket :as ws]
+              [cljs-uuid.core :as uuid]))
 
 ;;; system tools
 (defn create-sub-system
@@ -40,13 +41,22 @@
                              (server/on-close client (ws/websocket-on-close! ws client))
                              (server/on-receive client (ws/websocket-on-recieve! system client)))))
 
+(defn- index-page
+    "Render the index page"
+    [web cookies]
+    (let [cookies (if (:sid cookies)
+                      cookies
+                      (assoc cookies :sid (uuid/make-random-string)))]
+        {:cookies cookies
+         :body    (selmer/render-file "views/index.html"
+                                      {:less (dieter/link-to-asset "main.less" (:dieter web))}
+                                      {:tag-open \[ :tag-close \]})}))
+
 (defn- create-routes
     [system]
     (let [web (sub-system system)]
         (comp/routes
-            (comp/GET "/" [] (selmer/render-file "views/index.html"
-                                                 {:less (dieter/link-to-asset "main.less" (:dieter web))}
-                                                 {:tag-open \[ :tag-close \]}))
+            (comp/GET "/" {cookies :cookies} (index-page web cookies))
             (comp/GET "/rpc" [] (partial websocket-rpc-handler system))
             (route/resources "/public")
             (route/not-found "<h1>404 OMG</h1>"))))
