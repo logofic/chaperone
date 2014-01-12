@@ -47,7 +47,6 @@
             result-chan (timeout 5000)]
           (with-redefs [server/send! (fn [channel data] (put! result-chan [channel data]))]
                        (test/start pcore/start! install/start! rpc/start!)
-                       (start-rpc-response-listen test/system)
                        ((websocket-on-recieve! test/system channel) (pr-str request))
                        (let [result (<!! result-chan)
                              rchannel (first result)
