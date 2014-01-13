@@ -4,6 +4,7 @@
               [chaperone.persistence.install :as install]
               [chaperone.web.core :as web]
               [chaperone.web.rpc :as rpc]
+              [chaperone.web.session :as session]
               [chaperone.web.websocket :as ws])
     (:gen-class))
 
@@ -14,6 +15,7 @@
         (-> context persist/create-sub-system
             rpc/create-sub-system
             web/create-sub-system
+            session/create-sub-system
             ws/create-sub-system)))
 
 (defn start!
