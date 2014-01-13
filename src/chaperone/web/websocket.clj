@@ -1,6 +1,6 @@
 (ns ^{:doc "Manages the websocket processing"}
-    chaperone.websocket
-    (:require [chaperone.rpc :as rpc]
+    chaperone.web.websocket
+    (:require [chaperone.web.rpc :as rpc]
               [clojure.edn :as edn]))
 
 ;;; system tools

@@ -3,14 +3,14 @@
           [chaperone.web.core]
           [clojure.core.async :only [timeout <!! put!]])
     (:require [test-helper :as test]
-              [chaperone.rpc :as rpc]
+              [chaperone.web.rpc :as rpc]
               [chaperone.crossover.rpc :as x-rpc]
               [chaperone.crossover.user :as x-user]
               [chaperone.persistence.core :as pcore]
               [chaperone.persistence.install :as install]
               [org.httpkit.server :as server]
               [clojure.edn :as edn]
-              [chaperone.websocket :as ws]))
+              [chaperone.web.websocket :as ws]))
 
 (defn- setup!
     "Provides setup for the tests. Has side effects"

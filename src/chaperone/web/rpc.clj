@@ -1,5 +1,5 @@
 (ns ^{:doc "RPC mechanisms for the server side."}
-    chaperone.rpc
+    chaperone.web.rpc
     (:use [chaperone.crossover.rpc]
           [clojure.core.async :only [go >! <! chan close! put!]]
           [while-let.core])

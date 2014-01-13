@@ -8,7 +8,7 @@
               [clojurewerkz.elastisch.rest.index :as esi]
               [chaperone.persistence.install :as install]
               [chaperone.persistence.core :as pcore]
-              [chaperone.rpc :as rpc]
+              [chaperone.web.rpc :as rpc]
               [clojure.edn :as edn]))
 
 (defn- setup!

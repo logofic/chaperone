@@ -6,7 +6,7 @@
     (:require [chaperone.persistence.core :as pcore]
               [clojurewerkz.elastisch.query :as esq]
               [clojurewerkz.scrypt.core :as sc]
-              [chaperone.rpc :as rpc]))
+              [chaperone.web.rpc :as rpc]))
 
 (defmethod pcore/get-type User [record] "user")
 

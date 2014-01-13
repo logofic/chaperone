@@ -2,7 +2,7 @@
     chaperone.web.core
     (:use [clojure.core.async :only [go <!]]
           [while-let.core])
-    (:require [chaperone.rpc :as rpc]
+    (:require [chaperone.web.rpc :as rpc]
               [org.httpkit.server :as server]
               [environ.core :as env]
               [compojure.core :as comp]
@@ -11,7 +11,7 @@
               [ring.middleware.cookies :as cookies]
               [selmer.parser :as selmer]
               [dieter.core :as dieter]
-              [chaperone.websocket :as ws]
+              [chaperone.web.websocket :as ws]
               [cljs-uuid.core :as uuid]))
 
 ;;; system tools

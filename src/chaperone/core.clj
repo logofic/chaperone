@@ -3,8 +3,8 @@
     (:require [chaperone.persistence.core :as persist]
               [chaperone.persistence.install :as install]
               [chaperone.web.core :as web]
-              [chaperone.rpc :as rpc]
-              [chaperone.websocket :as ws])
+              [chaperone.web.rpc :as rpc]
+              [chaperone.web.websocket :as ws])
     (:gen-class))
 
 (defn create-system

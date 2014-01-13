@@ -1,8 +1,8 @@
-(ns chaperone.rpc-test
+(ns chaperone.web.rpc-test
     (:require [clojure.edn :as edn])
     (:use [midje.sweet]
           [chaperone.crossover.rpc]
-          [chaperone.rpc]
+          [chaperone.web.rpc]
           [clojure.core.async :only [pipe put! <!! timeout]])
     (:require [test-helper :as test]
               [chaperone.user :as user]
