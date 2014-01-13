@@ -2,8 +2,7 @@
     chaperone.ng.messagebox
     ;use to specify the order things need to run in.
     (:require chaperone.ng.core
-              [chaperone.messagebox :as mb]
-              purnam.types.clojure)
+              [chaperone.messagebox :as mb])
     (:use [purnam.native :only [aget-in aset-in js-equals]]
           [cljs.core.async :only [<!]])
     (:use-macros

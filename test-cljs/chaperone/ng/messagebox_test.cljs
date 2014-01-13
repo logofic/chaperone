@@ -1,7 +1,6 @@
 (ns ^{:doc "tests for the messagebox controller"}
     chaperone.ng.messagebox-test
     (:require chaperone.ng.messagebox
-              purnam.types.clojure
               [chaperone.messagebox :as mb])
     (:use [test-helper :only [init-tests]]
           [purnam.native :only [aset-in aget-in]]
