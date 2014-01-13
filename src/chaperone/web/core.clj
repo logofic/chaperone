@@ -3,6 +3,7 @@
     (:use [clojure.core.async :only [go <!]]
           [while-let.core])
     (:require [chaperone.web.rpc :as rpc]
+              [chaperone.web.session :as session]
               [org.httpkit.server :as server]
               [environ.core :as env]
               [compojure.core :as comp]
@@ -44,9 +45,7 @@
 (defn- index-page
     "Render the index page"
     [web cookies]
-    (let [cookies (if (:sid cookies)
-                      cookies
-                      (assoc cookies :sid (uuid/make-random-string)))]
+    (let [cookies (session/manage-session-cookies cookies)]
         {:cookies cookies
          :body    (selmer/render-file "views/index.html"
                                       {:less (dieter/link-to-asset "main.less" (:dieter web))}
