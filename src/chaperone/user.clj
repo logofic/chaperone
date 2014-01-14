@@ -1,6 +1,7 @@
 (ns ^{:doc "System user and user management"}
     chaperone.user
-    (:use [chaperone.crossover.user])
+    (:use [chaperone.crossover.user]
+          [clojure.pprint :only [pprint]])
     (:import chaperone.crossover.user.User
              chaperone.crossover.rpc.Request)
     (:require [chaperone.persistence.core :as pcore]
@@ -27,13 +28,23 @@
     (let [result (pcore/get-by-id persistence "user" id)]
         (_source->User persistence (:_source result))))
 
+(defn encrypt-user-password
+    "Encrypt the user password (one way)"
+    [password]
+    (sc/encrypt password 16384 8 1))
+
+(defn get-user-by-email
+    "get a user by email. Returns nil if not found"
+    [persistence email]
+    (first (pcore/search-to-record persistence "user" (partial _source->User persistence) :query (esq/match-all) :size 1 :filter {:term {:email email}})))
+
 (defn save-user
     "Save a user"
     [persistence user]
     (if (pcore/present? persistence (pcore/get-type user) (:id user))
         (pcore/save persistence user)
         (do
-            (let [password (sc/encrypt (:password user) 16384 8 1)
+            (let [password (encrypt-user-password (:password user))
                   user (assoc user :password password)]
                 (pcore/save persistence user)))))
 

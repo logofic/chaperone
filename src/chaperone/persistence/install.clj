@@ -8,7 +8,7 @@
 (def user-mapping {:user {:properties {:firstname      {:type "string"}
 									   :lastname       {:type "string"}
 									   :password       {:type "string" :index "not_analyzed"}
-									   :email          {:type "string"}
+									   :email          {:type "string" :index "not_analyzed"}
 									   :photo          {:type "string" :index "not_analyzed"}
 									   :last-logged-in {:type "date", :format "date_time"}}}})
 

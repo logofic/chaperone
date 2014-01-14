@@ -4,8 +4,11 @@
           [chaperone.crossover.user]
           [chaperone.crossover.rpc :only [new-request]])
     (:require [test-helper :as test]
+              [chaperone.persistence.install :as install]
               [clj-time.core :as time]
               [clojurewerkz.elastisch.rest.index :as esi]
+              [clojurewerkz.elastisch.rest.document :as esd]
+              [clojurewerkz.elastisch.query :as esq]
               [chaperone.persistence.install :as install]
               [chaperone.persistence.core :as pcore]
               [chaperone.web.rpc :as rpc]
@@ -16,7 +19,9 @@
     []
     (test/stop)
     (test/create)
-    (test/start pcore/start!))
+    (test/start pcore/start!)
+    (esi/delete @test/es-index)
+    (install/create-index test/system))
 
 (namespace-state-changes (before :facts (setup!)))
 
@@ -70,6 +75,16 @@
               (pcore/refresh persistence)
               (let [reget-user2 (get-user-by-id persistence (:id reget-user))]
                   reget-user => reget-user2))))
+
+(fact "You should be able to get a user by email" :focus
+      (let [test-user (new-user "Mark" "Mandel" "email@email.com" "unique password")
+            persistence (pcore/sub-system test/system)]
+          (esd/delete-by-query @test/es-index "user" (esq/match-all))
+          (save-user persistence test-user)
+          (pcore/refresh persistence)
+          (let [test-user (get-user-by-id persistence (:id test-user))
+                reget-user (get-user-by-email persistence (:email test-user))]
+              test-user => reget-user)))
 
 (fact
     "Test if the _source->User works properly"
