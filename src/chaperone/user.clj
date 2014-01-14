@@ -38,6 +38,11 @@
     [persistence email]
     (first (pcore/search-to-record persistence "user" (partial _source->User persistence) :query (esq/match-all) :size 1 :filter {:term {:email email}})))
 
+(defn ^boolean verify-user-password
+    "Verify that the password the user has matches the candidate"
+    [user password-candidate]
+    (sc/verify password-candidate (:password user)))
+
 (defn save-user
     "Save a user"
     [persistence user]

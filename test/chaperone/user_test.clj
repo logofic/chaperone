@@ -76,7 +76,7 @@
               (let [reget-user2 (get-user-by-id persistence (:id reget-user))]
                   reget-user => reget-user2))))
 
-(fact "You should be able to get a user by email" :focus
+(fact "You should be able to get a user by email"
       (let [test-user (new-user "Mark" "Mandel" "email@email.com" "unique password")
             persistence (pcore/sub-system test/system)]
           (esd/delete-by-query @test/es-index "user" (esq/match-all))
@@ -85,6 +85,17 @@
           (let [test-user (get-user-by-id persistence (:id test-user))
                 reget-user (get-user-by-email persistence (:email test-user))]
               test-user => reget-user)))
+
+(fact "You should be able to verify the password" :focus
+      (let [test-user (new-user "Mark" "Mandel" "email@email.com" "my password of doom")
+            persistence (pcore/sub-system test/system)]
+          (esd/delete-by-query @test/es-index "user" (esq/match-all))
+          (save-user persistence test-user)
+          (pcore/refresh persistence)
+          (let [test-user (get-user-by-id persistence (:id test-user))                ]
+              (verify-user-password test-user "my password of doom") => true
+              (verify-user-password test-user "INCORRECT") => false
+              )))
 
 (fact
     "Test if the _source->User works properly"
