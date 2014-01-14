@@ -14,9 +14,13 @@
 ;; configure routes
 (def.config chaperone.app [$routeProvider]
             (doto $routeProvider
+                ;; admin - user
+
                 (.when "/admin/users/add" (obj :templateUrl "/public/partials/admin/user/add-user-form.html" :controller "AdminUserCtrl"))
                 (.when "/admin/users/edit/:id" (obj :templateUrl "/public/partials/admin/user/edit-user-form.html" :controller "AdminUserCtrl"))
                 (.when "/admin/users/list" (obj :templateUrl "/public/partials/admin/user/list.html" :controller "AdminUserCtrl"))
+
+                ;; account management
+
+                (.when "/account/login" (obj :templateUrl "/public/partials/account/login.html" :controller "AccountCtrl"))
                 (.otherwise (obj :templateUrl "/public/partials/index.html"))))
-
-
