@@ -1,12 +1,13 @@
 (ns ^{:doc "Management of the application web sessions"}
-        chaperone.web.session
+    chaperone.web.session
     (:require [cljs-uuid.core :as uuid]))
 
 ;;; system tools
 (defn create-sub-system
     "Create the persistence system. Takes the existing system details"
     [system]
-    (let [sub-system {:sessions (atom {})}]
+    (let [sub-system {:websocket-clients (atom {})
+                      :loggedin-users    (atom {})}]
         (assoc system :session sub-system)))
 
 (defn sub-system
@@ -20,3 +21,16 @@
     (if (:sid cookies)
         cookies
         (assoc cookies :sid (uuid/make-random-string))))
+
+(defn open-session
+    "starts a session for a websocket connection"
+    [session cookies client]
+    (let [sid (:sid cookies)]
+        (if-not sid
+            (throw (Exception. "SID not present in cookie")))
+        (swap! (:websocket-clients session) assoc client sid)))
+
+(defn close-session
+    "Closes an existing session"
+    [session client]
+    (swap! (:websocket-clients session) dissoc client))

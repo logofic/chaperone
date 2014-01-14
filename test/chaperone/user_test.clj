@@ -57,6 +57,7 @@
       (let [test-user (new-user "Mark" "Mandel" "email" "password")
             persistence (pcore/sub-system test/system)]
           (:password test-user) => "password"
+          (esd/delete-by-query @test/es-index "user" (esq/match-all))
           (save-user persistence test-user)
           (pcore/refresh persistence)
           (let [reget-user (get-user-by-id persistence (:id test-user))]
@@ -67,6 +68,7 @@
       (let [test-user (new-user "Mark" "Mandel" "email" "password")
             persistence (pcore/sub-system test/system)]
           (:password test-user) => "password"
+          (esd/delete-by-query @test/es-index "user" (esq/match-all))
           (save-user persistence test-user)
           (pcore/refresh persistence)
           (let [reget-user (get-user-by-id persistence (:id test-user))]

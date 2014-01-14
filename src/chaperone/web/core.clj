@@ -19,12 +19,11 @@
 (defn create-sub-system
     "Create the persistence system. Takes the existing system details"
     [system]
-    (let [sub-system {:port    (env/env :web-server-port 8080)
-                      :dieter  {:engine     :v8
-                                :compress   false ; minify using Google Closure Compiler & Less compression
-                                :cache-mode :production ; or :production. :development disables cacheing
-                                }
-                      :clients (atom {})}]
+    (let [sub-system {:port   (env/env :web-server-port 8080)
+                      :dieter {:engine     :v8
+                               :compress   false ; minify using Google Closure Compiler & Less compression
+                               :cache-mode :production ; or :production. :development disables cacheing
+                               }}]
         (assoc system :web sub-system)))
 
 (defn sub-system

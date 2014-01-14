@@ -2,7 +2,8 @@
     chaperone.web.session-test
     (:use [midje.sweet]
           [chaperone.web.session])
-    (:require [test-helper :as test]))
+    (:require [test-helper :as test]
+              [cljs-uuid.core :as uuid]))
 
 (defn- setup!
     "Provides setup for the tests. Has side effects"
@@ -17,3 +18,25 @@
       (let [cookies (manage-session-cookies {})
             sid (:sid cookies)]
           (-> cookies manage-session-cookies :sid) => sid))
+
+(fact "Exception should be thrown if there is no sid in the cookie"
+      (let [session (sub-system test/system)]
+          (open-session session {} {}) => (throws Exception "SID not present in cookie")))
+
+(fact "UUID should be stored against the client when the session opens"
+      (let [session (sub-system test/system)
+            websocket-clients (:websocket-clients session)
+            client {:client true}
+            cookies {:sid (uuid/make-random-string)}]
+          (open-session session cookies client)
+          (get @websocket-clients client) => (:sid cookies)))
+
+(fact "UUID should be removed when the session is closed"
+      (let [session (sub-system test/system)
+            websocket-clients (:websocket-clients session)
+            client {:client true}
+            cookies {:sid (uuid/make-random-string)}]
+          (open-session session cookies client)
+          (count @websocket-clients) => 1
+          (close-session session client)
+          (empty? @websocket-clients) => true))
