@@ -25,7 +25,9 @@
 (defn open-session
     "starts a session for a websocket connection"
     [session cookies client]
-    (let [sid (:sid cookies)]
+    (let [sid (if (:sid cookies)
+                  (:sid cookies)
+                  (get-in cookies ["sid" :value]))]
         (if-not sid
             (throw (Exception. "SID not present in cookie")))
         (swap! (:websocket-clients session) assoc client sid)))

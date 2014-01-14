@@ -37,8 +37,8 @@
     [system request]
     (let [ws (ws/sub-system system)]
         (server/with-channel request client
-                             (ws/websocket-on-connect! ws request client)
-                             (server/on-close client (ws/websocket-on-close! ws client))
+                             (ws/websocket-on-connect! system request client)
+                             (server/on-close client (ws/websocket-on-close! system client))
                              (server/on-receive client (ws/websocket-on-recieve! system client)))))
 
 (defn- index-page

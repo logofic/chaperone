@@ -1,6 +1,9 @@
 (ns ^{:doc "Manages the websocket processing"}
     chaperone.web.websocket
+    (:use
+        [clojure.pprint :only [pprint]])
     (:require [chaperone.web.rpc :as rpc]
+              [chaperone.web.session :as session]
               [clojure.edn :as edn]))
 
 ;;; system tools
@@ -25,11 +28,12 @@
 
 (defn websocket-on-close!
     "Returns a handler function for when a websocket is closed"
-    [ws client]
-    (fn [status] (swap! (:clients ws) dissoc client)))
+    [system client]
+    (fn [status] (session/close-session (session/sub-system system) client)))
 
 (defn websocket-on-connect!
     "Handler for when a websocket conenction is made"
-    [ws request client]
-    (println "Connected: " request client)
-    (swap! (:clients ws) assoc client true))
+    [system request client]
+    (println "Connected - Request: ")
+    (pprint (:cookies request))
+    (session/open-session (session/sub-system system) (:cookies request) client))

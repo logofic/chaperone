@@ -20,26 +20,6 @@
 
 (namespace-state-changes (before :facts (setup!)))
 
-(fact "Connecting a websocket should store the channel"
-      (let [ws (ws/sub-system test/system)
-            channel {:channel true}
-            request {:request true}
-            clients (:clients ws)]
-          (ws/websocket-on-connect! ws request channel)
-          (count @clients) => 1
-          (first @clients) => [channel true]))
-
-(fact "Disconnecting a websocket should remove the channel"
-      (let [ws (ws/sub-system test/system)
-            channel {:channel true}
-            request {:request true}
-            clients (:clients ws)]
-          (ws/websocket-on-connect! ws request channel)
-          (count @clients) => 1
-          ;;returns a handler function. we need to call it.
-          ((ws/websocket-on-close! ws channel) "test")
-          (count @clients) => 0))
-
 (fact "Sending a request will result in a response coming back on the same channel"
       (let [channel {:channel true}
             test-user (x-user/new-user "Mark" "Mandel" "email" "password")
