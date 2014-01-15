@@ -68,7 +68,17 @@
     (-> session :loggedin-users deref (get sid)))
 
 ;;; handlers
-
-;; TODO: write this thing.
 (defmethod rpc/rpc-handler [:account :login]
-           [system ^Request request])
+           [system ^Request request]
+    (let [session (sub-system system)
+          client (rpc/get-client request)
+          sid (get-client-sid session client)
+          data (:data request)]
+        (login! system sid (:email data) (:password data))))
+
+
+(defmethod rpc/rpc-handler [:account :logout]
+           [system ^Request request]
+    (let [session (sub-system system)
+          sid (get-client-sid session (rpc/get-client request))]
+        (logout! session sid)))
