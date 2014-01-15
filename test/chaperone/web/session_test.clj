@@ -3,7 +3,12 @@
     (:use [midje.sweet]
           [chaperone.web.session])
     (:require [test-helper :as test]
-              [cljs-uuid.core :as uuid]))
+              [cljs-uuid.core :as uuid]
+              [clojurewerkz.elastisch.rest.document :as esd]
+              [clojurewerkz.elastisch.query :as esq]
+              [chaperone.user :as user]
+              [chaperone.crossover.user :as x-user]
+              [chaperone.persistence.core :as pcore]))
 
 (defn- setup!
     "Provides setup for the tests. Has side effects"
@@ -42,6 +47,33 @@
           (close-session! session client)
           (empty? @websocket-clients) => true))
 
-(fact "Should be able to login")
+(fact "Should be able to login"
+      (esd/delete-by-query @test/es-index "user" (esq/match-all))
+      (let [persistence (pcore/sub-system test/system)
+            session (sub-system test/system)
+            test-user (x-user/new-user "Mark" "Mandel" "email" "password")
+            sid (uuid/make-random-string)
+            cookies {"sid" {:value sid}}
+            client {:client true}]
+          (user/save-user persistence test-user)
+          (pcore/refresh persistence)
+          (open-session! session cookies client)
+          (get-user-session session sid) => nil
+          (login! test/system sid "email" "password") => truthy
+          (login! test/system sid "email" "password") => (user/get-user-by-id persistence (:id test-user))
+          (get-user-session session sid) => (user/get-user-by-id persistence (:id test-user))))
 
-(fact "Should be able to logout")
+(fact "Should be able to logout"
+      (esd/delete-by-query @test/es-index "user" (esq/match-all))
+      (let [persistence (pcore/sub-system test/system)
+            session (sub-system test/system)
+            test-user (x-user/new-user "Mark" "Mandel" "email" "password")
+            sid (uuid/make-random-string)
+            cookies {"sid" {:value sid}}
+            client {:client true}]
+          (user/save-user persistence test-user)
+          (pcore/refresh persistence)
+          (open-session! session cookies client)
+          (login! test/system sid "email" "password") => truthy
+          (logout! session sid)
+          (get-user-session session sid) => nil))

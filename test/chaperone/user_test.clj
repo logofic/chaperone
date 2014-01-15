@@ -88,7 +88,7 @@
                 reget-user (get-user-by-email persistence (:email test-user))]
               test-user => reget-user)))
 
-(fact "You should be able to verify the password" :focus
+(fact "You should be able to verify the password"
       (let [test-user (new-user "Mark" "Mandel" "email@email.com" "my password of doom")
             persistence (pcore/sub-system test/system)]
           (esd/delete-by-query @test/es-index "user" (esq/match-all))
