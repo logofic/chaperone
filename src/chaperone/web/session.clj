@@ -46,7 +46,7 @@
           persistence (pcore/sub-system system)
           user (user/get-user-by-email persistence email)]
         (if (user/verify-user-password user password)
-            (do (swap! (:loggedin-users session) assoc sid user)
+            (do (swap! (:loggedin-users session) assoc sid {:user user})
                 user)
             nil)))
 

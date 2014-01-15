@@ -61,7 +61,7 @@
           (get-user-session session sid) => nil
           (login! test/system sid "email" "password") => truthy
           (login! test/system sid "email" "password") => (user/get-user-by-id persistence (:id test-user))
-          (get-user-session session sid) => (user/get-user-by-id persistence (:id test-user))))
+          (:user (get-user-session session sid)) => (user/get-user-by-id persistence (:id test-user))))
 
 (fact "Should be able to logout"
       (esd/delete-by-query @test/es-index "user" (esq/match-all))
