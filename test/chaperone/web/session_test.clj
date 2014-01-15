@@ -29,7 +29,8 @@
             client {:client true}
             cookies {"sid" {:value (uuid/make-random-string)}}]
           (open-session! session cookies client)
-          (get @websocket-clients client) => (get-in cookies ["sid" :value])))
+          (get @websocket-clients client) => (get-in cookies ["sid" :value])
+          (get-client-sid session client) => (get-in cookies ["sid" :value])))
 
 (fact "UUID should be removed when the session is closed"
       (let [session (sub-system test/system)

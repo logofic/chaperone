@@ -58,9 +58,9 @@
 (defn get-client-sid
     "gets the sid for a client"
     [session client]
-    (-> session :websocket-clients (get client)))
+    (-> session :websocket-clients deref (get client)))
 
 (defn get-user-session
     "gets the user's session from a session ident"
     [session sid]
-    (-> session :loggedin-users (get sid)))
+    (-> session :loggedin-users deref (get sid)))
