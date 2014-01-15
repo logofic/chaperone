@@ -47,8 +47,13 @@
     [rpc ^Request request client]
     (.put (:rpc-map rpc) request client))
 
-(defn- get-client!
-    "After putting a client in for a request. Returns the websocket client the RPC request originated from."
+(defn get-client
+    "Retrieve the the client for a specific request"
+    [rpc ^Request request]
+    (.get (:rpc-map rpc) request))
+
+(defn- remove-client!
+    "Remove the request from the request map. Returns the websocket client the RPC request originated from."
     [rpc ^Request request]
     (.remove (:rpc-map rpc) request))
 
@@ -71,7 +76,7 @@
         (go
             (while-let [response (<! (:response-chan rpc))]
                        (let [request (:request response)
-                             client (get-client! rpc request)]
+                             client (remove-client! rpc request)]
                            (when (and response client)
                                (server/send! client (pr-str response))))))))
 

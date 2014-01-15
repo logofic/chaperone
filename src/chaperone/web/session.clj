@@ -1,8 +1,10 @@
 (ns ^{:doc "Management of the application web sessions"}
     chaperone.web.session
+    (:import chaperone.crossover.rpc.Request)
     (:require [cljs-uuid.core :as uuid]
               [chaperone.user :as user]
-              [chaperone.persistence.core :as pcore]))
+              [chaperone.persistence.core :as pcore]
+              [chaperone.web.rpc :as rpc]))
 
 ;;; system tools
 (defn create-sub-system
@@ -64,3 +66,9 @@
     "gets the user's session from a session ident"
     [session sid]
     (-> session :loggedin-users deref (get sid)))
+
+;;; handlers
+
+;; TODO: write this thing.
+(defmethod rpc/rpc-handler [:account :login]
+           [system ^Request request])

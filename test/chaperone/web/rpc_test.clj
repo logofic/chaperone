@@ -48,12 +48,14 @@
             response-chan (:response-chan rpc)
             test-user (x-user/new-user "Mark" "Mandel" "email" "password")
             piped-timeout (pipe response-chan (timeout 2000))
-            request (new-request :user :save test-user)]
+            request (new-request :user :save test-user)
+            client {:client true}]
           (test/start pcore/start! install/start! start!)
-          (send-request! rpc {} request)
+          (send-request! rpc client request)
           (let [response (<!! piped-timeout)
                 persistence (pcore/sub-system test/system)]
               (:request response) => request
+              (get-client rpc request) => client
               (pcore/refresh persistence)
               ;ignore password, as it gets encrypted
               (user/get-user-by-id persistence (:id test-user)) => (contains (dissoc test-user :password)))))
