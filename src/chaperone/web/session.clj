@@ -22,7 +22,7 @@
         cookies
         (assoc cookies :sid (uuid/make-random-string))))
 
-(defn open-session
+(defn open-session!
     "starts a session for a websocket connection"
     [session cookies client]
     (let [sid (if (:sid cookies)
@@ -32,7 +32,15 @@
             (throw (Exception. "SID not present in cookie")))
         (swap! (:websocket-clients session) assoc client sid)))
 
-(defn close-session
+(defn close-session!
     "Closes an existing session"
     [session client]
     (swap! (:websocket-clients session) dissoc client))
+
+(defn login!
+    "Login to the system. Returns the user data if successful. nil if not."
+    [sid email password])
+
+(defn logout!
+    "Logout the specific session."
+    [sid])

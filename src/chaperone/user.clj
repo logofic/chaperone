@@ -1,7 +1,6 @@
 (ns ^{:doc "System user and user management"}
     chaperone.user
-    (:use [chaperone.crossover.user]
-          [clojure.pprint :only [pprint]])
+    (:use [chaperone.crossover.user])
     (:import chaperone.crossover.user.User
              chaperone.crossover.rpc.Request)
     (:require [chaperone.persistence.core :as pcore]
