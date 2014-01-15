@@ -40,3 +40,7 @@
           (count @websocket-clients) => 1
           (close-session! session client)
           (empty? @websocket-clients) => true))
+
+(fact "Should be able to login")
+
+(fact "Should be able to logout")

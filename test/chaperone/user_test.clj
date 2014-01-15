@@ -97,6 +97,7 @@
           (let [test-user (get-user-by-id persistence (:id test-user))                ]
               (verify-user-password test-user "my password of doom") => true
               (verify-user-password test-user "INCORRECT") => false
+              (verify-user-password test-user nil) => false
               )))
 
 (fact

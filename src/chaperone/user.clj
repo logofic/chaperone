@@ -40,7 +40,10 @@
 (defn ^boolean verify-user-password
     "Verify that the password the user has matches the candidate"
     [user password-candidate]
-    (sc/verify password-candidate (:password user)))
+    (let [password (:password user)]
+        (if (and password-candidate password)
+            (sc/verify password-candidate password)
+            false)))
 
 (defn save-user
     "Save a user"

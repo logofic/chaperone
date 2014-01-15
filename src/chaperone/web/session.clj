@@ -1,6 +1,8 @@
 (ns ^{:doc "Management of the application web sessions"}
     chaperone.web.session
-    (:require [cljs-uuid.core :as uuid]))
+    (:require [cljs-uuid.core :as uuid]
+              [chaperone.user :as user]
+              [chaperone.persistence.core :as pcore]))
 
 ;;; system tools
 (defn create-sub-system
@@ -39,8 +41,26 @@
 
 (defn login!
     "Login to the system. Returns the user data if successful. nil if not."
-    [sid email password])
+    [system sid email password]
+    (let [session (sub-system system)
+          persistence (pcore/sub-system system)
+          user (user/get-user-by-email persistence email)]
+        (if (user/verify-user-password user password)
+            (do (swap! (:loggedin-users session) assoc sid user)
+                user)
+            nil)))
 
 (defn logout!
     "Logout the specific session."
-    [sid])
+    [session sid]
+    (swap! (:loggedin-users session) dissoc sid))
+
+(defn get-client-sid
+    "gets the sid for a client"
+    [session client]
+    (-> session :websocket-clients (get client)))
+
+(defn get-user-session
+    "gets the user's session from a session ident"
+    [session sid]
+    (-> session :loggedin-users (get sid)))
