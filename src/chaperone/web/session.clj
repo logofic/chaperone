@@ -81,5 +81,6 @@
 (defmethod rpc/rpc-handler [:account :logout]
            [system ^Request request]
     (let [session (sub-system system)
-          sid (get-client-sid session (rpc/get-client request))]
+          rpc (rpc/sub-system system)
+          sid (get-client-sid session (rpc/get-client rpc request))]
         (logout! session sid)))
