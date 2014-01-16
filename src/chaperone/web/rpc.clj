@@ -57,6 +57,13 @@
     [rpc ^Request request]
     (.remove (:rpc-map rpc) request))
 
+(defn run-client-request!
+    "Runs the rpc request against the connected client, so we know who to send the result back to"
+    [system client request]
+    (let [rpc (sub-system system)]
+        (put-client! rpc request client)
+        (new-response request (run-rpc-request system request))))
+
 (defn- start-rpc-request-listen!
     "Start listening to the rpc request channel, and process it"
     [system]
@@ -64,10 +71,8 @@
         (go (while-let [packet (<! (:request-chan rpc))]
                        (when packet
                            (let [client (:client packet)
-                                 request (:data packet)
-                                 data (run-rpc-request system request)]
-                               (put-client! rpc request client)
-                               (>! (:response-chan rpc) (new-response request data))))))))
+                                 request (:data packet)]
+                               (>! (:response-chan rpc) (run-client-request! system client request))))))))
 
 (defn- start-rpc-response-listen
     "Start listening to the rpc response channel"

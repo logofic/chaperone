@@ -77,3 +77,20 @@
           (login! test/system sid "email" "password") => truthy
           (logout! session sid)
           (get-user-session session sid) => nil))
+
+(fact "RPC: login"
+      (esd/delete-by-query @test/es-index "user" (esq/match-all))
+      (let [persistence (pcore/sub-system test/system)
+            session (sub-system test/system)
+            test-user (x-user/new-user "Mark" "Mandel" "email" "password")
+            sid (uuid/make-random-string)
+            cookies {"sid" {:value sid}}
+            client {:client true}]
+          (user/save-user persistence test-user)
+          (pcore/refresh persistence)
+          (open-session! session cookies client)
+          (get-user-session session sid) => nil
+          (login! test/system sid "email" "password") => (user/get-user-by-id persistence (:id test-user))
+          (:user (get-user-session session sid)) => (user/get-user-by-id persistence (:id test-user)))
+
+      )
