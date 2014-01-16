@@ -57,7 +57,7 @@
     [rpc ^Request request]
     (.remove (:rpc-map rpc) request))
 
-(defn run-client-request!
+(defn run-client-rpc-request!
     "Runs the rpc request against the connected client, so we know who to send the result back to"
     [system client request]
     (let [rpc (sub-system system)]
@@ -72,7 +72,7 @@
                        (when packet
                            (let [client (:client packet)
                                  request (:data packet)]
-                               (>! (:response-chan rpc) (run-client-request! system client request))))))))
+                               (>! (:response-chan rpc) (run-client-rpc-request! system client request))))))))
 
 (defn- start-rpc-response-listen
     "Start listening to the rpc response channel"

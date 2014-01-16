@@ -71,7 +71,8 @@
 (defmethod rpc/rpc-handler [:account :login]
            [system ^Request request]
     (let [session (sub-system system)
-          client (rpc/get-client request)
+          rpc (rpc/sub-system system)
+          client (rpc/get-client rpc request)
           sid (get-client-sid session client)
           data (:data request)]
         (login! system sid (:email data) (:password data))))

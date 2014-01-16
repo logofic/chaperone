@@ -8,7 +8,9 @@
               [clojurewerkz.elastisch.query :as esq]
               [chaperone.user :as user]
               [chaperone.crossover.user :as x-user]
-              [chaperone.persistence.core :as pcore]))
+              [chaperone.persistence.core :as pcore]
+              [chaperone.web.rpc :as rpc]
+              [chaperone.crossover.rpc :as x-rpc]))
 
 (defn- setup!
     "Provides setup for the tests. Has side effects"
@@ -59,6 +61,7 @@
           (pcore/refresh persistence)
           (open-session! session cookies client)
           (get-user-session session sid) => nil
+          (login! test/system sid "email" "passwordX") => nil
           (login! test/system sid "email" "password") => truthy
           (login! test/system sid "email" "password") => (user/get-user-by-id persistence (:id test-user))
           (:user (get-user-session session sid)) => (user/get-user-by-id persistence (:id test-user))))
@@ -85,12 +88,14 @@
             test-user (x-user/new-user "Mark" "Mandel" "email" "password")
             sid (uuid/make-random-string)
             cookies {"sid" {:value sid}}
-            client {:client true}]
+            client {:client true}
+            request (x-rpc/new-request :account :login {:email "email" :password "password"})
+            bad-request (x-rpc/new-request :account :login {:email "email" :password "passwordX"})
+            ]
           (user/save-user persistence test-user)
           (pcore/refresh persistence)
           (open-session! session cookies client)
           (get-user-session session sid) => nil
-          (login! test/system sid "email" "password") => (user/get-user-by-id persistence (:id test-user))
-          (:user (get-user-session session sid)) => (user/get-user-by-id persistence (:id test-user)))
-
-      )
+          (:data (rpc/run-client-rpc-request! test/system client bad-request)) => nil
+          (:data (rpc/run-client-rpc-request! test/system client request)) => (user/get-user-by-id persistence (:id test-user))
+          (:user (get-user-session session sid)) => (user/get-user-by-id persistence (:id test-user))))
