@@ -84,3 +84,11 @@
           rpc (rpc/sub-system system)
           sid (get-client-sid session (rpc/get-client rpc request))]
         (logout! session sid)))
+
+(defmethod rpc/rpc-handler [:account :current]
+           [system ^Request request]
+    (let [session (sub-system system)
+          rpc (rpc/sub-system system)
+          client (rpc/get-client rpc request)
+          sid (get-client-sid session client)]
+        (get-user-session session sid)))

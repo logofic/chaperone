@@ -116,3 +116,21 @@
           (rpc/run-client-rpc-request! test/system client login-request)
           (rpc/run-client-rpc-request! test/system client logout-request)
           (get-user-session session sid) => nil))
+
+(fact "RPC: get current user"
+      (esd/delete-by-query @test/es-index "user" (esq/match-all))
+      (let [persistence (pcore/sub-system test/system)
+            session (sub-system test/system)
+            test-user (x-user/new-user "Mark" "Mandel" "email" "password")
+            sid (uuid/make-random-string)
+            cookies {"sid" {:value sid}}
+            client {:client true}
+            login-request (x-rpc/new-request :account :login {:email "email" :password "password"})
+            current-request (x-rpc/new-request :account :current {})]
+          (user/save-user persistence test-user)
+          (pcore/refresh persistence)
+          (open-session! session cookies client)
+          (-> (rpc/run-client-rpc-request! test/system client current-request) :data) => nil
+          (rpc/run-client-rpc-request! test/system client login-request)
+          (-> (rpc/run-client-rpc-request! test/system client current-request) :data :user)
+          => (user/get-user-by-id persistence (:id test-user))))
