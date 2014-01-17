@@ -132,5 +132,5 @@
           (open-session! session cookies client)
           (-> (rpc/run-client-rpc-request! test/system client current-request) :data) => nil
           (rpc/run-client-rpc-request! test/system client login-request)
-          (-> (rpc/run-client-rpc-request! test/system client current-request) :data :user)
+          (-> (rpc/run-client-rpc-request! test/system client current-request) :data)
           => (user/get-user-by-id persistence (:id test-user))))

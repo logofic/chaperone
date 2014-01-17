@@ -91,4 +91,4 @@
           rpc (rpc/sub-system system)
           client (rpc/get-client rpc request)
           sid (get-client-sid session client)]
-        (get-user-session session sid)))
+        (:user (get-user-session session sid))))
