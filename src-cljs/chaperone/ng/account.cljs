@@ -22,9 +22,8 @@
 (def.controller chaperone.app.AccountCtrl [$scope System]
                 (! $scope.init
                    (fn []
-                       (go (let [response (<! (session/current-user System))
-                                 current-user (:data response)]
-                               (set-current-user! $scope current-user)))))
+                       (let [chan (session/current-user System)]
+                           (go (set-current-user! $scope (:data (<! chan)))))))
 
                 (! $scope.login
                    (fn []
