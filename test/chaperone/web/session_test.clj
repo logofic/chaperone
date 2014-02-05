@@ -16,7 +16,8 @@
     "Provides setup for the tests. Has side effects"
     []
     (test/stop)
-    (test/create))
+    (test/create)
+    (test/start pcore/start!))
 
 (namespace-state-changes (before :facts (setup!)))
 
