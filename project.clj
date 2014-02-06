@@ -7,14 +7,14 @@
                    [clj-time "0.6.0"]
                    [cljs-uuid "0.0.5"]
                    [environ "0.4.0"]
-                   [clojurewerkz/elastisch "1.3.0"]
+                   [clojurewerkz/elastisch "1.4.0"]
                    [http-kit "2.1.16"]
-                   [selmer "0.5.5"]
+                   [selmer "0.5.9"]
                    [compojure "1.1.5"]
                    [dieter "0.4.1"]
                    [org.clojure/core.async "0.1.242.0-44b1e3-alpha"]
-                   [com.google.guava/guava "15.0"]
-                   [clojurewerkz/scrypt "1.0.0"]
+                   [com.google.guava/guava "16.0.1"]
+                   [clojurewerkz/scrypt "1.1.0"]
                    [while-let "0.1.0"]]
     :main chaperone.core
     :plugins [[lein-midje "3.1.1"]
@@ -27,17 +27,16 @@
                                         [org.clojure/tools.namespace "0.2.4"]
                                         [org.clojure/tools.trace "0.7.6"]
                                         [org.clojars.gjahad/debug-repl "0.3.3"]
-                                        [clj-webdriver "0.6.0"]]
-                         :source-paths ["dev"]
+                                        [clj-webdriver "0.6.1"]]
+                         :source-paths ["dev"]g
                          :repl-options {:init-ns user}
                          :env          {:elasticsearch-url "http://dev.chaperone:9200"
                                         :web-server-port   8080}}
 
                ;; profile specifically for compiling cljs, to remove unneccessary dependencies, and sinceA
                ;; it will blow up with dieter as it looks for the v8 native
-               :cljs    {:dependencies [[org.clojure/clojurescript "0.0-2138"]
+               :cljs    {:dependencies [[org.clojure/clojurescript "0.0-2156"]
                                         [im.chit/purnam "0.3.0-SNAPSHOT"]
-                                        [com.google.guava/guava "14.0.1"]
                                         [com.google.javascript/closure-compiler "v20131014"]
                                         [jayq "2.5.0"]]
                          :exclusions   [dieter http-kit compojure environ clj-time selmer clojurewerkz/elastisch]
