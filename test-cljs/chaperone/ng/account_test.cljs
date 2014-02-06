@@ -50,4 +50,8 @@
                              (is $scope.clj-current-user user)
                              (is (type $scope.currentUser) nil)))))
 
+    ; TODO: test login correctly
+    ; TODO: test login with failure
+    ; TODO: test logout
+
     )
