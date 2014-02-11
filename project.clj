@@ -28,7 +28,7 @@
                                         [org.clojure/tools.trace "0.7.6"]
                                         [org.clojars.gjahad/debug-repl "0.3.3"]
                                         [clj-webdriver "0.6.1"]]
-                         :source-paths ["dev"]g
+                         :source-paths ["dev"]
                          :repl-options {:init-ns user}
                          :env          {:elasticsearch-url "http://dev.chaperone:9200"
                                         :web-server-port   8080}}
