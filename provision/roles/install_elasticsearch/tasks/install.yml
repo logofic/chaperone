@@ -2,10 +2,16 @@
 - name: download directory
   file: path={{download_dir}} state=directory
 - name: download elasticsearch
-  get_url: url=https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-0.90.11.deb dest={{download_dir}}/elasticsearch.deb
+  get_url: url=https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.0.0.deb dest={{download_dir}}/elasticsearch.deb
 - name: install elasticsearch
   command: dpkg -i {{download_dir}}/elasticsearch.deb
   sudo: true
-- name: install front end
+- name: install head front end
   command: /usr/share/elasticsearch/bin/plugin -install mobz/elasticsearch-head
+  sudo: true
+- name: install HQ front end
+  command: /usr/share/elasticsearch/bin/plugin -install royrusso/elasticsearch-HQ
+  sudo: true
+- name: Start elastic search
+  service: name=elasticsearch state=started
   sudo: true
